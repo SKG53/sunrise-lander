@@ -26,7 +26,6 @@ import { Route as AccessibilityStatementRouteImport } from './routes/accessibili
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsSlugRouteImport } from './routes/products_.$slug'
-import { Route as ApiPublicEventSignupRouteImport } from './routes/api/public/event-signup'
 
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
@@ -113,11 +112,6 @@ const ProductsSlugRoute = ProductsSlugRouteImport.update({
   path: '/products/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicEventSignupRoute = ApiPublicEventSignupRouteImport.update({
-  id: '/api/public/event-signup',
-  path: '/api/public/event-signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -137,7 +131,6 @@ export interface FileRoutesByFullPath {
   '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/products/$slug': typeof ProductsSlugRoute
-  '/api/public/event-signup': typeof ApiPublicEventSignupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -157,7 +150,6 @@ export interface FileRoutesByTo {
   '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/products/$slug': typeof ProductsSlugRoute
-  '/api/public/event-signup': typeof ApiPublicEventSignupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -178,7 +170,6 @@ export interface FileRoutesById {
   '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/products_/$slug': typeof ProductsSlugRoute
-  '/api/public/event-signup': typeof ApiPublicEventSignupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -200,7 +191,6 @@ export interface FileRouteTypes {
     | '/social'
     | '/terms-of-service'
     | '/products/$slug'
-    | '/api/public/event-signup'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -220,7 +210,6 @@ export interface FileRouteTypes {
     | '/social'
     | '/terms-of-service'
     | '/products/$slug'
-    | '/api/public/event-signup'
   id:
     | '__root__'
     | '/'
@@ -240,7 +229,6 @@ export interface FileRouteTypes {
     | '/social'
     | '/terms-of-service'
     | '/products_/$slug'
-    | '/api/public/event-signup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -261,7 +249,6 @@ export interface RootRouteChildren {
   SocialRoute: typeof SocialRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
-  ApiPublicEventSignupRoute: typeof ApiPublicEventSignupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -385,13 +372,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/event-signup': {
-      id: '/api/public/event-signup'
-      path: '/api/public/event-signup'
-      fullPath: '/api/public/event-signup'
-      preLoaderRoute: typeof ApiPublicEventSignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -413,7 +393,6 @@ const rootRouteChildren: RootRouteChildren = {
   SocialRoute: SocialRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   ProductsSlugRoute: ProductsSlugRoute,
-  ApiPublicEventSignupRoute: ApiPublicEventSignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

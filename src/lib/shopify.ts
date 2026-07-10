@@ -1,6 +1,7 @@
-// Shopify Storefront API helper + cart mutations.
-// Used by the cart store and product detail pages to fetch live product data
-// and create/update Shopify carts that lead to a real Shopify checkout.
+// Shopify Storefront API helper — READ ONLY.
+// This site only fetches product data from Shopify. All cart/checkout
+// mutations are intentionally no-ops so nothing is ever written back to the
+// Shopify store. Add-to-cart buttons in the UI therefore do nothing.
 
 export const SHOPIFY_API_VERSION = "2025-07";
 export const SHOPIFY_STORE_PERMANENT_DOMAIN = "30dfrv-hs.myshopify.com";

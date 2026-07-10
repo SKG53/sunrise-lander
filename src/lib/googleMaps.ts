@@ -5,11 +5,10 @@
 // API KEY NOTES
 //   The Maps JavaScript API is a client-side product: the key is visible
 //   in the browser by design. Security is enforced server-side by Google
-//   via the HTTP Referer restriction on the key. This key is restricted
-//   to: savorsunrise.com, *.savorsunrise.com, *.lovable.app,
-//   *.lovableproject.com, localhost. Requests from any other origin are
-//   rejected by Google's servers regardless of what code runs here.
-//   Rotating the key is safe if ever needed — change the constant below.
+//   via the HTTP Referer restriction on the key. The lander uses its OWN
+//   key (VITE_GOOGLE_MAPS_API_KEY), separate from the main site's key and
+//   Google Cloud project. Restrict the lander key to the lander's domain(s)
+//   only. Requests from any other origin are rejected by Google's servers.
 //
 // LOADING STRATEGY
 //   Google Maps JS is injected from the Maps CDN at runtime. Module-level
@@ -19,9 +18,12 @@
 //   caller's catch block handles it.
 // =============================================================================
 
-// Domain-restricted public key — safe to embed per Google's client-side
-// Maps model. See API KEY NOTES above.
-export const GOOGLE_MAPS_API_KEY = "AIzaSyCjWZ3tjPQ5jARXQx0LxSuQuIcvExXZbAc";
+// Lander-specific, domain-restricted public key — read from the environment,
+// never hardcoded. This lander does NOT share the main site's key or Google
+// Cloud project. Create a NEW Maps key restricted to the lander's own
+// domain(s) and set it as VITE_GOOGLE_MAPS_API_KEY in the lander environment.
+// If unset, the key is empty and the map degrades gracefully (no crash).
+export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? "";
 
 // Custom map style — heavily muted palette tuned for SUNRISE cream (#FEFBE0).
 // Neutralizes all colors toward warm tones, hides most POI labels, keeps

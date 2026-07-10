@@ -1,0 +1,12 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   SUNRISE LANDER — HOME ( / ) styles
+   Blank canvas. Only sets the page to fill the viewport on the brand default
+   cream ground (var(--cream) from sunrise-shell.css) so the empty page has
+   body and isn't a broken-looking void. No design decisions here yet — we
+   build this up together.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.lander-home {
+  min-height: 100vh;
+  background: var(--cream);
+}

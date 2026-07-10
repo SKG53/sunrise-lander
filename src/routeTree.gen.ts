@@ -16,6 +16,7 @@ import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as OghomeRouteImport } from './routes/oghome'
 import { Route as HbeRouteImport } from './routes/hbe'
 import { Route as FindRouteImport } from './routes/find'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -60,6 +61,11 @@ const ProductsRoute = ProductsRouteImport.update({
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OghomeRoute = OghomeRouteImport.update({
+  id: '/oghome',
+  path: '/oghome',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HbeRoute = HbeRouteImport.update({
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/hbe': typeof HbeRoute
+  '/oghome': typeof OghomeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/hbe': typeof HbeRoute
+  '/oghome': typeof OghomeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/hbe': typeof HbeRoute
+  '/oghome': typeof OghomeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/find'
     | '/hbe'
+    | '/oghome'
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/find'
     | '/hbe'
+    | '/oghome'
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/find'
     | '/hbe'
+    | '/oghome'
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
@@ -241,6 +253,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   FindRoute: typeof FindRoute
   HbeRoute: typeof HbeRoute
+  OghomeRoute: typeof OghomeRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
@@ -300,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy-policy'
       fullPath: '/privacy-policy'
       preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oghome': {
+      id: '/oghome'
+      path: '/oghome'
+      fullPath: '/oghome'
+      preLoaderRoute: typeof OghomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/hbe': {
@@ -385,6 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   FindRoute: FindRoute,
   HbeRoute: HbeRoute,
+  OghomeRoute: OghomeRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
   RefundPolicyRoute: RefundPolicyRoute,

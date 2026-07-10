@@ -21,11 +21,11 @@ export const Route = createFileRoute("/")({
   component: HomePage,
   head: () => ({
     meta: [
-      { title: "SUNRISE · Refresh the way the world drinks." },
+      { title: "SUNRISE Lander" },
       {
         name: "description",
         content:
-          "Hemp-infused Delta-9 seltzer. Simple ingredients, pure cane sugar, clean lift — four potency tiers from easy to elevated, engineered for refreshment.",
+          "Drinks to help with a better-for-you approach",
       },
     ],
     links: [

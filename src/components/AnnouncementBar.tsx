@@ -11,7 +11,7 @@
 
 export function AnnouncementBar() {
   return (
-    <a className="announcement-bar" href="/products">
+    <a className="announcement-bar" href="/neverpull/products">
       Free shipping on all orders{" "}
       <span className="announcement-bar-emph">$75+</span>
     </a>

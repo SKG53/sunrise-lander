@@ -124,7 +124,7 @@ export function CartDrawer() {
               <p className="cart-empty-title">Your cart is empty</p>
               <p className="cart-empty-sub">Pick a flavor — start with our seltzers.</p>
               <a
-                href="/products"
+                href="/neverpull/products"
                 className="cart-empty-cta"
                 onClick={() => setIsOpen(false)}
               >

@@ -19,7 +19,7 @@ import { getShopifyMapping } from "@/lib/shopifyProductMap";
 import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import "./products.css";
 
-export const Route = createFileRoute("/products")({
+export const Route = createFileRoute("/neverpull/products")({
   component: ProductsPage,
   head: () => ({
     meta: [
@@ -635,8 +635,8 @@ function ProductsPage() {
                 </p>
               </div>
               <div className="p-ptp-ctas">
-                <a href="/about" className="btn btn-on-color">More About SUNRISE</a>
-                <a href="/find" className="btn btn-on-color-ghost">
+                <a href="/neverpull/about" className="btn btn-on-color">More About SUNRISE</a>
+                <a href="/neverpull/find" className="btn btn-on-color-ghost">
                   Find Near You
                 </a>
               </div>
@@ -672,7 +672,7 @@ function ProductsPage() {
               })}
             </div>
             <div className="p-faq-more">
-              <a href="/faq" className="p-faq-more-link">
+              <a href="/neverpull/faq" className="p-faq-more-link">
                 See the full FAQ <span aria-hidden="true">→</span>
               </a>
             </div>

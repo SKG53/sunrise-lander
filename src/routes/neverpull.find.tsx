@@ -26,7 +26,7 @@ import { SiteFooter } from "../components/SiteFooter";
 import { loadGoogleMaps, MAP_STYLE } from "../lib/googleMaps";
 import "./find.css";
 
-export const Route = createFileRoute("/find")({
+export const Route = createFileRoute("/neverpull/find")({
   component: FindPage,
   head: () => ({
     meta: [
@@ -157,10 +157,10 @@ function FindPage() {
                 </p>
               </div>
               <div className="f-fallback-ctas">
-                <a href="/products" className="btn btn-on-color">
+                <a href="/neverpull/products" className="btn btn-on-color">
                   Shop Online
                 </a>
-                <a href="/about" className="btn btn-on-color-ghost">
+                <a href="/neverpull/about" className="btn btn-on-color-ghost">
                   Our Story
                 </a>
               </div>
@@ -183,7 +183,7 @@ function FindPage() {
                 </p>
               </div>
               <div className="f-gateway-right">
-                <a href="/contact?topic=wholesale" className="btn btn-primary">
+                <a href="/neverpull/contact?topic=wholesale" className="btn btn-primary">
                   Wholesale Inquiries
                 </a>
               </div>

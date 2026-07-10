@@ -17,7 +17,7 @@ import {
 } from "../lib/sunrise-components";
 import "./home.css";
 
-export const Route = createFileRoute("/oghome")({
+export const Route = createFileRoute("/neverpull/oghome")({
   component: HomePage,
   head: () => ({
     meta: [
@@ -369,7 +369,7 @@ function HomePage() {
                     style={{ ["--card-flavor-color" as string]: card.color } as React.CSSProperties}
                   >
                     <Link
-                      to="/products/$slug"
+                      to="/neverpull/products/$slug"
                       params={{ slug: card.slug }}
                       className="s03-card-link"
                     >
@@ -408,7 +408,7 @@ function HomePage() {
                     </Link>
                     <div className="s03-card-cta">
                       <Link
-                        to="/products/$slug"
+                        to="/neverpull/products/$slug"
                         params={{ slug: card.slug }}
                         className="btn btn-flavor"
                         style={{ ["--flavor-color" as string]: card.color } as React.CSSProperties}
@@ -435,7 +435,7 @@ function HomePage() {
                 the hover behavior matches every other button on the
                 site without per-element wiring.                          */}
             <div className="home-section-cta-row">
-              <Link to="/products" className="btn btn-primary btn-xl">
+              <Link to="/neverpull/products" className="btn btn-primary btn-xl">
                 See the Full Lineup
               </Link>
             </div>
@@ -455,7 +455,7 @@ function HomePage() {
             <div className="s06-grid">
               {/* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flag-gated */}
               {SHOW_NON_LIVE_PRODUCTS && (
-              <a href="/products?tier=5" className="s06-card t5">
+              <a href="/neverpull/products?tier=5" className="s06-card t5">
                 <div className="s06-lockup-slot" ref={lockup5Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">Subtle<br />Lift</div>
@@ -467,7 +467,7 @@ function HomePage() {
                 <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
               )}
-              <a href="/products?tier=10" className="s06-card t10">
+              <a href="/neverpull/products?tier=10" className="s06-card t10">
                 <div className="s06-lockup-slot" ref={lockup10Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">Perfect<br />Buzz</div>
@@ -478,7 +478,7 @@ function HomePage() {
                 </div>
                 <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
-              <a href="/products?tier=30" className="s06-card t30">
+              <a href="/neverpull/products?tier=30" className="s06-card t30">
                 <div className="s06-lockup-slot" ref={lockup30Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">Deeper<br />Dive</div>
@@ -489,7 +489,7 @@ function HomePage() {
                 </div>
                 <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
-              <a href="/products?tier=60" className="s06-card t60">
+              <a href="/neverpull/products?tier=60" className="s06-card t60">
                 <div className="s06-lockup-slot" ref={lockup60Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">Elevated<br />Experience</div>
@@ -510,7 +510,7 @@ function HomePage() {
             {/* (/products), but offer different organizing axes — flavor   */}
             {/* (S03) or potency (S06).                                     */}
             <div className="home-section-cta-row">
-              <Link to="/products" className="btn btn-primary btn-xl">
+              <Link to="/neverpull/products" className="btn btn-primary btn-xl">
                 See the Full Lineup
               </Link>
             </div>
@@ -646,7 +646,7 @@ function HomePage() {
                   like no other.
                 </p>
                 <div className="s07-cta-row">
-                  <a href="/about" className="btn btn-on-color-ghost">Read Our Story</a>
+                  <a href="/neverpull/about" className="btn btn-on-color-ghost">Read Our Story</a>
                 </div>
               </div>
             </div>
@@ -666,7 +666,7 @@ function HomePage() {
                 to find your nearest store.
               </p>
               <div>
-                <a href="/find" className="btn btn-primary">Find Near You</a>
+                <a href="/neverpull/find" className="btn btn-primary">Find Near You</a>
               </div>
             </div>
           </div>
@@ -697,7 +697,7 @@ function HomePage() {
               ))}
             </div>
             <div className="s10-faq-more">
-              <a href="/faq" className="s10-faq-more-link">
+              <a href="/neverpull/faq" className="s10-faq-more-link">
                 See the full FAQ <span aria-hidden="true">→</span>
               </a>
             </div>

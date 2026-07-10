@@ -80,7 +80,7 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
             rel="noopener noreferrer"
             className="nav-cta outline"
           ><span className="no-transform">COAs</span></a>
-          <a href="/products" className="nav-cta solid">Shop</a>
+          <a href="/neverpull/products" className="nav-cta solid">Shop</a>
           <CartDrawer />
           <button
             type="button"
@@ -147,7 +147,7 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
               onClick={closeMenu}
             >COAs</a>
             <a
-              href="/products"
+              href="/neverpull/products"
               className="mobile-menu-cta solid"
               onClick={closeMenu}
             >Shop</a>

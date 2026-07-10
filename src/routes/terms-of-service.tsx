@@ -230,7 +230,7 @@ function TermsOfServicePage() {
                 <p>
                   Your purchases are subject to return or exchange solely in
                   accordance with our{" "}
-                  <a href="/refund-policy">Refund Policy</a>.
+                  <a href="/neverpull/refund-policy">Refund Policy</a>.
                 </p>
                 <p>
                   You represent and warrant that your purchases are for your
@@ -277,7 +277,7 @@ function TermsOfServicePage() {
                 <p>
                   Shipping methods, delivery timelines, carrier handling,
                   adult-signature requirements, and related terms are governed
-                  by our <a href="/shipping-policy">Shipping Policy</a>. Please
+                  by our <a href="/neverpull/shipping-policy">Shipping Policy</a>. Please
                   refer to our Shipping Policy for full details.
                 </p>
                 <p>

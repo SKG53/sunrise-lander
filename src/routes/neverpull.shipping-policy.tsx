@@ -3,7 +3,7 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import "./shipping-policy.css";
 
-export const Route = createFileRoute("/shipping-policy")({
+export const Route = createFileRoute("/neverpull/shipping-policy")({
   component: ShippingPolicyPage,
   head: () => ({
     meta: [
@@ -187,7 +187,7 @@ function ShippingPolicyPage() {
                   <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>{" "}
                   within 48 hours of delivery. For full details on how we
                   handle damaged orders and refund eligibility, please refer
-                  to our <a href="/refund-policy">Refund Policy</a>.
+                  to our <a href="/neverpull/refund-policy">Refund Policy</a>.
                 </p>
 
                 <h3 className="sp-policy-heading">Title and risk of loss</h3>

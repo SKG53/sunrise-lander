@@ -3,7 +3,7 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import "./refund-policy.css";
 
-export const Route = createFileRoute("/refund-policy")({
+export const Route = createFileRoute("/neverpull/refund-policy")({
   component: RefundPolicyPage,
   head: () => ({
     meta: [
@@ -126,7 +126,7 @@ function RefundPolicyPage() {
                     Original and return shipping fees are non-refundable in
                     this circumstance.
                   </strong>{" "}
-                  See our <a href="/shipping-policy">Shipping Policy</a> for
+                  See our <a href="/neverpull/shipping-policy">Shipping Policy</a> for
                   full details.
                 </p>
 

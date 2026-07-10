@@ -122,7 +122,7 @@ function AgeVerificationPolicyPage() {
                   carrier's redelivery attempts, the package will be returned
                   to us, and you will be refunded for the product cost (less
                   non-refundable shipping fees). See our{" "}
-                  <a href="/shipping-policy">Shipping Policy</a> for full
+                  <a href="/neverpull/shipping-policy">Shipping Policy</a> for full
                   details.
                 </p>
 

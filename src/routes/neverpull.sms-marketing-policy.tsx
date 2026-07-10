@@ -3,7 +3,7 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import "./sms-marketing-policy.css";
 
-export const Route = createFileRoute("/sms-marketing-policy")({
+export const Route = createFileRoute("/neverpull/sms-marketing-policy")({
   component: SmsMarketingPolicyPage,
   head: () => ({
     meta: [

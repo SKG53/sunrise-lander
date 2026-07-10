@@ -301,7 +301,7 @@ function getFaqsForProduct(p: Product): Array<{ q: string; a: string }> {
 }
 
 // ── ROUTE ────────────────────────────────────────────────────────────────
-export const Route = createFileRoute("/products_/$slug")({
+export const Route = createFileRoute("/neverpull/products_/$slug")({
   component: ProductDetailPage,
   loader: ({ params }) => {
     // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — non-live slugs return 404
@@ -595,7 +595,7 @@ function ProductDetailPage() {
             <ol>
               <li><a href="/">Home</a></li>
               <li aria-hidden="true">·</li>
-              <li><a href="/products">Products</a></li>
+              <li><a href="/neverpull/products">Products</a></li>
               <li aria-hidden="true">·</li>
               <li><a href={`/products?tier=${product.tier}`}>{product.tier}mg</a></li>
               <li aria-hidden="true">·</li>
@@ -832,7 +832,7 @@ function ProductDetailPage() {
                       Add to Your Cart
                     </a>
                   )}
-                  <a href="/find" className="btn btn-secondary">Find Near You</a>
+                  <a href="/neverpull/find" className="btn btn-secondary">Find Near You</a>
                 </div>
               </div>
             </div>
@@ -951,7 +951,7 @@ function ProductDetailPage() {
               {othersInTier.map((o, i) => (
                 <Link
                   key={o.slug}
-                  to="/products/$slug"
+                  to="/neverpull/products/$slug"
                   params={{ slug: o.slug }}
                   className="pd-related-card"
                   style={{ ["--pd-related-color" as string]: o.color } as React.CSSProperties}
@@ -1087,7 +1087,7 @@ function ProductDetailPage() {
               ))}
             </div>
             <div className="pd-faq-more">
-              <a href="/faq" className="pd-faq-more-link">
+              <a href="/neverpull/faq" className="pd-faq-more-link">
                 See the full FAQ <span aria-hidden="true">→</span>
               </a>
             </div>
@@ -1115,7 +1115,7 @@ function ProductDetailPage() {
               </div>
               <div className="pd-ptp-ctas">
                 <a href="#" className="btn btn-on-color">Shop the Lineup</a>
-                <a href="/find" className="btn btn-on-color-ghost">Find Near You</a>
+                <a href="/neverpull/find" className="btn btn-on-color-ghost">Find Near You</a>
               </div>
             </div>
           </div>

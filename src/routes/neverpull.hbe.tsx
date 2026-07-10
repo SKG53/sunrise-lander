@@ -118,7 +118,7 @@ function renderEffectSymbol(cann: Cannabinoid | null, base: number, color: strin
   return vert + big
 }
 
-export const Route = createFileRoute('/hbe')({
+export const Route = createFileRoute('/neverpull/hbe')({
   component: EventSignupPage,
   head: () => ({
     meta: [

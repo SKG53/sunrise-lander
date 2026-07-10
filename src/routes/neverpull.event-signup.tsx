@@ -72,7 +72,7 @@ const TIERS: { tier: TierKey; flavors: Flavor[] }[] = [
   },
 ]
 
-export const Route = createFileRoute('/event-signup')({
+export const Route = createFileRoute('/neverpull/event-signup')({
   component: EventSignupPage,
   head: () => ({
     meta: [
@@ -375,7 +375,7 @@ function EventSignupPage() {
                           {f.comingSoon ? (
                             inner
                           ) : (
-                            <Link to="/products/$slug" params={{ slug }} className="es-card-link">
+                            <Link to="/neverpull/products/$slug" params={{ slug }} className="es-card-link">
                               {inner}
                             </Link>
                           )}

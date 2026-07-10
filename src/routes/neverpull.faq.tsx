@@ -4,7 +4,7 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import "./faq.css";
 
-export const Route = createFileRoute("/faq")({
+export const Route = createFileRoute("/neverpull/faq")({
   component: FAQPage,
   head: () => ({
     meta: [
@@ -422,7 +422,7 @@ const SECTIONS: FAQSection[] = [
           <p>
             Email{" "}
             <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>{" "}
-            or visit the <a href="/contact">Contact</a> page for more details.
+            or visit the <a href="/neverpull/contact">Contact</a> page for more details.
             Email responses typically arrive within five business days.
           </p>
         ),

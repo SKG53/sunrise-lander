@@ -3,7 +3,7 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import "./about.css";
 
-export const Route = createFileRoute("/about")({
+export const Route = createFileRoute("/neverpull/about")({
   component: AboutPage,
   head: () => ({
     meta: [
@@ -218,8 +218,8 @@ function AboutPage() {
                 </p>
               </div>
               <div className="a-ptp-ctas">
-                <a href="/products" className="btn btn-on-color">Shop the Lineup</a>
-                <a href="/find" className="btn btn-on-color-ghost">
+                <a href="/neverpull/products" className="btn btn-on-color">Shop the Lineup</a>
+                <a href="/neverpull/find" className="btn btn-on-color-ghost">
                   Find Near You
                 </a>
               </div>

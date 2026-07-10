@@ -93,15 +93,15 @@ export function SiteFooter() {
           <div className="footer-col">
             <div className="footer-col-label">Shop</div>
             <ul>
-              <li><a href="/products">All Products</a></li>
+              <li><a href="/neverpull/products">All Products</a></li>
               {/* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flag-gated */}
               {SHOW_NON_LIVE_PRODUCTS && (
-                <li><a href="/products?tier=5">5mg THC</a></li>
+                <li><a href="/neverpull/products?tier=5">5mg THC</a></li>
               )}
-              <li><a href="/products?tier=10">10mg THC</a></li>
-              <li><a href="/products?tier=30">30mg THC</a></li>
-              <li><a href="/products?tier=60">60mg THC</a></li>
-              <li><a href="/find">Find Near You</a></li>
+              <li><a href="/neverpull/products?tier=10">10mg THC</a></li>
+              <li><a href="/neverpull/products?tier=30">30mg THC</a></li>
+              <li><a href="/neverpull/products?tier=60">60mg THC</a></li>
+              <li><a href="/neverpull/find">Find Near You</a></li>
             </ul>
           </div>
 
@@ -109,11 +109,11 @@ export function SiteFooter() {
           <div className="footer-col">
             <div className="footer-col-label">Company</div>
             <ul>
-              <li><a href="/about">About</a></li>
-              <li><a href="/contact">Contact</a></li>
-              <li><a href="/contact?topic=wholesale">Wholesale</a></li>
+              <li><a href="/neverpull/about">About</a></li>
+              <li><a href="/neverpull/contact">Contact</a></li>
+              <li><a href="/neverpull/contact?topic=wholesale">Wholesale</a></li>
               <li><a href="https://marketing8710.wixstudio.com/beverage-manufacture/blank" target="_blank" rel="noopener noreferrer">COAs</a></li>
-              <li><a href="/hbe">Hemp Beverage Expo</a></li>
+              <li><a href="/neverpull/hbe">Hemp Beverage Expo</a></li>
             </ul>
           </div>
 
@@ -125,9 +125,9 @@ export function SiteFooter() {
           <div className="footer-col">
             <div className="footer-col-label">Support</div>
             <ul>
-              <li><a href="/faq">FAQs</a></li>
-              <li><a href="/shipping-policy">Shipping Policy</a></li>
-              <li><a href="/refund-policy">Refund Policy</a></li>
+              <li><a href="/neverpull/faq">FAQs</a></li>
+              <li><a href="/neverpull/shipping-policy">Shipping Policy</a></li>
+              <li><a href="/neverpull/refund-policy">Refund Policy</a></li>
               <li><a href="/privacy-policy">Privacy Policy</a></li>
               <li><a href="/terms-of-service">Terms of Service</a></li>
             </ul>
@@ -152,7 +152,7 @@ export function SiteFooter() {
             </div>
             {/* Easter-egg link to the hidden /social page. Sized at 25% of  */}
             {/* the .footer-col-label scale, dimmed cream — barely visible.  */}
-            <a href="/social" className="footer-social-easter-egg">Social</a>
+            <a href="/neverpull/social" className="footer-social-easter-egg">Social</a>
           </div>
         </div>
 

@@ -493,7 +493,7 @@ function PrivacyPolicyPage() {
                   <strong>HELP</strong> or by contacting us at{" "}
                   <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>
                   . For full SMS terms, see our{" "}
-                  <a href="/sms-marketing-policy">SMS Marketing Policy</a>.
+                  <a href="/neverpull/sms-marketing-policy">SMS Marketing Policy</a>.
                 </p>
 
                 <h3 className="pp-policy-heading">Children's Data</h3>

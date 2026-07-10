@@ -3,7 +3,7 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import "./social.css";
 
-export const Route = createFileRoute("/social")({
+export const Route = createFileRoute("/neverpull/social")({
   component: SocialPage,
   head: () => ({
     meta: [

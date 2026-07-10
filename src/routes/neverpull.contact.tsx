@@ -26,7 +26,7 @@ const REASONS = [
   "Other",
 ];
 
-export const Route = createFileRoute("/contact")({
+export const Route = createFileRoute("/neverpull/contact")({
   component: ContactPage,
   head: () => ({
     meta: [
@@ -163,7 +163,7 @@ function ContactPage() {
                       meantime, feel free to explore the lineup.
                     </p>
                     <div className="c-success-ctas">
-                      <a href="/products" className="btn btn-primary">
+                      <a href="/neverpull/products" className="btn btn-primary">
                         See the Lineup
                       </a>
                       <button

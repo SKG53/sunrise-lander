@@ -140,26 +140,11 @@ export const useCartStore = create<CartStore>()(
       },
 
       clearCart: () => set({ items: [], cartId: null, checkoutUrl: null }),
-      getCheckoutUrl: () => get().checkoutUrl,
-
-      syncCart: async () => {
-        const { cartId, isSyncing, clearCart } = get();
-        if (!cartId || isSyncing) return;
-        set({ isSyncing: true });
-        try {
-          const data = await storefrontApiRequest<{ cart: { id: string; totalQuantity: number } | null }>(
-            CART_QUERY,
-            { id: cartId }
-          );
-          if (!data) return;
-          const cart = data?.data?.cart;
-          if (!cart || cart.totalQuantity === 0) clearCart();
-        } catch (err) {
-          console.error("Failed to sync cart:", err);
-        } finally {
-          set({ isSyncing: false });
-        }
-      },
+      // Read-only site: never expose a Shopify checkout URL, even if a stale
+      // one is still sitting in localStorage from a previous session.
+      getCheckoutUrl: () => null,
+      // Read-only site: never call Shopify to sync cart state.
+      syncCart: async () => {},
     }),
     {
       name: "shopify-cart",

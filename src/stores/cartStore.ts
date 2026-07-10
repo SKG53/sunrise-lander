@@ -1,11 +1,9 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import {
-  CART_QUERY,
   addLineToShopifyCart,
   createShopifyCart,
   removeLineFromShopifyCart,
-  storefrontApiRequest,
   updateShopifyCartLine,
 } from "@/lib/shopify";
 

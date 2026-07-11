@@ -388,10 +388,14 @@
 .p-flavor-can:not(.has-image)::before {
   content: 'Can Image';
 }
+.p-flavor-can.has-image {
+  background: transparent;
+  padding: 0;
+}
 .p-flavor-can img {
-  width: 75%;
-  height: 75%;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   object-position: center;
 }
 .p-flavor-meta {

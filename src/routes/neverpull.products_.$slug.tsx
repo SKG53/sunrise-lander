@@ -445,14 +445,6 @@ function ProductDetailPage() {
   const [selectedPack, setSelectedPack] = useState<string>(
     shopifyMapping?.defaultPackOption ?? "Single Can"
   );
-  // PD gallery: index of the currently displayed Shopify image. Resets to 0
-  // whenever the SKU changes so visiting a sibling product never starts on a
-  // stale image. Only used when Shopify returns multiple images for a SKU;
-  // otherwise the strip is hidden and the main image stays at index 0.
-  const [selectedImageIdx, setSelectedImageIdx] = useState(0);
-  useEffect(() => {
-    setSelectedImageIdx(0);
-  }, [shopifyMapping?.handle]);
   const addItem = useCartStore((s) => s.addItem);
   const cartLoading = useCartStore((s) => s.isLoading);
 
@@ -617,75 +609,7 @@ function ProductDetailPage() {
           <div className="container">
             <div className="pd-hero-grid">
               <div className="pd-hero-gallery">
-              <div className="pd-hero-can" style={{ background: product.color }}>
-                {(() => {
-                  // Priority: Shopify image (mapped SKUs) → local slug image →
-                  // colored placeholder (only hit if the local file is missing).
-                  // Every SKU has a companion /images/cans/{slug}.webp, so the
-                  // placeholder branch is effectively unreachable in practice.
-                  // When multiple Shopify images exist, the selected thumb (rendered below the
-                  // can) drives which one shows here via selectedImageIdx; default index is 0.
-                  const shopifyImages = shopifyProduct?.node.images.edges ?? [];
-                  const shopifyImage =
-                    shopifyImages[selectedImageIdx]?.node ?? shopifyImages[0]?.node;
-                  if (shopifyImage?.url) {
-                    return (
-                      <img
-                        src={shopifyImage.url}
-                        alt={
-                          shopifyImage.altText ??
-                          `SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${product.cannabinoid ? ` + ${product.cannabinoid}` : ""} seltzer can`
-                        }
-                        fetchPriority="high"
-                      />
-                    );
-                  }
-                  return (
-                    <img
-                      src={`/images/cans/${product.slug}.webp`}
-                      alt={`SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${product.cannabinoid ? ` + ${product.cannabinoid}` : ""} seltzer can`}
-                      width="960"
-                      height="1920"
-                      fetchPriority="high"
-                    />
-                  );
-                })()}
-              </div>
-              {/* Thumbnail strip — only renders when Shopify returns 2+ images for the
-                  SKU. The query in src/lib/shopify.ts already requests up to 5 images;
-                  expanding the catalog later is purely a Shopify-side change. */}
-              {(() => {
-                const thumbs = shopifyProduct?.node.images.edges ?? [];
-                if (thumbs.length < 2) return null;
-                return (
-                  <div className="pd-hero-thumbs" role="list">
-                    {thumbs.map((edge, idx) => {
-                      const isActive = idx === selectedImageIdx;
-                      return (
-                        <button
-                          key={edge.node.url}
-                          type="button"
-                          role="listitem"
-                          aria-label={`View image ${idx + 1} of ${thumbs.length}`}
-                          aria-pressed={isActive}
-                          className={
-                            "pd-hero-thumb" + (isActive ? " is-active" : "")
-                          }
-                          style={{ background: product.color }}
-                          onClick={() => setSelectedImageIdx(idx)}
-                        >
-                          <img
-                            src={edge.node.url}
-                            alt={edge.node.altText ?? `SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC seltzer — view ${idx + 1}`}
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        </button>
-                      );
-                    })}
-                  </div>
-                );
-              })()}
+              <div className="pd-hero-can" style={{ background: product.color }} />
               </div>
 
               <div className="pd-hero-meta">
@@ -1022,17 +946,7 @@ function ProductDetailPage() {
                   </div>
                 </div>
               </div>
-              <div className="pd-inside-center">
-                <img
-                  className="pd-inside-can"
-                  src={`/images/cans/${product.slug}.webp`}
-                  alt={`SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${product.cannabinoid ? ` + ${product.cannabinoid}` : ""} seltzer can`}
-                  width="960"
-                  height="1920"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+              <div className="pd-inside-center" />
               <div className="pd-inside-col pd-inside-col-right">
                 <div className="pd-inside-ing">
                   <div className="pd-inside-ing-name">Emulsified<br />Hemp Extract</div>
@@ -1128,41 +1042,10 @@ function ProductDetailPage() {
 }
 
 // ── RelatedCan ───────────────────────────────────────────────────────────
-// Renders the can thumbnail for each "Others in Tier" sibling card. Mirrors
-// the FlavorCan helper on /products: prefers a live Shopify image for
-// mapped SKUs, falls back to the local /images/cans/{slug}.webp asset that
-// every SKU ships with. The colored placeholder branch is effectively
-// unreachable in practice. The `color` prop floods the frame in the
-// sibling SKU's flavor color so each card carries its own identity.
-// `children` lets the caller slot overlays (e.g. the cannabinoid corner
-// lockup) into the can-frame box so absolute-positioned siblings are
-// scoped to the flavor-flooded area rather than the whole card height.
-function RelatedCan({ slug, flavorName, color, children }: { slug: string; flavorName: string; color: string; children?: React.ReactNode }) {
-  const mapping = getShopifyMapping(slug);
-  const { product } = useShopifyProduct(mapping?.handle);
-  const image = product?.node.images.edges[0]?.node;
-
-  if (image?.url) {
-    return (
-      <div className="pd-related-can has-image" style={{ background: color }}>
-        <img
-          src={image.url}
-          alt={image.altText ?? `SUNRISE ${flavorName} hemp-infused THC seltzer can`}
-          loading="lazy"
-        />
-        {children}
-      </div>
-    );
-  }
+// Blank flavor-flooded frame (can imagery removed per art-direction reset).
+function RelatedCan({ color, children }: { slug: string; flavorName: string; color: string; children?: React.ReactNode }) {
   return (
-    <div className="pd-related-can has-image" style={{ background: color }}>
-      <img
-        src={`/images/cans/${slug}.webp`}
-        alt={`SUNRISE ${flavorName} hemp-infused THC seltzer can`}
-        width="960"
-        height="1920"
-        loading="lazy"
-      />
+    <div className="pd-related-can" style={{ background: color }}>
       {children}
     </div>
   );

@@ -87,30 +87,6 @@ function AboutPage() {
         <section className="a-cans">
           <div className="container">
             <div className="a-cans-row">
-              <img
-                className="a-cans-can"
-                src="/images/cans/60mg-blueberry-lemonade.webp"
-                alt="SUNRISE Blueberry Lemonade 60mg hemp-infused THC seltzer can"
-                width="960"
-                height="1920"
-                loading="lazy"
-              />
-              <img
-                className="a-cans-can"
-                src="/images/cans/10mg-lemonade.webp"
-                alt="SUNRISE Lemonade 10mg hemp-infused THC seltzer can"
-                width="960"
-                height="1920"
-                loading="lazy"
-              />
-              <img
-                className="a-cans-can"
-                src="/images/cans/60mg-blood-orange-cbg.webp"
-                alt="SUNRISE Blood Orange 60mg hemp-infused THC + CBG seltzer can"
-                width="960"
-                height="1920"
-                loading="lazy"
-              />
             </div>
             <div className="a-icons-list">
               <div className="a-icons-item">

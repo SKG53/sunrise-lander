@@ -10,11 +10,12 @@ import { AnnouncementBar } from "../components/AnnouncementBar";
 // which never appears consumer-facing), no logo or sameAs yet (added later
 // once a transparent logo and claimed social URLs exist). `<` is escaped so
 // the JSON can't break out of the inline <script> tag.
+// Lander JSON-LD: brand identity only. Intentionally declares NO `url` —
+// the lander must not assert a machine-readable relationship to the main site.
 const ORG_JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "SUNRISE Beverage",
-  url: "https://savorsunrise.com",
   email: "hello@savorsunrise.com",
   telephone: "+1-877-674-7459",
 }).replace(/</g, "\\u003c");

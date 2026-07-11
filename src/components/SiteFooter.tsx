@@ -1,46 +1,28 @@
-// Dark 5-column footer: Logo+Signup | Shop | Company | Support | Follow.
-// Disclaimer row + legal bar. Copy locked from brand docs.
+// Minimal lander footer: wordmark + legal bar. Nothing else.
+//
+// STRIPPED (2026-07-11): the signup form, the Shop / Company / Support /
+// Follow columns, the social icons, the /neverpull/social easter egg, and the
+// "Consume Responsibly" disclaimer block. What remains is the logo and the
+// bottom legal strip.
+//
+// Two consequences worth knowing:
+//   1. The newsletter form POSTed to /api/public/newsletter, an endpoint that
+//      was deleted during isolation — it 404'd on every submit. Removing the
+//      form closes that loose end.
+//   2. Every /neverpull/* link lived in the columns that are now gone. The
+//      footer no longer leaks the reference-route prefix into the URL bar of
+//      a public page. The three links that remain (Privacy, Accessibility,
+//      Terms) are all clean root paths, by design.
+//
+// The disclaimer's removal is a LEGAL call, not a design one — see the note in
+// the chat handoff. Restore it here if Legal requires it on the ad
+// destination.
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
-
-// ── ACTIVE POTENCY CLEANUP FLAG ───────────────────────────────────────
-// 2026-05-08: When false, hides Shop column links to non-live tiers (5mg
-// and 30mg). Reverse: change false → true. See
-// docs/active-potency-cleanup-2026-05-08.md.
-const SHOW_NON_LIVE_PRODUCTS = false;
 
 export function SiteFooter() {
   const wmRef = useRef<HTMLDivElement>(null);
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
-  const [statusMsg, setStatusMsg] = useState("");
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (status === "submitting") return;
-    setStatus("submitting");
-    setStatusMsg("");
-    try {
-      const res = await fetch("/api/public/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, source: "footer" }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setStatus("error");
-        setStatusMsg(data?.error || "Something went wrong. Please try again.");
-        return;
-      }
-      setStatus("success");
-      setStatusMsg("Cheers! You’re on the list. ☀️");
-      setEmail("");
-    } catch {
-      setStatus("error");
-      setStatusMsg("Network error. Please try again.");
-    }
-  };
 
   useEffect(() => {
     const paint = () => {
@@ -57,125 +39,15 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="footer-inner">
         <div className="footer-row-main">
-          {/* ── Brand + signup column ── */}
           <div className="footer-brand-col">
             <div className="wordmark-slot" ref={wmRef} />
-            <div className="footer-signup">
-              <div className="signup-label">Stay in the Know</div>
-              {status === "success" ? (
-                <div className="signup-success" role="status" aria-live="polite">
-                  {statusMsg}
-                </div>
-              ) : (
-                <form className="signup-form" onSubmit={handleSubscribe}>
-                  <input
-                    type="email"
-                    className="signup-input"
-                    placeholder="Email address"
-                    aria-label="Email address"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={status === "submitting"}
-                  />
-                  <button type="submit" className="signup-btn" disabled={status === "submitting"}>
-                    {status === "submitting" ? "..." : "Subscribe"}
-                  </button>
-                </form>
-              )}
-              {status === "error" && (
-                <div className="signup-error" role="alert">{statusMsg}</div>
-              )}
-            </div>
-          </div>
-
-          {/* ── Shop column ── */}
-          <div className="footer-col">
-            <div className="footer-col-label">Shop</div>
-            <ul>
-              <li><a href="/neverpull/products">All Products</a></li>
-              {/* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flag-gated */}
-              {SHOW_NON_LIVE_PRODUCTS && (
-                <li><a href="/neverpull/products?tier=5">5mg THC</a></li>
-              )}
-              <li><a href="/neverpull/products?tier=10">10mg THC</a></li>
-              <li><a href="/neverpull/products?tier=30">30mg THC</a></li>
-              <li><a href="/neverpull/products?tier=60">60mg THC</a></li>
-              <li><a href="/neverpull/find">Find Near You</a></li>
-            </ul>
-          </div>
-
-          {/* ── Company column ── */}
-          <div className="footer-col">
-            <div className="footer-col-label">Company</div>
-            <ul>
-              <li><a href="/neverpull/about">About</a></li>
-              <li><a href="/neverpull/contact">Contact</a></li>
-              <li><a href="/neverpull/contact?topic=wholesale">Wholesale</a></li>
-              <li><a href="https://marketing8710.wixstudio.com/beverage-manufacture/blank" target="_blank" rel="noopener noreferrer">COAs</a></li>
-              <li><a href="/neverpull/hbe">Hemp Beverage Expo</a></li>
-            </ul>
-          </div>
-
-          {/* ── Support column ── */}
-          {/* Five links covering customer-facing policies: FAQs (live at  */}
-          {/* /faq), Shipping Policy (live), Refund Policy (live), Privacy */}
-          {/* Policy (live), Terms of Service (live). Hierarchy is         */}
-          {/* informational first, then legal.                             */}
-          <div className="footer-col">
-            <div className="footer-col-label">Support</div>
-            <ul>
-              <li><a href="/neverpull/faq">FAQs</a></li>
-              <li><a href="/neverpull/shipping-policy">Shipping Policy</a></li>
-              <li><a href="/neverpull/refund-policy">Refund Policy</a></li>
-              <li><a href="/privacy-policy">Privacy Policy</a></li>
-              <li><a href="/terms-of-service">Terms of Service</a></li>
-            </ul>
-          </div>
-
-          {/* ── Follow column ── */}
-          <div className="footer-col footer-follow-col">
-            <div className="footer-col-label">Follow</div>
-            <div className="footer-social">
-              <a href="#" aria-label="Instagram">
-                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                <span>Instagram</span>
-              </a>
-              <a href="#" aria-label="TikTok">
-                <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.1z"/></svg>
-                <span>TikTok</span>
-              </a>
-              <a href="#" aria-label="LinkedIn">
-                <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
-                <span>LinkedIn</span>
-              </a>
-            </div>
-            {/* Easter-egg link to the hidden /social page. Sized at 25% of  */}
-            {/* the .footer-col-label scale, dimmed cream — barely visible.  */}
-            <a href="/neverpull/social" className="footer-social-easter-egg">Social</a>
-          </div>
-        </div>
-
-        {/* ── Disclaimer ── */}
-        {/* Full-width compliance disclaimer. Mini "CONSUME RESPONSIBLY"      */}
-        {/* header acts as a section label so the regulatory copy below reads */}
-        {/* as a deliberate consumer-safety block, not anonymous fine print.  */}
-        <div className="footer-disclaimer">
-          <div className="footer-disclaimer-inner">
-            <div className="footer-disclaimer-heading">Consume Responsibly</div>
-            Hemp-derived Delta-9 THC products. For adults 21 and over. Do not drive or operate machinery after consumption. Keep out of reach of children and pets. These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Contains hemp-derived cannabinoids. Compliant with the 2018 Farm Bill.
           </div>
         </div>
 
         {/* ── Legal bar ── */}
-        {/* Two-column row: copyright on the left, secondary legal links on  */}
-        {/* the right (Privacy / Accessibility / Terms of Service).          */}
-        {/* Mobile (<768px) collapses to single-column stack via the         */}
-        {/* .footer-legal flex-direction:column rule in sunrise-shell.css.   */}
-        {/* The primary policy links (Shipping / Refund / Privacy / Terms)  */}
-        {/* still live in the Support column above; this row is the smaller, */}
-        {/* fine-print legal strip that conventionally appears at the very   */}
-        {/* bottom of the page.                                              */}
+        {/* Copyright left, secondary legal links right. Mobile (<768px)
+            collapses to a single-column stack via the .footer-legal
+            flex-direction: column rule in sunrise-shell.css. */}
         <div className="footer-legal">
           <div className="footer-copyright">© 2026 SUNRISE Beverage. All Rights Reserved.</div>
           <ul className="footer-legal-links">

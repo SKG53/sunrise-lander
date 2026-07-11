@@ -5,6 +5,9 @@
 //     exists); the <section> shell is retained as intentional blank space.
 //   • "Find your SUNRISE" effects section removed — it cannot be written
 //     without naming THC / CBG / CBN / THCV.
+//   • The blank <section> the form left behind is gone too — nothing is going
+//     to fill it, and empty it was contributing ~3.8x base of dead vertical
+//     space directly above the products hero.
 // Potency lockups in the product selector use the LANDER-ONLY renderers from
 // src/lib/srlander-lockups.ts (THC -> ACTIVE, CBG/CBN/THCV -> BLEND).
 import { createFileRoute } from '@tanstack/react-router'
@@ -22,6 +25,7 @@ import {
   render60mgActiveLockup,
   renderBlendLockup,
 } from '../lib/srlander-lockups'
+import './index.css'
 import './contact.css'
 import './home.css'
 import './products.css'
@@ -190,16 +194,8 @@ function EventSignupPage() {
           </div>
         </section>
 
-        {/* ── SIGNUP FORM REMOVED — intentionally blank for now ─────────── */}
-        {/* The event-signup form (and its /api/public/event-signup POST) was
-            stripped. The <section> shell is retained so the vertical space it
-            occupied is preserved for whatever fills it next. */}
-        <section className="c-form-section">
-          <div className="container" />
-        </section>
-
         {/* ── PRODUCTS — Enjoy every last sip and pour ─────────────────── */}
-        <section className="p-hero" id="our-products">
+        <section className="p-hero lh-hero" id="our-products">
           <div className="container">
             <div className="p-hero-inner">
               <h2 className="p-hero-headline">
@@ -214,7 +210,7 @@ function EventSignupPage() {
         </section>
 
         {/* ── TIER SWITCHER + PANEL ─────────────────────────────────────── */}
-        <section className="p-switcher">
+        <section className="p-switcher lh-switcher">
           <div className="container">
             <div className="p-switcher-bar">
               {(['5', '10', '30', '60'] as TierKey[])

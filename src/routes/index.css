@@ -1,12 +1,87 @@
 /* ─────────────────────────────────────────────────────────────────────────
    SUNRISE LANDER — HOME ( / ) styles
-   Blank canvas. Only sets the page to fill the viewport on the brand default
-   cream ground (var(--cream) from sunrise-shell.css) so the empty page has
-   body and isn't a broken-looking void. No design decisions here yet — we
-   build this up together.
+
+   This file holds ONLY the corrections the lander needs on top of the
+   inherited home.css / products.css / contact.css. Both live here rather than
+   in products.css because products.css is shared with /neverpull/products —
+   see the reasoning in each block.
    ───────────────────────────────────────────────────────────────────────── */
 
-.lander-home {
-  min-height: 100vh;
-  background: var(--cream);
+
+/* ─────────────────────────────────────────────────────────────────────────
+   1 · PRODUCT SELECTOR — lander lockup column width (.lh-switcher)
+
+   THE BUG: the panel lockups wrapped onto two lines — the MG/ACTIVE stack
+   dropping below the dose number instead of sitting beside it.
+
+   THE CAUSE: .p-panel-head (products.css) pins its first grid column to a
+   FIXED width so the text column starts at the same x across every tier,
+   whichever lockup is painted. products.css sets that column to 5.5x base
+   (275px at --base: 50px) — measured against the widest canonical THC lockup.
+   The lander paints ACTIVE lockups instead, and "ACTIVE" is six characters
+   where "THC" is three. Measured in the live render:
+
+       tier    ACTIVE lockup width
+       10          340px  = 6.80x
+       30          362px  = 7.24x
+       60          367px  = 7.34x     <- against a 5.5x (275px) column
+
+   7.34x does not fit in 5.5x. A real overflow, not a nudge.
+
+   THE FIX: widen the column to 7.7x (385px) — the widest ACTIVE lockup
+   (7.34x) plus an 18px residual, so the text column keeps its constant
+   start x across tiers.
+
+   Sized from the LIVE RENDER, not a synthetic probe: a first pass used 7.3x
+   off an isolated measurement and still clipped 60mg by 2px. The only
+   trustworthy width is the one the actually-painted lockup reports.
+
+   WHY NOT IN products.css: that file is shared with /neverpull/products,
+   which still renders the CANONICAL THC lockups — its 5.5x column is correct
+   there. Widening it globally would open a dead gap on a page with no wrap
+   problem. The fix belongs where the ACTIVE lockups actually render.
+
+   GUARDED TO >=981px: below 980px products.css already collapses
+   .p-panel-head to a single column, so there is no fixed column to overflow.
+   ───────────────────────────────────────────────────────────────────────── */
+@media (min-width: 981px) {
+  .lh-switcher .p-panel-head {
+    grid-template-columns: calc(var(--base) * 7.7) 1fr;
+  }
+}
+
+/* The lockups are built from inline-block spans, so a width shortfall wraps
+   them SILENTLY rather than overflowing visibly — which is exactly how the bug
+   above hid. nowrap makes any future shortfall loud instead of quiet. */
+.lh-switcher .p-panel-lockup,
+.lh-switcher .p-switch-lockup {
+  white-space: nowrap;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+   2 · PRODUCTS HERO — top spacing (.lh-hero)
+
+   The dead space above "ENJOY EVERY LAST SIP AND POUR" had two sources
+   stacked on top of each other:
+
+     a) the empty <section className="c-form-section"> the removed signup form
+        left behind — 1.8x base top + 2.0x base bottom of nothing;
+     b) .p-hero's own 2.4x base top padding.
+
+   Together: ~6.2x base (310px) of empty cream between the hero color bars and
+   the headline.
+
+   (a) is fixed in index.tsx — the placeholder section is deleted outright,
+   since nothing is going to fill it. (b) is trimmed here from 2.4x to 1.2x.
+
+   Net: ~6.2x base -> 1.2x base above the headline. The bottom padding is left
+   alone; only the top was wrong.
+
+   Scoped to .lh-hero rather than .p-hero for the same reason as above —
+   /neverpull/products has no empty section above its hero, so its 2.4x top
+   padding is correct for that page.
+   ───────────────────────────────────────────────────────────────────────── */
+.lh-hero {
+  padding-top: calc(var(--base) * 1.2);
 }

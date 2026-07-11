@@ -11,6 +11,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { SiteFooter } from '../components/SiteFooter'
+import { getCanImage } from '../lib/canImages'
 import {
   renderWordmark,
   getBasePx,
@@ -266,7 +267,17 @@ function EventSignupPage() {
                       aria-label={`${f.name} — ${TIERS[activeTier].name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ''}`}
                       style={{ ['--flavor-color' as string]: f.flavorColor } as React.CSSProperties}
                     >
-                      <div className="p-flavor-can" />
+                      {(() => {
+                        const slug = toSlug(activeTier, f)
+                        const img = getCanImage(slug)
+                        return img ? (
+                          <div className="p-flavor-can has-image">
+                            <img src={img} alt={`SUNRISE ${f.name}`} loading="lazy" />
+                          </div>
+                        ) : (
+                          <div className="p-flavor-can" />
+                        )
+                      })()}
                       <div className="p-flavor-meta">
                         <div className="p-flavor-name">{f.name}</div>
                         <div className="p-flavor-descriptor">{f.descriptor}</div>

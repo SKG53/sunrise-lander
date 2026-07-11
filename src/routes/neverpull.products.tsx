@@ -15,8 +15,6 @@ import {
   renderWordmark,
   getBasePx,
 } from "../lib/sunrise-components";
-import { getShopifyMapping } from "@/lib/shopifyProductMap";
-import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import "./products.css";
 
 export const Route = createFileRoute("/neverpull/products")({

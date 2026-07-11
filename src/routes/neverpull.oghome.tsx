@@ -374,13 +374,6 @@ function HomePage() {
                       className="s03-card-link"
                     >
                       <div className="s03-card-can" style={{ background: card.color }}>
-                        <img
-                          src={`/images/cans/${card.slug}.webp`}
-                          alt={`SUNRISE ${card.flavor} ${card.tier}mg hemp-infused THC${card.cannabinoid ? ` + ${card.cannabinoid}` : ""} seltzer can`}
-                          width="960"
-                          height="1920"
-                          loading="lazy"
-                        />
                         <span
                           className="s03-card-tier"
                           ref={(el) => { cardLockupRefs.current[i] = el; }}
@@ -554,17 +547,7 @@ function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="s04-center">
-                <img
-                  className="s04-can"
-                  src="/images/cans/10mg-lemonade.webp"
-                  alt="SUNRISE Lemonade 10mg hemp-infused THC seltzer can"
-                  width="960"
-                  height="1920"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+              <div className="s04-center" />
               <div className="s04-col s04-col-right">
                 <div className="s04-ing">
                   <div className="s04-ing-name">Emulsified<br />Hemp Extract</div>
@@ -603,38 +586,7 @@ function HomePage() {
         <section className="s07-story">
           <div className="container">
             <div className="s07-layout">
-              <div className="s07-cans" aria-hidden="true">
-                <img
-                  className="s07-can s07-can-lg"
-                  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original src preserved for revival
-                  // src="/images/cans/10mg-blueberry-acai-thcv.webp"
-                  src="/images/cans/10mg-strawberry.webp"
-                  alt="SUNRISE Strawberry 10mg hemp-infused THC seltzer can"
-                  width="960"
-                  height="1920"
-                  loading="lazy"
-                />
-                <img
-                  className="s07-can s07-can-md"
-                  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original src preserved for revival
-                  // src="/images/cans/30mg-cherry-limeade.webp"
-                  src="/images/cans/60mg-blood-orange-cbg.webp"
-                  alt="SUNRISE Blood Orange 60mg hemp-infused THC + CBG seltzer can"
-                  width="960"
-                  height="1920"
-                  loading="lazy"
-                />
-                <img
-                  className="s07-can s07-can-sm"
-                  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original src preserved for revival
-                  // src="/images/cans/5mg-blood-orange.webp"
-                  src="/images/cans/10mg-watermelon.webp"
-                  alt="SUNRISE Watermelon 10mg hemp-infused THC seltzer can"
-                  width="960"
-                  height="1920"
-                  loading="lazy"
-                />
-              </div>
+              <div className="s07-cans" aria-hidden="true" />
               <div className="s07-copy">
                 <h2 className="s07-headline">
                   Delicious drinks<br />Designed to deliver.

@@ -119,7 +119,6 @@ function RootComponent() {
     <>
       <AnnouncementBar />
       <Outlet />
-      <AgeGate />
     </>
   );
 }

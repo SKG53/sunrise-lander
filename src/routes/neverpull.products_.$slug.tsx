@@ -29,6 +29,7 @@ import { CannabinoidIcon } from "../components/CannabinoidIcon";
 import { getShopifyMapping } from "@/lib/shopifyProductMap";
 import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import { useCartStore } from "@/stores/cartStore";
+import { getCanImage } from "@/lib/canImages";
 // PD claim-strip icons — imported as raw SVG strings so they can be inlined
 // via dangerouslySetInnerHTML. The src/ versions use `fill: currentColor` for
 // the icon shape (cls-2), letting the parent's CSS `color` drive per-flavor
@@ -609,7 +610,18 @@ function ProductDetailPage() {
           <div className="container">
             <div className="pd-hero-grid">
               <div className="pd-hero-gallery">
-              <div className="pd-hero-can" style={{ background: product.color }} />
+              <div className="pd-hero-can" style={{ background: product.color }}>
+                {(() => {
+                  const img = getCanImage(product.slug);
+                  return img ? (
+                    <img
+                      src={img}
+                      alt={`SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${product.cannabinoid ? ` + ${product.cannabinoid}` : ""} seltzer can`}
+                      fetchPriority="high"
+                    />
+                  ) : null;
+                })()}
+              </div>
               </div>
 
               <div className="pd-hero-meta">
@@ -946,7 +958,20 @@ function ProductDetailPage() {
                   </div>
                 </div>
               </div>
-              <div className="pd-inside-center" />
+              <div className="pd-inside-center">
+                {(() => {
+                  const img = getCanImage(product.slug);
+                  return img ? (
+                    <img
+                      className="pd-inside-can"
+                      src={img}
+                      alt={`SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${product.cannabinoid ? ` + ${product.cannabinoid}` : ""} seltzer can`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : null;
+                })()}
+              </div>
               <div className="pd-inside-col pd-inside-col-right">
                 <div className="pd-inside-ing">
                   <div className="pd-inside-ing-name">Emulsified<br />Hemp Extract</div>

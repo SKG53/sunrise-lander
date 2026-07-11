@@ -618,41 +618,6 @@ function ProductDetailPage() {
             <div className="pd-hero-grid">
               <div className="pd-hero-gallery">
               <div className="pd-hero-can" style={{ background: product.color }} />
-              {/* Thumbnail strip — only renders when Shopify returns 2+ images for the
-                  SKU. The query in src/lib/shopify.ts already requests up to 5 images;
-                  expanding the catalog later is purely a Shopify-side change. */}
-              {(() => {
-                const thumbs = shopifyProduct?.node.images.edges ?? [];
-                if (thumbs.length < 2) return null;
-                return (
-                  <div className="pd-hero-thumbs" role="list">
-                    {thumbs.map((edge, idx) => {
-                      const isActive = idx === selectedImageIdx;
-                      return (
-                        <button
-                          key={edge.node.url}
-                          type="button"
-                          role="listitem"
-                          aria-label={`View image ${idx + 1} of ${thumbs.length}`}
-                          aria-pressed={isActive}
-                          className={
-                            "pd-hero-thumb" + (isActive ? " is-active" : "")
-                          }
-                          style={{ background: product.color }}
-                          onClick={() => setSelectedImageIdx(idx)}
-                        >
-                          <img
-                            src={edge.node.url}
-                            alt={edge.node.altText ?? `SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC seltzer — view ${idx + 1}`}
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        </button>
-                      );
-                    })}
-                  </div>
-                );
-              })()}
               </div>
 
               <div className="pd-hero-meta">

@@ -131,8 +131,7 @@ export function AgeGate() {
 
         <div className="age-gate-divider" aria-hidden="true" />
         <p className="age-gate-disclosure">
-          SUNRISE&trade; products contain hemp-derived Delta-9 THC. Must be 21+
-          to purchase. Consume responsibly.
+          Must be 21+ to purchase SUNRISE&trade; products. Consume responsibly.
         </p>
       </div>
     </div>

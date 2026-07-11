@@ -3,7 +3,6 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 import appCss from "../styles.css?url";
 import sunriseCss from "../styles/sunrise-shell.css?url";
 import { useCartSync } from "../hooks/useCartSync";
-import { AgeGate } from "../components/AgeGate";
 import { AnnouncementBar } from "../components/AnnouncementBar";
 
 // Sitewide Organization JSON-LD (schema.org). Minimal, factual fields only —
@@ -120,7 +119,6 @@ function RootComponent() {
     <>
       <AnnouncementBar />
       <Outlet />
-      <AgeGate />
     </>
   );
 }

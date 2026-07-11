@@ -261,7 +261,9 @@ function EventSignupPage() {
                   .map((f, i) => (
                     <a
                       key={i}
-                      href={`/products/${toSlug(activeTier, f)}`}
+                      href={`https://www.savorsunrise.com/products/${toSlug(activeTier, f)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="p-flavor-card"
                       aria-label={`${f.name} — ${TIERS[activeTier].name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ''}`}
                       style={{ ['--flavor-color' as string]: f.flavorColor } as React.CSSProperties}
@@ -275,7 +277,7 @@ function EventSignupPage() {
                         )}
                       </div>
                       <div className="p-flavor-cta">
-                        <span className="p-flavor-cta-label">Buy Now</span>
+                        <span className="p-flavor-cta-label">Learn More</span>
                         <span className="p-flavor-cta-arrow">→</span>
                       </div>
                       {f.cannabinoid && (

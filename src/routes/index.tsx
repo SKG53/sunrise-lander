@@ -1,21 +1,26 @@
-// Simple event signup page — collects name, email, phone and pushes the
-// attendee into HubSpot via /api/public/event-signup.
+// SUNRISE LANDER — HOME ( / )
+// Recreated from the Hemp Beverage Expo page, then stripped down:
+//   • SiteHeader (nav) removed entirely — the page opens on the hero color bars.
+//   • Signup form removed (its /api/public/event-signup endpoint no longer
+//     exists); the <section> shell is retained as intentional blank space.
+//   • "Find your SUNRISE" effects section removed — it cannot be written
+//     without naming THC / CBG / CBN / THCV.
+// Potency lockups in the product selector use the LANDER-ONLY renderers from
+// src/lib/srlander-lockups.ts (THC -> ACTIVE, CBG/CBN/THCV -> BLEND).
 import { createFileRoute } from '@tanstack/react-router'
-import { Link } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
-import { SiteHeader } from '../components/SiteHeader'
 import { SiteFooter } from '../components/SiteFooter'
 import {
   renderWordmark,
-  render10mgLockup,
-  render30mgLockup,
-  render60mgLockup,
-  renderCBGLockup,
-  renderCBNLockup,
-  renderTHCVLockup,
   getBasePx,
 } from '../lib/sunrise-components'
+import {
+  render10mgActiveLockup,
+  render30mgActiveLockup,
+  render60mgActiveLockup,
+  renderBlendLockup,
+} from '../lib/srlander-lockups'
 import { getShopifyMapping } from '@/lib/shopifyProductMap'
 import { useShopifyProduct } from '@/hooks/useShopifyProduct'
 import './contact.css'
@@ -89,35 +94,6 @@ const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
   THCV: 'Elevate + Engage',
 }
 
-type EffectCardData = { bg: string; icon: string; cann: Cannabinoid | null; bestFor: string; body: string; foot: string }
-const EFFECTS: EffectCardData[] = [
-  { bg: '#1A1A1A', icon: '/images/effects/thc.svg',  cann: null,   bestFor: 'Anytime',           body: 'Full and familiar, this is the starting point for every SUNRISE experience.',  foot: 'Pure + Classic' },
-  { bg: '#DC7F27', icon: '/images/effects/cbg.svg',  cann: 'CBG',  bestFor: 'Daytime',           body: 'Gently elevates the mood and experience for a subtle, clear-headed lift.',     foot: 'Focus + Uplift' },
-  { bg: '#2E1E3D', icon: '/images/effects/cbn.svg',  cann: 'CBN',  bestFor: 'Nighttime',         body: 'Gently relaxes and mellows the mind for a calming overall experience.',         foot: 'Relax + Unwind' },
-  { bg: '#CC1F39', icon: '/images/effects/thcv.svg', cann: 'THCV', bestFor: 'Focus & Clarity',   body: 'Leans forward with a slightly sharper lift to enhance focus and motivation.',   foot: 'Elevate + Engage' },
-]
-
-function renderEffectSymbol(cann: Cannabinoid | null, base: number, color: string): string {
-  const thcWord = (sz: number) =>
-    `<span style="display:inline-block; text-align:left; line-height:1">` +
-    `<span style="font-family:Montserrat, sans-serif; font-size:${sz}px; font-weight:900; letter-spacing:${sz * -0.105}px; color:${color}">THC</span>` +
-    `</span>`
-  if (!cann) return thcWord(base)
-  const t = base * 0.545
-  const w = base * 0.41
-  const h = base * 0.91
-  const vert =
-    `<span style="display:inline-block; position:relative; width:${w}px; height:${h}px; flex-shrink:0">` +
-    `<span style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-90deg); opacity:0.55; white-space:nowrap; line-height:1">` +
-    `<span style="font-family:Montserrat, sans-serif; font-size:${t}px; font-weight:900; letter-spacing:${t * -0.105}px; color:${color}">THC</span>` +
-    `</span></span>`
-  const big =
-    cann === 'CBG' ? renderCBGLockup(base, color) :
-    cann === 'CBN' ? renderCBNLockup(base, color) :
-    renderTHCVLockup(base, color)
-  return vert + big
-}
-
 export const Route = createFileRoute('/')({
   component: EventSignupPage,
   head: () => ({
@@ -132,22 +108,6 @@ export const Route = createFileRoute('/')({
 })
 
 function EventSignupPage() {
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [details, setDetails] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-  const [errors, setErrors] = useState<{
-    firstName?: string
-    lastName?: string
-    email?: string
-    phone?: string
-    details?: string
-  }>({})
-  const [submitting, setSubmitting] = useState(false)
-  const [submitError, setSubmitError] = useState<string | null>(null)
-
   const [activeTier, setActiveTier] = useState<TierKey>('10')
 
   // Refs for brand-mark painting
@@ -160,8 +120,6 @@ function EventSignupPage() {
   const switchRefs: Record<TierKey, RefObject<HTMLDivElement | null>> = {
     '5': switch5Ref, '10': switch10Ref, '30': switch30Ref, '60': switch60Ref,
   }
-  const effectRefs = useRef<(HTMLDivElement | null)[]>([])
-  const wordmarkRef = useRef<HTMLSpanElement>(null)
   const cornerRefs = useRef<(HTMLSpanElement | null)[]>([])
 
   useEffect(() => {
@@ -172,9 +130,9 @@ function EventSignupPage() {
       if (panelLockupRef.current) {
         const size = base * LOCKUP_SIZE
         let html = ''
-        if (activeTier === '10') html = render10mgLockup(size, '#FEFBE0')
-        if (activeTier === '30') html = render30mgLockup(size, '#FEFBE0')
-        if (activeTier === '60') html = render60mgLockup(size, '#FEFBE0')
+        if (activeTier === '10') html = render10mgActiveLockup(size, '#FEFBE0')
+        if (activeTier === '30') html = render30mgActiveLockup(size, '#FEFBE0')
+        if (activeTier === '60') html = render60mgActiveLockup(size, '#FEFBE0')
         panelLockupRef.current.innerHTML = html
       }
 
@@ -187,19 +145,11 @@ function EventSignupPage() {
           const color = isActive ? '#FEFBE0' : TIERS[tier].color
           const size = base * 1.2
           let html = ''
-          if (tier === '10') html = render10mgLockup(size, color)
-          if (tier === '30') html = render30mgLockup(size, color)
-          if (tier === '60') html = render60mgLockup(size, color)
+          if (tier === '10') html = render10mgActiveLockup(size, color)
+          if (tier === '30') html = render30mgActiveLockup(size, color)
+          if (tier === '60') html = render60mgActiveLockup(size, color)
           ref.innerHTML = html
         })
-
-      if (wordmarkRef.current) wordmarkRef.current.innerHTML = renderWordmark(base * 1.0, 'gradient')
-
-      EFFECTS.forEach((e, i) => {
-        const ref = effectRefs.current[i]
-        if (!ref) return
-        ref.innerHTML = renderEffectSymbol(e.cann, base * 1.05, '#FEFBE0')
-      })
 
       const tierData = TIERS[activeTier]
       tierData.flavors
@@ -208,10 +158,7 @@ function EventSignupPage() {
           const ref = cornerRefs.current[i]
           if (!ref || !f.cannabinoid) return
           const size = base * 0.91
-          const html =
-            f.cannabinoid === 'CBG' ? renderCBGLockup(size, '#FEFBE0') :
-            f.cannabinoid === 'CBN' ? renderCBNLockup(size, '#FEFBE0') :
-                                      renderTHCVLockup(size, '#FEFBE0')
+          const html = renderBlendLockup(size, '#FEFBE0')
           ref.innerHTML = html
         })
     }
@@ -221,48 +168,8 @@ function EventSignupPage() {
     return () => window.removeEventListener('resize', paint)
   }, [activeTier])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const next: typeof errors = {}
-    if (!firstName.trim()) next.firstName = 'First name needed.'
-    if (!lastName.trim()) next.lastName = 'Last name needed.'
-    if (!email.trim()) next.email = 'Email needed.'
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = 'Email looks off.'
-    if (!phone.trim()) next.phone = 'Phone needed.'
-    if (!details.trim()) next.details = 'Additional details needed.'
-    setErrors(next)
-    if (Object.keys(next).length > 0) return
-
-    setSubmitError(null)
-    setSubmitting(true)
-    try {
-      const res = await fetch('/api/public/event-signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          email: email.trim(),
-          phone: phone.trim(),
-          details: details.trim(),
-          eventName: EVENT_NAME,
-        }),
-      })
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data?.error || `Request failed (${res.status})`)
-      }
-      setSubmitted(true)
-    } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
   return (
     <>
-      <SiteHeader />
       <main>
         {/* ── HERO — matches home page (4 tier strips + wordmark + subtitle) */}
         <section className="home-hero">
@@ -284,138 +191,12 @@ function EventSignupPage() {
           </div>
         </section>
 
+        {/* ── SIGNUP FORM REMOVED — intentionally blank for now ─────────── */}
+        {/* The event-signup form (and its /api/public/event-signup POST) was
+            stripped. The <section> shell is retained so the vertical space it
+            occupied is preserved for whatever fills it next. */}
         <section className="c-form-section">
-          <div className="container">
-            <div className="es-top-heading">
-              <div className="es-top-heading-line1">JOIN US AT THE</div>
-              <div className="es-top-heading-line1">HEMP BEVERAGE EXPO</div>
-            </div>
-            <div className="c-form-card">
-                {submitted ? (
-                  <div className="c-success es-success" role="status" aria-live="polite">
-                    <div className="c-success-headline es-success-headline">Thanks for stopping by!</div>
-                    <div className="es-success-cta">Explore our lineup below.</div>
-                    <div className="es-success-actions">
-                      <Link to="/" className="btn btn-primary">Home Page</Link>
-                      <a href="#our-products" className="btn btn-secondary">Products</a>
-                    </div>
-                  </div>
-                ) : (
-                  <form className="c-form" onSubmit={handleSubmit} noValidate>
-                    <div className="c-form-row">
-                      <label className="c-field">
-                        <span className="c-field-label">First Name</span>
-                        <input
-                          type="text"
-                          className={`c-input${errors.firstName ? ' c-input-error' : ''}`}
-                          value={firstName}
-                          onChange={(e) => {
-                            setFirstName(e.target.value)
-                            if (errors.firstName) setErrors({ ...errors, firstName: undefined })
-                          }}
-                          required
-                          autoComplete="given-name"
-                          aria-invalid={errors.firstName ? true : undefined}
-                        />
-                        {errors.firstName && <span className="c-field-error">{errors.firstName}</span>}
-                      </label>
-                    </div>
-
-                    <div className="c-form-row">
-                      <label className="c-field">
-                        <span className="c-field-label">Last Name</span>
-                        <input
-                          type="text"
-                          className={`c-input${errors.lastName ? ' c-input-error' : ''}`}
-                          value={lastName}
-                          onChange={(e) => {
-                            setLastName(e.target.value)
-                            if (errors.lastName) setErrors({ ...errors, lastName: undefined })
-                          }}
-                          required
-                          autoComplete="family-name"
-                          aria-invalid={errors.lastName ? true : undefined}
-                        />
-                        {errors.lastName && <span className="c-field-error">{errors.lastName}</span>}
-                      </label>
-                    </div>
-
-                    <div className="c-form-row">
-                      <label className="c-field">
-                        <span className="c-field-label">Email</span>
-                        <input
-                          type="email"
-                          className={`c-input${errors.email ? ' c-input-error' : ''}`}
-                          value={email}
-                          onChange={(e) => {
-                            setEmail(e.target.value)
-                            if (errors.email) setErrors({ ...errors, email: undefined })
-                          }}
-                          required
-                          autoComplete="email"
-                          aria-invalid={errors.email ? true : undefined}
-                        />
-                        {errors.email && <span className="c-field-error">{errors.email}</span>}
-                      </label>
-                    </div>
-
-                    <div className="c-form-row">
-                      <label className="c-field">
-                        <span className="c-field-label">Phone</span>
-                        <input
-                          type="tel"
-                          className={`c-input${errors.phone ? ' c-input-error' : ''}`}
-                          value={phone}
-                          onChange={(e) => {
-                            setPhone(e.target.value)
-                            if (errors.phone) setErrors({ ...errors, phone: undefined })
-                          }}
-                          required
-                          autoComplete="tel"
-                          aria-invalid={errors.phone ? true : undefined}
-                        />
-                        {errors.phone && <span className="c-field-error">{errors.phone}</span>}
-                      </label>
-                    </div>
-
-                    <div className="c-form-row">
-                      <label className="c-field">
-                        <span className="c-field-label">Additional Details</span>
-                        <textarea
-                          className={`c-input${errors.details ? ' c-input-error' : ''}`}
-                          value={details}
-                          onChange={(e) => {
-                            setDetails(e.target.value)
-                            if (errors.details) setErrors({ ...errors, details: undefined })
-                          }}
-                          rows={4}
-                          maxLength={2000}
-                          required
-                          aria-invalid={errors.details ? true : undefined}
-                          placeholder="Business name, role (wholesaler, retailer, distributor), or anything else you'd like us to know."
-                        />
-                        {errors.details && <span className="c-field-error">{errors.details}</span>}
-                      </label>
-                    </div>
-
-                    <div className="c-form-submit">
-                      <button type="submit" className="btn btn-primary" disabled={submitting}>
-                        {submitting ? 'Sending…' : 'Submit'}
-                      </button>
-                      {submitError && (
-                        <span
-                          className="c-field-error"
-                          role="alert"
-                          style={{ display: 'block', marginTop: '0.5rem' }}
-                        >
-                          {submitError}
-                        </span>
-                      )}
-                    </div>
-                  </form>
-                )}
-            </div>
-          </div>
+          <div className="container" />
         </section>
 
         {/* ── PRODUCTS — Enjoy every last sip and pour ─────────────────── */}
@@ -511,34 +292,6 @@ function EventSignupPage() {
           </div>
         </section>
 
-        {/* ── FIND YOUR SUNRISE — minor cannabinoid cards ──────────────── */}
-        <section className="p-effects">
-          <div className="container">
-            <h2 className="p-effects-headline">
-              <span>Find your</span>
-              <span className="p-effects-wordmark" ref={wordmarkRef} aria-label="SUNRISE" />
-            </h2>
-            <p className="p-effects-subhead">
-              Every tier offers four paths — a classic THC core, or three enhanced with minor cannabinoids for a more specific experience.
-            </p>
-            <div className="p-effects-grid">
-              {EFFECTS.map((e, i) => (
-                <div key={i} className="p-effect-card" style={{ background: e.bg }}>
-                  <img className="p-effect-icon" src={e.icon} alt="" aria-hidden="true" />
-                  <div
-                    className="p-effect-symbol"
-                    ref={(el) => { effectRefs.current[i] = el }}
-                    aria-label={e.cann ? `THC + ${e.cann}` : 'THC'}
-                  />
-                  <div className="p-effect-bestfor">Best for<br />{e.bestFor}</div>
-                  <div className="p-effect-body">{e.body}</div>
-                  <div className="p-effect-spacer" />
-                  <div className="p-effect-foot">{e.foot}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
       </main>
       <SiteFooter />
     </>

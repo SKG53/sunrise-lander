@@ -106,23 +106,7 @@ function SocialPage() {
                 {/* sprite — every frame is a discrete asset under Lovable's */}
                 {/* image-optimization width cap so source resolution        */}
                 {/* survives deploy intact.                                   */}
-                <div
-                  className="social-rotator"
-                  role="img"
-                  aria-label="SUNRISE Lemonade 10mg hemp-infused THC seltzer can rotating"
-                >
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                    <img
-                      key={n}
-                      className="social-rotator-frame"
-                      src={`/images/cans/lemonade-360-${n}.webp`}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                      style={{ animationDelay: `${(n - 1) * 1.0}s` }}
-                    />
-                  ))}
-                </div>
+                <div className="social-rotator" aria-hidden="true" />
               </div>
               <div className="s04-col s04-col-right">
                 <div className="s04-ing">

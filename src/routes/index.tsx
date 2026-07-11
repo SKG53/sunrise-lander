@@ -268,7 +268,7 @@ function EventSignupPage() {
                       aria-label={`${f.name} — ${TIERS[activeTier].name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ''}`}
                       style={{ ['--flavor-color' as string]: f.flavorColor } as React.CSSProperties}
                     >
-                      <FlavorCan slug={toSlug(activeTier, f)} flavorName={f.name} />
+                      <div className="p-flavor-can" />
                       <div className="p-flavor-meta">
                         <div className="p-flavor-name">{f.name}</div>
                         <div className="p-flavor-descriptor">{f.descriptor}</div>
@@ -298,23 +298,4 @@ function EventSignupPage() {
       <SiteFooter />
     </>
   )
-}
-
-// ── FlavorCan ────────────────────────────────────────────────────────────
-function FlavorCan({ slug, flavorName }: { slug: string; flavorName: string }) {
-  const mapping = getShopifyMapping(slug)
-  const { product } = useShopifyProduct(mapping?.handle)
-  const image = product?.node.images.edges[0]?.node
-  if (image?.url) {
-    return (
-      <div className="p-flavor-can has-image">
-        <img
-          src={image.url}
-          alt={image.altText ?? `SUNRISE ${flavorName} hemp-infused THC seltzer can`}
-          loading="lazy"
-        />
-      </div>
-    )
-  }
-  return <div className="p-flavor-can" />
 }

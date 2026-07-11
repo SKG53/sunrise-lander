@@ -15,7 +15,6 @@ export const Route = createFileRoute("/terms-of-service")({
       },
     ],
     links: [
-      { rel: "canonical", href: "https://savorsunrise.com/terms-of-service" },
     ],
   }),
 });

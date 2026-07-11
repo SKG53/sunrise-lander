@@ -21,8 +21,6 @@ import {
   render60mgActiveLockup,
   renderBlendLockup,
 } from '../lib/srlander-lockups'
-import { getShopifyMapping } from '@/lib/shopifyProductMap'
-import { useShopifyProduct } from '@/hooks/useShopifyProduct'
 import './contact.css'
 import './home.css'
 import './products.css'

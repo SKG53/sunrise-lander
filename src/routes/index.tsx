@@ -5,12 +5,12 @@
 //   • Signup form removed (its /api/public/event-signup endpoint no longer
 //     exists); the <section> shell is retained as intentional blank space.
 //   • "Find your SUNRISE" effects section removed — it cannot be written
-//     without naming THC / CBG / CBN / THCV.
+// without naming / / /.
 //   • The blank <section> the form left behind is gone too — nothing is going
 //     to fill it, and empty it was contributing ~3.8x base of dead vertical
 //     space directly above the products hero.
 // Potency lockups in the product selector use the LANDER-ONLY renderers from
-// src/lib/srlander-lockups.ts (THC -> ACTIVE, CBG/CBN/THCV -> BLEND).
+// src/lib/srlander-lockups.ts ( -> ACTIVE, // -> BLEND).
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
@@ -56,7 +56,7 @@ const LIVE_SLUGS = new Set<string>([
 const TIERS: Record<TierKey, TierData> = {
   '5':  { color: '#DC7F27', name: 'Subtle Lift', short: 'Subtle Lift', descriptors: 'Light · Bright · Casual',
     copy: 'First times, mid-week refreshments, or social sessions. Crisp, casual, easy to like.', flavors: [] },
-  '10': { color: '#CC1F39', name: 'Perfect Buzz', short: 'Perfect Buzz', descriptors: 'Smooth · Balanced · Social',
+  '10': { color: '#CC1F39', name: 'The Perfect Pour', short: 'Perfect Pour', descriptors: 'Smooth · Balanced · Social',
     copy: 'Casual sips, afternoon resets, or social gatherings. The go-to tier — a steady, social lift.',
     flavors: [
       { name: 'Strawberry',          descriptor: 'Fresh + Fruity',  flavorColor: '#CC1F39' },
@@ -228,7 +228,7 @@ function LanderHome() {
             {/* "Crafted Beverages" — NOT the tagline.
 
                 A prior pass set this to "Refresh the way the world drinks" while
-                purging Hemp Beverage Expo strings. But "Crafted Beverages" was
+ purging Beverage Expo strings. But "Crafted Beverages" was
                 never an HBE reference — it is the main store's hero subtitle —
                 so it was collateral, and it broke a brand rule: the tagline is
                 a closing anchor ONLY, never an opener. Sitting directly under
@@ -328,7 +328,6 @@ function LanderHome() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-flavor-card"
-                          aria-label={`${f.name} — ${TIERS[tier].name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ''}`}
                           style={{ ['--flavor-color' as string]: f.flavorColor } as React.CSSProperties}
                         >
                           {img ? (
@@ -353,7 +352,6 @@ function LanderHome() {
                             <span
                               className="p-flavor-corner"
                               ref={(el) => { cornerRefs.current[`${tier}-${i}`] = el }}
-                              aria-label={`+${f.cannabinoid}`}
                             />
                           )}
                         </a>

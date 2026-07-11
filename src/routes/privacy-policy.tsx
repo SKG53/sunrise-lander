@@ -260,10 +260,10 @@ function PrivacyPolicyPage() {
                   </li>
                   <li>
                     <strong>Age Verification and Compliance.</strong> To
-                    verify your age at the point of entry, at checkout, and at
-                    delivery, and to comply with applicable hemp, cannabis,
-                    and consumer-protection laws.
-                  </li>
+ verify your age at the point of entry, at checkout, and at
+ delivery, and to comply with applicable,
+ and consumer-protection laws.
+ </li>
                   <li>
                     <strong>Marketing and Advertising.</strong> To send
                     marketing, advertising, and promotional communications by

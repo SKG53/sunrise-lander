@@ -169,9 +169,9 @@
 .pd-hero-meta {
   /* No top padding — the flavor headline is the first element on every SKU
      and sits flush with the top of its column, aligned with the top of the
-     can frame in the adjacent column. The cannabinoid lockup that briefly
-     occupied this slot above the headline on +CBG/+CBN/+THCV SKUs was
-     removed; cannabinoid identity is now communicated only in S02.       */
+ can frame in the adjacent column. The lockup that briefly
+ occupied this slot above the headline on +/+/+ SKUs was
+ removed; identity is now communicated only in S02. */
   min-width: 0;
 }
 
@@ -662,21 +662,21 @@
   26%  { transform: translateX(calc(var(--base) * -0.4)); opacity: 0; }
   100% { transform: translateX(0);                       opacity: 1; }
 }
-/* Cannabinoid lockup — vertical strip anchored to the can-frame's bottom */
+/* lockup — vertical strip anchored to the can-frame's bottom */
 /* right corner. Lives inside .pd-related-can (via RelatedCan's children   */
 /* prop) so absolute positioning is scoped to the flavor-flooded portion  */
 /* of the card.                                                            */
 /*                                                                         */
 /* Rotation pivot is the lockup's own bottom-left corner (transform-origin */
 /* 0 100%) — NOT center. With center-pivot the visible vertical extent     */
-/* scales with text width (W), so +THCV's longer wordmark pushed below the */
-/* cream line while shorter +CBG/+CBN sat noticeably higher above it. With */
+/* scales with text width (W), so +'s longer wordmark pushed below the */
+/* cream line while shorter +/+ sat noticeably higher above it. With */
 /* bottom-left pivot, the visible bottom-right of the rotated text always  */
-/* lands at the pivot point regardless of W — all three cannabinoids end   */
+/* lands at the pivot point regardless of W — all three end */
 /* at the same Y, with bottoms ~0.15×base above the can/meta boundary.     */
 /* The variants differ only in how far up the can-frame they extend (W is  */
-/* the post-rotation visible height): +THCV reaches further up because     */
-/* its wordmark is wider, +CBG/+CBN are more compact.                      */
+/* the post-rotation visible height): + reaches further up because */
+/* its wordmark is wider, +/+ are more compact. */
 /*                                                                         */
 /* Corner is a 0×0 positioning anchor at the can-frame's bottom-right,     */
 /* lifted by a small buffer above cream. The lockup is absolute-positioned */
@@ -705,25 +705,25 @@
   white-space: nowrap;
 }
 
-/* ── 06 · CANNABINOID STORY (variant only — three-element band on flavor flood) ─
+/* ── 06 · STORY (variant only — three-element band on flavor flood) ─
    Layout: three peer elements on a flex row distributed by space-evenly.
    The container's width drives the spacing — each gap (including the two
    outer edge gaps) gets equal share of free space. Children are sized
-   intrinsically so the rhythm adapts to whichever cannabinoid + flavor
+ intrinsically so the rhythm adapts to whichever + flavor
    the SKU has.
 
-   E1  .pd-cannabinoid-icon    — inline-SVG icon component. Background
+ E1.pd--icon — inline-SVG icon component. Background
                                  circle filled with the SKU's flavor color
                                  to match the section flood (renders
                                  invisible); cream glyph reads on the flood.
                                  Sized via width/height in CSS (base * 4.8)
                                  since the inline <svg> has no intrinsic
                                  dimensions.
-   E2  .pd-cannabinoid-lockup  — host for the brand-locked +30 MG / CBG
-                                 (or CBN / THCV) potency lockup. Painted at
+ E2.pd--lockup — host for the brand-locked +30 MG /
+ (or / ) potency lockup. Painted at
                                  base * 1.8 in cream via innerHTML in
                                  useEffect.
-   E3  .pd-cannabinoid-right   — italic "Best for {X}" subhead + three
+ E3.pd--right — italic "Best for {X}" subhead + three
                                  stacked body paragraphs.
 
    Vertical alignment via align-items: center centers each peer at its own
@@ -739,18 +739,18 @@
    Combined, these reduce section height roughly from ~360px to ~245px at
    base 50px (~32% reduction), with copy block and icon now near-equal
    height anchors and padding still readable as intentional margin.       */
-.pd-cannabinoid {
+.pd-variant {
   color: var(--cream);
   padding: calc(var(--base) * 0.65) 0;
 }
-.pd-cannabinoid-grid {
+.pd-variant-grid {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   gap: calc(var(--base) * 0.8);
   flex-wrap: wrap;
 }
-.pd-cannabinoid-icon {
+.pd-variant-icon {
   /* Inline-SVG; CSS owns size since the SVG itself declares no width/height.
      base * 3.6 (was 4.8 — 25% smaller). Still ~225% of the original 1.6
      anchor size, so the icon remains the dominant visual element while
@@ -760,15 +760,15 @@
   display: block;
   flex-shrink: 0;
 }
-.pd-cannabinoid-lockup {
+.pd-variant-lockup {
   display: inline-block;
   line-height: 0;
   flex-shrink: 0;
-  /* Host for the brand-locked +30 MG / cannabinoid potency lockup. Empty
+  /* Host for the brand-locked +30 MG / potency lockup. Empty
      in SSR markup; hydration-time useEffect writes the lockup HTML via
      innerHTML at base * 1.8 in cream against the flavor-color flood.    */
 }
-.pd-cannabinoid-right {
+.pd-variant-right {
   display: flex;
   flex-direction: column;
   gap: calc(var(--base) * 0.18);
@@ -779,7 +779,7 @@
      blurb's max-width for a consistent reading line across the page. */
   max-width: 46ch;
 }
-.pd-cannabinoid-bestfor {
+.pd-variant-bestfor {
   font-family: 'Montserrat', sans-serif;
   font-style: italic;
   font-weight: 800;
@@ -789,7 +789,7 @@
   color: var(--cream);
   margin-bottom: calc(var(--base) * 0.10);
 }
-.pd-cannabinoid-body {
+.pd-variant-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.32);
   font-weight: 400;
@@ -942,16 +942,16 @@
   /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis replaces
      grid-template-columns. Original: .pd-related-grid { grid-template-columns: repeat(3, 1fr); } */
   .pd-related-card { flex-basis: calc((100% - 2 * (var(--base) * 0.4)) / 3); }
-  /* Cannabinoid section is a flex row on desktop (space-evenly). On tablet
+  /* section is a flex row on desktop (space-evenly). On tablet
      and below it stacks: column direction, items centered, comfortable
      vertical gap. The icon, lockup, and copy still appear in the same
      reading order, just stacked instead of distributed horizontally. */
-  .pd-cannabinoid-grid {
+  .pd-variant-grid {
     flex-direction: column;
     align-items: center;
     gap: calc(var(--base) * 0.7);
   }
-  .pd-cannabinoid-right { text-align: center; align-items: center; }
+  .pd-variant-right { text-align: center; align-items: center; }
   .pd-ptp-inner { grid-template-columns: 1fr; }
   .pd-ptp-ctas { justify-self: start; flex-direction: row; }
 }
@@ -975,8 +975,8 @@
   /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis replaces
      grid-template-columns. Original: .pd-related-grid { grid-template-columns: repeat(2, 1fr); } */
   .pd-related-card { flex-basis: calc((100% - (var(--base) * 0.4)) / 2); }
-  .pd-cannabinoid-grid { gap: calc(var(--base) * 0.55); }
-  .pd-cannabinoid-bestfor { font-size: calc(var(--base) * 0.42); }
+  .pd-variant-grid { gap: calc(var(--base) * 0.55); }
+  .pd-variant-bestfor { font-size: calc(var(--base) * 0.42); }
 }
 @media (max-width: 520px) {
   .pd-ptp-ctas { flex-direction: column; width: 100%; }

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/neverpull/faq")({
       {
         name: "description",
         content:
-          "Frequently asked questions about SUNRISE hemp-derived Delta-9 THC seltzers — potency, effects, ingredients, legality, shipping, and safety.",
+          "Frequently asked questions about SUNRISE seltzers — potency, effects, ingredients, legality, shipping, and safety.",
       },
     ],
     links: [
@@ -30,61 +30,61 @@ type FAQSection = { num: string; id: string; title: string; items: FAQItem[] };
 const SECTIONS: FAQSection[] = [
   {
     num: "01",
-    id: "hemp-cannabinoids",
-    title: "Hemp & Cannabinoids",
+    id: "the-basics",
+    title: " & ",
     items: [
       {
         tag: "1a",
-        q: "What is hemp?",
+        q: "What is?",
         a: (
           <p>
-            Hemp is a variant of the cannabis plant with 0.3% Delta-9 THC or
-            less by dry weight — federally legal under the 2018 Farm Bill. It
-            still carries the same psychoactive properties at higher doses, so
-            we encourage customers to choose their experience based on comfort
-            and habit.
-          </p>
+ is a variant of the plant with 0.3% or
+ less by dry weight — federally legal under the 2018 Farm Bill. It
+ still carries the same psychoactive properties at higher doses, so
+ we encourage customers to choose their experience based on comfort
+ and habit.
+ </p>
         ),
       },
       {
         tag: "1b",
-        q: "What is hemp-derived THC?",
+        q: "What is?",
         a: (
           <p>
-            Delta-9 THC is the cannabinoid responsible for the lift in
-            cannabis. The molecule is chemically identical whether it comes
-            from hemp or marijuana — what changes is legal status. Hemp-derived
-            Delta-9 is federally legal at concentrations of 0.3% or less by
-            dry weight.
-          </p>
+ is the responsible for the lift in
+. The molecule is chemically identical whether it comes
+ from or — what changes is legal status.
+ is federally legal at concentrations of 0.3% or less by
+ dry weight.
+ </p>
         ),
       },
       {
         tag: "1c",
-        q: "What are CBG, CBN, and THCV?",
+        q: "What are, and?",
         a: (
           <p>
-            Minor cannabinoids — the supporting cast alongside Delta-9 THC.
-            CBG tracks toward focus and uplift, CBN toward relaxation and
-            unwinding, THCV toward clarity and engagement. Every variant in
-            the lineup blends 30mg of one of these alongside the stated
-            Delta-9 dose, shifting the character of the experience without
-            changing the THC level.
-          </p>
+ — the supporting cast alongside.
+ tracks toward focus and uplift, toward relaxation and
+ unwinding, toward clarity and engagement. Every variant in
+ the lineup blends 30mg of one of these alongside the stated
+ dose, shifting the character of the experience without
+ changing the level.
+ </p>
         ),
       },
       {
         tag: "1d",
-        q: "How does THC actually work in the body?",
+        q: "How does actually work in the body?",
         a: (
           <p>
-            THC and other cannabinoids work through the endocannabinoid
-            system — a network of receptors in the brain and body that helps
-            regulate mood, appetite, pain, and sleep. THC binds to those
-            receptors (mainly the ones called CB1 and CB2) to produce the
-            lift. Receptor density and tolerance vary by person, which is why
-            the same can can feel different from one body to another.
-          </p>
+ and other work through the
+ system — a network of receptors in the brain and body that helps
+ regulate mood, appetite, pain, and sleep. binds to those
+ receptors (mainly the ones called CB1 and CB2) to produce the
+ lift. Receptor density and tolerance vary by person, which is why
+ the same can can feel different from one body to another.
+ </p>
         ),
       },
     ],
@@ -107,7 +107,7 @@ const SECTIONS: FAQSection[] = [
       },
       {
         tag: "2b",
-        q: "I've never tried a hemp seltzer. Where should I start?",
+        q: "I've never tried a seltzer. Where should I start?",
         a: (
           <p>
             Start lower than you think and work your way up. Begin with half a
@@ -122,10 +122,10 @@ const SECTIONS: FAQSection[] = [
         q: "Can I mix potencies in one session?",
         a: (
           <p>
-            Not advised. Mixing potencies stacks the dose — a 10MG plus a 30MG
-            is 40mg of THC, which can land harder than expected. Pick one
-            potency and stay with it for the session.
-          </p>
+ Not advised. Mixing potencies stacks the dose — a 10MG plus a 30MG
+ is 40mg of, which can land harder than expected. Pick one
+ potency and stay with it for the session.
+ </p>
         ),
       },
     ],
@@ -175,26 +175,26 @@ const SECTIONS: FAQSection[] = [
         q: "Why is this different from a gummy or edible?",
         a: (
           <p>
-            Emulsion and absorption. The Delta-9 THC in our seltzers is
-            emulsified into microscopic droplets, which lets your body absorb
-            it faster and more consistently than a typical gummy. That means
-            onset around 30 to 40 minutes instead of 60 to 90, and a cleaner
-            taper on the way out.
-          </p>
+ Emulsion and absorption. The in our seltzers is
+ emulsified into microscopic droplets, which lets your body absorb
+ it faster and more consistently than a typical gummy. That means
+ onset around 30 to 40 minutes instead of 60 to 90, and a cleaner
+ taper on the way out.
+ </p>
         ),
       },
       {
         tag: "3e",
-        q: "What's the difference between alcohol and THC?",
+        q: "What's the difference between alcohol and?",
         a: (
           <p>
-            Different compounds, different rides. Alcohol is a depressant your
-            liver works through over hours, with hangovers and dehydration as
-            the cost. THC works through the endocannabinoid system and
-            typically produces a shorter peak with a cleaner exit. Our
-            seltzers contain no alcohol, and we'd steer clear of mixing the
-            two.
-          </p>
+ Different compounds, different rides. Alcohol is a depressant your
+ liver works through over hours, with hangovers and dehydration as
+ the cost. works through the system and
+ typically produces a shorter peak with a cleaner exit. Our
+ seltzers contain no alcohol, and we'd steer clear of mixing the
+ two.
+ </p>
         ),
       },
       {
@@ -202,11 +202,11 @@ const SECTIONS: FAQSection[] = [
         q: "Can I drink on an empty stomach?",
         a: (
           <p>
-            You can, though without food the THC tends to absorb faster and
-            the lift can arrive in a less predictable way. Eating something
-            first lets you pace yourself and helps make for a more comfortable
-            experience.
-          </p>
+ You can, though without food the tends to absorb faster and
+ the lift can arrive in a less predictable way. Eating something
+ first lets you pace yourself and helps make for a more comfortable
+ experience.
+ </p>
         ),
       },
     ],
@@ -221,12 +221,12 @@ const SECTIONS: FAQSection[] = [
         q: "What's in a can?",
         a: (
           <p>
-            Our ingredients are designed to be straightforward: purified
-            water, pure cane sugar, natural flavoring, emulsified hemp
-            extract, B12, citric acid, and sodium benzoate. Lemonade and
-            Limeade flavors also contain fresh lemon or lime juice. Full
-            ingredient lists are printed on every can.
-          </p>
+ Our ingredients are designed to be straightforward: purified
+ water, pure cane sugar, natural flavoring, emulsified
+ extract, B12, citric acid, and sodium benzoate. Lemonade and
+ Limeade flavors also contain fresh lemon or lime juice. Full
+ ingredient lists are printed on every can.
+ </p>
         ),
       },
       {
@@ -257,11 +257,11 @@ const SECTIONS: FAQSection[] = [
         q: "Is the product third-party lab tested?",
         a: (
           <p>
-            Every batch. Full-panel testing by an accredited third-party lab
-            covers cannabinoid potency and contaminants. Scan the QR code on
-            any can to visit our website and navigate to the COAs page, where
-            you can pull up the Certificate of Analysis for that batch.
-          </p>
+ Every batch. Full-panel testing by an accredited third-party lab
+ covers potency and contaminants. Scan the QR code on
+ any can to visit our website and navigate to the COAs page, where
+ you can pull up the Certificate of Analysis for that batch.
+ </p>
         ),
       },
     ],
@@ -276,11 +276,11 @@ const SECTIONS: FAQSection[] = [
         q: "Will it show up on a drug test?",
         a: (
           <p>
-            Possibly. Standard drug panels test for THC metabolites and don't
-            distinguish hemp-derived THC from any other source. If your job or
-            situation requires a clean test, we'd caution against our
-            products.
-          </p>
+ Possibly. Standard drug panels test for metabolites and don't
+ distinguish from any other source. If your job or
+ situation requires a clean test, we'd caution against our
+ products.
+ </p>
         ),
       },
       {
@@ -288,10 +288,10 @@ const SECTIONS: FAQSection[] = [
         q: "Can I drink while pregnant, breastfeeding, or on medication?",
         a: (
           <p>
-            Please do not consume our products if you are pregnant,
-            breastfeeding, or taking prescription medications. Always check
-            with a healthcare provider before consuming THC products.
-          </p>
+ Please do not consume our products if you are pregnant,
+ breastfeeding, or taking prescription medications. Always check
+ with a healare provider before consuming products.
+ </p>
         ),
       },
       {
@@ -299,10 +299,10 @@ const SECTIONS: FAQSection[] = [
         q: "Can I drive after drinking SUNRISE?",
         a: (
           <p>
-            Please do not drive or operate heavy machinery after drinking any
-            infused beverage. THC impairs reaction time, coordination, and
-            judgment, which could create unexpected danger after consumption.
-          </p>
+ Please do not drive or operate heavy machinery after drinking any
+ infused beverage. impairs reaction time, coordination, and
+ judgment, which could create unexpected danger after consumption.
+ </p>
         ),
       },
       {
@@ -329,12 +329,12 @@ const SECTIONS: FAQSection[] = [
         q: "Is SUNRISE legal?",
         a: (
           <p>
-            Yes — our beverages are 100% federally legal because every can
-            uses hemp-derived Delta-9 THC at or below 0.3% by dry weight,
-            which makes them legal under the 2018 Farm Bill. State laws vary,
-            however. Please check your local rules for specific guidelines on
-            hemp-infused beverage consumption.
-          </p>
+ Yes — our beverages are 100% federally legal because every can
+ uses at or below 0.3% by dry weight,
+ which makes them legal under the 2018 Farm Bill. State laws vary,
+ however. Please check your local rules for specific guidelines on
+ beverage consumption.
+ </p>
         ),
       },
       {
@@ -352,10 +352,10 @@ const SECTIONS: FAQSection[] = [
         q: "Is it legal in my state?",
         a: (
           <p>
-            Most US states allow hemp-derived Delta-9 THC beverages — but not
-            all. We only ship to states where the product is legal, so if
-            checkout completes for your address, you're good.
-          </p>
+ Most US states allow beverages — but not
+ all. We only ship to states where the product is legal, so if
+ checkout completes for your address, you're good.
+ </p>
         ),
       },
     ],
@@ -370,10 +370,10 @@ const SECTIONS: FAQSection[] = [
         q: "Where can I buy SUNRISE?",
         a: (
           <p>
-            Through retail partners in select states across the country, and
-            direct from us at savorsunrise.com. We ship across the US in
-            compliance with local state regulations for hemp beverages.
-          </p>
+ Through retail partners in select states across the country, and
+ direct from us at savorsunrise.com. We ship across the US in
+ compliance with local state regulations for beverages.
+ </p>
         ),
       },
       {
@@ -394,11 +394,11 @@ const SECTIONS: FAQSection[] = [
         q: "Why do you check ID at checkout?",
         a: (
           <p>
-            SUNRISE is an adult product — consumers must be 21 or older. ID
-            verification at checkout ensures every order goes to a verified
-            adult and that we stay compliant with the regulations governing
-            hemp-derived THC beverages.
-          </p>
+ SUNRISE is an adult product — consumers must be 21 or older. ID
+ verification at checkout ensures every order goes to a verified
+ adult and that we stay compliant with the regulations governing
+ beverages.
+ </p>
         ),
       },
       {

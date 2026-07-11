@@ -603,7 +603,7 @@
   pointer-events: none;
   z-index: 2;
 }
-.es-card-cannabinoid {
+.es-card-variant {
   position: absolute;
   right: 0;
   bottom: calc(var(--base) * 0.15);
@@ -612,7 +612,7 @@
   pointer-events: none;
   z-index: 2;
 }
-.es-card-cannabinoid > * {
+.es-card-variant > * {
   position: absolute;
   left: 0;
   bottom: 0;

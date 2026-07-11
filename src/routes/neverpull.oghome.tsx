@@ -36,7 +36,7 @@ export const Route = createFileRoute("/neverpull/oghome")({
 
 // ── ACTIVE POTENCY CLEANUP FLAG ───────────────────────────────────────
 // 2026-05-08: When false, hides non-live SKUs (5mg tier, 30mg tier,
-// 60mg Wild Cherry Peach, and 10mg cannabinoid variants) from the user-
+// 60mg Wild Cherry Peach, and 10mg variants) from the user-
 // facing site for active potency cleanup. Reverse: change
 // false → true and uncomment the related code blocks marked with the
 // matching "HIDDEN FOR ACTIVE POTENCY CLEANUP" tag throughout this file.
@@ -51,12 +51,12 @@ const SHOW_NON_LIVE_PRODUCTS = false;
 // directs to /faq for the full set.
 const FAQS = [
   {
-    q: "What is hemp?",
-    a: "Hemp is a variant of the cannabis plant with 0.3% Delta-9 THC or less by dry weight — federally legal under the 2018 Farm Bill. It still carries the same psychoactive properties at higher doses, so we encourage customers to choose their experience based on comfort and habit.",
+    q: "What is?",
+    a: " is a variant of the plant with 0.3% or less by dry weight — federally legal under the 2018 Farm Bill. It still carries the same psychoactive properties at higher doses, so we encourage customers to choose their experience based on comfort and habit.",
   },
   {
     q: "Is SUNRISE legal?",
-    a: "Yes — our beverages are 100% federally legal because every can uses hemp-derived Delta-9 THC at or below 0.3% by dry weight, which makes them legal under the 2018 Farm Bill. State laws vary, however. Please check your local rules for specific guidelines on hemp-infused beverage consumption.",
+    a: "Yes — our beverages are 100% federally legal because every can uses at or below 0.3% by dry weight, which makes them legal under the 2018 Farm Bill. State laws vary, however. Please check your local rules for specific guidelines on beverage consumption.",
   },
   {
     q: "How will it feel?",
@@ -64,11 +64,11 @@ const FAQS = [
   },
   {
     q: "Will it show up on a drug test?",
-    a: "Possibly. Standard drug panels test for THC metabolites and don't distinguish hemp-derived THC from any other source. If your job or situation requires a clean test, we'd caution against our products.",
+    a: "Possibly. Standard drug panels test for metabolites and don't distinguish from any other source. If your job or situation requires a clean test, we'd caution against our products.",
   },
   {
     q: "Where can I buy SUNRISE?",
-    a: "Through retail partners in select states across the country, and direct from us at savorsunrise.com. We ship across the US in compliance with local state regulations for hemp beverages.",
+    a: "Through retail partners in select states across the country, and direct from us at savorsunrise.com. We ship across the US in compliance with local state regulations for beverages.",
   },
 ];
 
@@ -79,7 +79,7 @@ const FAQS = [
 // (see SHOW_NON_LIVE_PRODUCTS gate downstream). Each card represents a
 // flagship flavor whose color drives the can-frame flood; the potency
 // lockup is painted in cream over the flavor flood as a top-left badge.
-// Cannabinoid SKUs (e.g. 60mg Blood Orange +CBG) carry a second cream
+// SKUs (e.g. 60mg Blood Orange +) carry a second cream
 // lockup as a vertical rotated strip on the can-frame's right edge — same
 // pattern as the PD related-cards (.pd-related-corner), kept inside the
 // can frame so the cream-on-color contrast holds.
@@ -219,8 +219,8 @@ function HomePage() {
   // position in the FILTERED (visible) S03_TIER_CARDS array so each visible
   // card gets a dedicated ref. The single-ref-per-tier pattern broke once
   // the row gained two 10mg + two 60mg cards (two DOM nodes can't share one
-  // ref). Cannabinoid refs follow the same array pattern and are only
-  // populated for cards whose data carries a `cannabinoid` field.
+  // ref). refs follow the same array pattern and are only
+  // populated for cards whose data carries a `` field.
   const cardLockupRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const cardCannabinoidRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const manifestoRef = useRef<HTMLDivElement>(null);
@@ -238,7 +238,7 @@ function HomePage() {
       if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(lockupBase, "#FEFBE0");
       if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(lockupBase, "#FEFBE0");
       // S03 card lockups — paint the tier badge + (when present) the
-      // cannabinoid right-strip for every visible card. The order here must
+      // right-strip for every visible card. The order here must
       // match the JSX render order downstream so refs[i] aligns to card[i].
       const visibleCards = S03_TIER_CARDS.filter((card) =>
         SHOW_NON_LIVE_PRODUCTS || card.tier !== 5
@@ -259,7 +259,7 @@ function HomePage() {
         }
         const cbEl = cardCannabinoidRefs.current[i];
         if (cbEl && card.cannabinoid) {
-          // Sized to mirror PD related-card cannabinoid lockups so the
+          // Sized to mirror PD related-card lockups so the
           // visual language stays consistent between home and product
           // detail. Painted cream against the flavor-color flood inside
           // the can frame.
@@ -313,7 +313,7 @@ function HomePage() {
             <div className="hero-strip-col tier-60-bg" />
           </div>
           <div className="hero-overlay">
-            <h1 className="sr-only">SUNRISE — Hemp-Infused Seltzers</h1>
+            <h1 className="sr-only">SUNRISE — Seltzers</h1>
             <div className="hero-wordmark-slot" ref={heroWmRef} />
             <div className="hero-subtitle">Crafted Beverages</div>
           </div>
@@ -377,13 +377,12 @@ function HomePage() {
                         <span
                           className="s03-card-tier"
                           ref={(el) => { cardLockupRefs.current[i] = el; }}
-                          aria-label={`${card.tier} milligram THC`}
+                          aria-label={`${card.tier} milligram `}
                         />
                         {card.cannabinoid && (
                           <span
-                            className="s03-card-cannabinoid"
+                            className="s03-card-variant"
                             ref={(el) => { cardCannabinoidRefs.current[i] = el; }}
-                            aria-label={`+${card.cannabinoid}`}
                           />
                         )}
                       </div>
@@ -550,11 +549,11 @@ function HomePage() {
               <div className="s04-center" />
               <div className="s04-col s04-col-right">
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Emulsified<br />Hemp Extract</div>
+                  <div className="s04-ing-name">Emulsified<br /> Extract</div>
                   <div className="s04-ing-desc">
-                    The good stuff — expertly blended cannabis extract for a clean
-                    and consistent experience with every sip.
-                  </div>
+ The good stuff — expertly blended extract for a clean
+ and consistent experience with every sip.
+ </div>
                 </div>
                 <div className="s04-ing">
                   <div className="s04-ing-name">Naturally Sourced<br />Enhancers</div>

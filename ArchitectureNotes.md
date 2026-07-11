@@ -174,7 +174,7 @@ head: () => ({
   meta: [
     { charSet: "utf-8" },
     { name: "viewport", content: "width=1100" },
-    { title: "SUNRISE — Hemp-Infused Delta-9 Seltzer" },
+ { title: "SUNRISE — Seltzer" },
     { name: "description", content: "..." },
     { property: "og:title", content: "..." },
     { property: "og:description", content: "..." },
@@ -222,7 +222,7 @@ head: ({ loaderData }) => {
   if (!p) return { meta: [{ title: "Product · SUNRISE" }] };
   return {
     meta: [
-      { title: `${p.flavor} · ${p.tier}mg THC · SUNRISE` },
+ { title: `${p.flavor} · ${p.tier}mg · SUNRISE` },
       { name: "description", content: `${p.flavor}. ${p.blurb}` },
       { property: "og:image", content: p.ogImageUrl },
     ],
@@ -256,7 +256,7 @@ The age gate MUST be a client-side overlay that does NOT prevent SSR content fro
 - Defines site header, footer, and announcement-bar shared styles
 - Imported once in `__root.tsx` so it applies globally
 
-**Color authority.** The canonical color definitions for the SUNRISE system live in `SUNRISE_Colors_v2.xlsx` (the brand-doc spreadsheet — covering tier colors, flavor colors, cannabinoid blocks, system colors, and the seven-stop wordmark gradient). The implementation of those colors as CSS tokens lives in `sunrise-shell.css`. **Do not hard-code hex values anywhere else** — neither in documentation, nor in per-route CSS, nor inline in components. Reference the token (`var(--tier-10)`) or the spreadsheet.
+**Color authority.** The canonical color definitions for the SUNRISE system live in `SUNRISE_Colors_v2.xlsx` (the brand-doc spreadsheet — covering tier colors, flavor colors, blocks, system colors, and the seven-stop wordmark gradient). The implementation of those colors as CSS tokens lives in `sunrise-shell.css`. **Do not hard-code hex values anywhere else** — neither in documentation, nor in per-route CSS, nor inline in components. Reference the token (`var(--tier-10)`) or the spreadsheet.
 
 ### 7.3 Layer 3: `src/routes/*.css` — per-route scoped styles
 

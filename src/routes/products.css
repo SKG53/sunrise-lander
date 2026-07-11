@@ -93,7 +93,7 @@
   margin-right: auto;
 }
 
-/* ── FIND YOUR EFFECT (4-card: Core + CBG/CBN/THCV) ─────────────────────── */
+/* ── FIND YOUR EFFECT (4-card: Core + //) ─────────────────────── */
 .p-effects {
   background: var(--cream);
   padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 2.2);
@@ -336,7 +336,7 @@
    feedback. Each card sets its own --flavor-color via inline style, which
    floods the can container and paints the BUY NOW CTA. The CTA is pinned
    to card bottom via margin-top: auto so all CTAs align horizontally
-   across the row regardless of whether the card has the cannabinoid pill
+ across the row regardless of whether the card has the pill
    below the descriptor.                                                   */
 .p-flavor-grid {
   /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original was
@@ -443,7 +443,7 @@
 /* CTA — solid filled pill in the SKU's flavor color, cream label/arrow.
    margin-top: auto (via `auto` in shorthand) pins it to the bottom of the
    card so all CTAs align horizontally across a row regardless of meta-
-   block height (cards with the cannabinoid pill are otherwise taller).
+ block height (cards with the pill are otherwise taller).
    Hover state: a cream ::before pseudo wipes left-to-right inside the
    pill, and the label + arrow flip from cream to the flavor color so
    they remain readable against the cream wipe. Mirrors the home s06
@@ -510,9 +510,9 @@
   100% { transform: translateX(0);                       opacity: 1; }
 }
 
-/* Cannabinoid lockup — vertical strip on the card's right edge, visually
+/* lockup — vertical strip on the card's right edge, visually
    centered. Span fills card height as a flex container; child lockup is
-   rotated -90deg (CCW) so the cannabinoid word reads bottom-to-top. The
+ rotated -90deg (CCW) so the word reads bottom-to-top. The
    strip's content lands over the can area (the card's vertical center
    falls within the can portion at 3:4), so the lockup is painted in cream
    for on-color contrast against the tier-flooded panel showing through

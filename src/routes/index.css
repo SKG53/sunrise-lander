@@ -17,9 +17,9 @@
    THE CAUSE: .p-panel-head (products.css) pins its first grid column to a
    FIXED width so the text column starts at the same x across every tier,
    whichever lockup is painted. products.css sets that column to 5.5x base
-   (275px at --base: 50px) — measured against the widest canonical THC lockup.
+ (275px at --base: 50px) — measured against the widest canonical lockup.
    The lander paints ACTIVE lockups instead, and "ACTIVE" is six characters
-   where "THC" is three. Measured in the live render:
+ where "" is three. Measured in the live render:
 
        tier    ACTIVE lockup width
        10          340px  = 6.80x
@@ -37,7 +37,7 @@
    trustworthy width is the one the actually-painted lockup reports.
 
    WHY NOT IN products.css: that file is shared with /neverpull/products,
-   which still renders the CANONICAL THC lockups — its 5.5x column is correct
+ which still renders the CANONICAL lockups — its 5.5x column is correct
    there. Widening it globally would open a dead gap on a page with no wrap
    problem. The fix belongs where the ACTIVE lockups actually render.
 

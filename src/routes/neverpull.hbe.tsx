@@ -20,7 +20,7 @@ import './contact.css'
 import './home.css'
 import './products.css'
 
-const EVENT_NAME = 'Hemp Beverage Expo'
+const EVENT_NAME = ' Beverage Expo'
 
 // ── PRODUCTS SECTION DATA (mirrors /products page) ───────────────────────
 type Cannabinoid = 'CBG' | 'CBN' | 'THCV'
@@ -47,7 +47,7 @@ const LIVE_SLUGS = new Set<string>([
 const TIERS: Record<TierKey, TierData> = {
   '5':  { color: '#DC7F27', name: 'Subtle Lift', short: 'Subtle Lift', descriptors: 'Light · Bright · Casual',
     copy: 'First times, mid-week refreshments, or social sessions. Crisp, casual, easy to like.', flavors: [] },
-  '10': { color: '#CC1F39', name: 'Perfect Buzz', short: 'Perfect Buzz', descriptors: 'Smooth · Balanced · Social',
+  '10': { color: '#CC1F39', name: 'The Perfect Pour', short: 'Perfect Pour', descriptors: 'Smooth · Balanced · Social',
     copy: 'Casual sips, afternoon resets, or social gatherings. The go-to tier — a steady, social lift.',
     flavors: [
       { name: 'Strawberry',          descriptor: 'Fresh + Fruity',  flavorColor: '#CC1F39' },
@@ -98,7 +98,7 @@ const EFFECTS: EffectCardData[] = [
 function renderEffectSymbol(cann: Cannabinoid | null, base: number, color: string): string {
   const thcWord = (sz: number) =>
     `<span style="display:inline-block; text-align:left; line-height:1">` +
-    `<span style="font-family:Montserrat, sans-serif; font-size:${sz}px; font-weight:900; letter-spacing:${sz * -0.105}px; color:${color}">THC</span>` +
+    `<span style="font-family:Montserrat, sans-serif; font-size:${sz}px; font-weight:900; letter-spacing:${sz * -0.105}px; color:${color}"></span>` +
     `</span>`
   if (!cann) return thcWord(base)
   const t = base * 0.545
@@ -107,7 +107,7 @@ function renderEffectSymbol(cann: Cannabinoid | null, base: number, color: strin
   const vert =
     `<span style="display:inline-block; position:relative; width:${w}px; height:${h}px; flex-shrink:0">` +
     `<span style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-90deg); opacity:0.55; white-space:nowrap; line-height:1">` +
-    `<span style="font-family:Montserrat, sans-serif; font-size:${t}px; font-weight:900; letter-spacing:${t * -0.105}px; color:${color}">THC</span>` +
+    `<span style="font-family:Montserrat, sans-serif; font-size:${t}px; font-weight:900; letter-spacing:${t * -0.105}px; color:${color}"></span>` +
     `</span></span>`
   const big =
     cann === 'CBG' ? renderCBGLockup(base, color) :
@@ -271,7 +271,7 @@ function EventSignupPage() {
             <div className="hero-strip-col tier-60-bg" />
           </div>
           <div className="hero-overlay">
-            <h1 className="sr-only">SUNRISE — Hemp Beverage Expo</h1>
+            <h1 className="sr-only">SUNRISE — Beverage Expo</h1>
             <div className="hero-wordmark-slot" ref={heroWmRef} />
             <div className="hero-subtitle">Crafted Beverages</div>
           </div>
@@ -286,7 +286,7 @@ function EventSignupPage() {
           <div className="container">
             <div className="es-top-heading">
               <div className="es-top-heading-line1">JOIN US AT THE</div>
-              <div className="es-top-heading-line1">HEMP BEVERAGE EXPO</div>
+              <div className="es-top-heading-line1"> BEVERAGE EXPO</div>
             </div>
             <div className="c-form-card">
                 {submitted ? (
@@ -480,7 +480,6 @@ function EventSignupPage() {
                       key={i}
                       href={`/products/${toSlug(activeTier, f)}`}
                       className="p-flavor-card"
-                      aria-label={`${f.name} — ${TIERS[activeTier].name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ''}`}
                       style={{ ['--flavor-color' as string]: f.flavorColor } as React.CSSProperties}
                     >
                       <div className="p-flavor-can" />
@@ -499,7 +498,6 @@ function EventSignupPage() {
                         <span
                           className="p-flavor-corner"
                           ref={(el) => { cornerRefs.current[i] = el }}
-                          aria-label={`+${f.cannabinoid}`}
                         />
                       )}
                     </a>
@@ -509,7 +507,7 @@ function EventSignupPage() {
           </div>
         </section>
 
-        {/* ── FIND YOUR SUNRISE — minor cannabinoid cards ──────────────── */}
+        {/* ── FIND YOUR SUNRISE — minor cards ──────────────── */}
         <section className="p-effects">
           <div className="container">
             <h2 className="p-effects-headline">
@@ -517,8 +515,8 @@ function EventSignupPage() {
               <span className="p-effects-wordmark" ref={wordmarkRef} aria-label="SUNRISE" />
             </h2>
             <p className="p-effects-subhead">
-              Every tier offers four paths — a classic THC core, or three enhanced with minor cannabinoids for a more specific experience.
-            </p>
+ Every tier offers four paths — a classic core, or three enhanced with for a more specific experience.
+ </p>
             <div className="p-effects-grid">
               {EFFECTS.map((e, i) => (
                 <div key={i} className="p-effect-card" style={{ background: e.bg }}>
@@ -526,7 +524,6 @@ function EventSignupPage() {
                   <div
                     className="p-effect-symbol"
                     ref={(el) => { effectRefs.current[i] = el }}
-                    aria-label={e.cann ? `THC + ${e.cann}` : 'THC'}
                   />
                   <div className="p-effect-bestfor">Best for<br />{e.bestFor}</div>
                   <div className="p-effect-body">{e.body}</div>

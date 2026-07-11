@@ -14,7 +14,7 @@
      · Tier-30 green is shared across all policy pages.
      · v2 (this revision): adds .tos-policy-callout (Important Notice block,
        tier-30 left border, allcaps copy), .tos-policy-list (Section 1
-       hemp-acknowledgment bullets), and .tos-policy-list-ordered (Section
+ -acknowledgment bullets), and.tos-policy-list-ordered (Section
        25 DMCA numbered steps). .tos-policy-allcaps retained from v1.
    ========================================================================== */
 
@@ -146,7 +146,7 @@
   font-weight: 500;
 }
 
-/* Bullet list — Section 1 hemp-acknowledgment items. */
+/* Bullet list — Section 1 -acknowledgment items. */
 .tos-policy-list {
   list-style: disc;
   padding-left: calc(var(--base) * 0.7);

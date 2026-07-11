@@ -54,19 +54,19 @@ function ShippingPolicyPage() {
               <div className="sp-policy-body">
                 <h3 className="sp-policy-heading">Where we ship</h3>
                 <p>
-                  SUNRISE Beverage ships to addresses within the continental
-                  United States only, pursuant to applicable federal, state,
-                  and local regulations restricting the shipment of
-                  hemp-derived cannabinoid products. We do not ship to P.O.
-                  boxes, APO/FPO military addresses, U.S. territories, Alaska,
-                  or Hawaii.
-                </p>
+ SUNRISE Beverage ships to addresses within the continental
+ United States only, pursuant to applicable federal, state,
+ and local regulations restricting the shipment of
+ products. We do not ship to P.O.
+ boxes, APO/FPO military addresses, U.S. territories, Alaska,
+ or Hawaii.
+ </p>
                 <p>
-                  Hemp-derived Delta-9 THC products are subject to
-                  state-by-state regulations that continue to evolve. We
-                  follow local regulations, and shipment to all 50 states is
-                  not possible at this time.{" "}
-                  <strong>
+ products are subject to
+ state-by-state regulations that continue to evolve. We
+ follow local regulations, and shipment to all 50 states is
+ not possible at this time.{" "}
+ <strong>
                     As of the effective date of this Shipping Policy, we are
                     unable to ship to the following states:
                   </strong>
@@ -236,12 +236,12 @@ function ShippingPolicyPage() {
 
                 <h3 className="sp-policy-heading">State-law changes during transit</h3>
                 <p>
-                  Hemp regulations change frequently. If a destination
-                  state's laws change such that we are unable to lawfully
-                  complete delivery while your order is in transit, we will
-                  work with the carrier to return the order to us and refund
-                  the purchase price (less any non-refundable shipping fees).
-                </p>
+ regulations change frequently. If a destination
+ state's laws change such that we are unable to lawfully
+ complete delivery while your order is in transit, we will
+ work with the carrier to return the order to us and refund
+ the purchase price (less any non-refundable shipping fees).
+ </p>
 
                 <h3 className="sp-policy-heading">Contact</h3>
                 <p>

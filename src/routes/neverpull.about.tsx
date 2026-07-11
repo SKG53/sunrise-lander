@@ -11,7 +11,7 @@ export const Route = createFileRoute("/neverpull/about")({
       {
         name: "description",
         content:
-          "A family-owned beverage company built along Route 66 in Tulsa, Oklahoma. Hemp-derived Delta-9 THC seltzers made in-house, full-panel tested, and crafted in the American heartland.",
+          "A family-owned beverage company built along Route 66 in Tulsa, Oklahoma. seltzers made in-house, full-panel tested, and crafted in the American heartland.",
       },
     ],
     links: [
@@ -59,13 +59,13 @@ function AboutPage() {
                   brands have existed.
                 </p>
                 <p>
-                  Our team brings decades of beverage manufacturing to the
-                  work — formulation, production, blending, testing. What's
-                  new is the category. What's not new is how we approach it.
-                  Every SUNRISE is made from simple ingredients and pure cane sugar,
-                  emulsified with hemp extract in our own facility, tested
-                  batch by batch before it ever reaches a can.
-                </p>
+ Our team brings decades of beverage manufacturing to the
+ work — formulation, production, blending, testing. What's
+ new is the category. What's not new is how we approach it.
+ Every SUNRISE is made from simple ingredients and pure cane sugar,
+ emulsified with extract in our own facility, tested
+ batch by batch before it ever reaches a can.
+ </p>
                 <p>
                   <span className="a-intro-emphasizer">Every can, every batch.</span>
                   {" "}Made in-house. Made in Oklahoma. Made to be what the
@@ -175,9 +175,9 @@ function AboutPage() {
               <div className="a-build-pillar">
                 <div className="a-build-pillar-title">Full-Panel Testing</div>
                 <p className="a-build-pillar-body">
-                  Every batch is third-party tested for cannabinoid content and contaminants.
-                  Every COA is published. Nothing to hide, and nothing ever does.
-                </p>
+ Every batch is third-party tested for content and contaminants.
+ Every COA is published. Nothing to hide, and nothing ever does.
+ </p>
               </div>
             </div>
           </div>

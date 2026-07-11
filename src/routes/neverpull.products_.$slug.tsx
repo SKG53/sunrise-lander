@@ -1,9 +1,9 @@
 // Dynamic route rendering a product detail page for each of the 24 SKUs.
-// URL pattern: /products/{tier}mg-{flavor-slug}[-{cannabinoid}]
-// Example:     /products/10mg-blackberry-lemonade-cbn
+// URL pattern: /products/{tier}mg-{flavor-slug}[-{}]
+// Example: /products/10mg-blackberry-lemonade-
 //
 // Section order (visual; code section numbers kept stable for reference):
-// 01 Breadcrumb → 02 Hero → 06 Cannabinoid (variant only) → 03 Stat Strip
+// 01 Breadcrumb → 02 Hero → 06 (variant only) → 03 Stat Strip
 // → 05 Others in Tier → 04 Ingredients → 07 FAQ → 08 PtP band → Footer
 
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
@@ -25,7 +25,7 @@ import {
   render30mgTHCVLockup,
   getBasePx,
 } from "../lib/sunrise-components";
-import { CannabinoidIcon } from "../components/CannabinoidIcon";
+import { VariantIcon } from "../components/VariantIcon";
 import { getShopifyMapping } from "@/lib/shopifyProductMap";
 import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import { useCartStore } from "@/stores/cartStore";
@@ -87,8 +87,8 @@ type Product = {
 };
 
 // ── PRODUCT DATA (24 SKUs) ───────────────────────────────────────────────
-// Positions 1/2/3 = base flavors; positions 4/5/6 = +CBG / +CBN / +THCV.
-// Effect defaults per VIG: CBG=FOCUS, CBN=RELAX, THCV=ELEVATE (can override).
+// Positions 1/2/3 = base flavors; positions 4/5/6 = + / + / +.
+// Effect defaults per VIG: =FOCUS, =RELAX, =ELEVATE (can override).
 const PRODUCTS: Product[] = [
   // ── 5mg ────────────────────────────────────────────────────────────────
   { slug: "5mg-blackberry", tier: 5, flavor: "Blackberry", descriptor: "Dark + Smooth",
@@ -185,7 +185,7 @@ const PRODUCTS: Product[] = [
 
 // ── ACTIVE POTENCY CLEANUP FLAG ───────────────────────────────────────
 // 2026-05-08: When false, hides non-live SKUs (5mg tier, 30mg tier,
-// 60mg Wild Cherry Peach, and 10mg cannabinoid variants) from the user-
+// 60mg Wild Cherry Peach, and 10mg variants) from the user-
 // facing site for active potency cleanup. The route loader
 // throws notFound() for any non-live slug when the flag is off, so direct
 // URL access (e.g. /products/5mg-blackberry) returns 404 rather than
@@ -213,10 +213,10 @@ const LIVE_SLUGS = new Set<string>([
 ]);
 
 // ── HELPERS ──────────────────────────────────────────────────────────────
-// Per-cannabinoid copy surfaced in Section 02 (variant SKUs only). "bestFor"
+// Per- copy surfaced in Section 02 (variant SKUs only). "bestFor"
 // maps to the small italic subhead; body1/2/3 map to the three stacked
-// paragraphs that follow. Content is locked to the SUNRISE +CBG / +CBN /
-// +THCV functional copy block.
+// paragraphs that follow. Content is locked to the SUNRISE + / + /
+// + functional copy block.
 const CANNABINOID_COPY: Record<Cannabinoid, { bestFor: string; body1: string; body2: string; body3: string }> = {
   CBG: {
     bestFor: "Daytime",
@@ -240,8 +240,8 @@ const CANNABINOID_COPY: Record<Cannabinoid, { bestFor: string; body1: string; bo
 
 // Two-word effect phrases were previously surfaced on related-card pills
 // (Focus + Uplift / Relax + Unwind / Elevate + Engage). Pills were removed
-// per founder direction — the rotated +CBG/+CBN/+THCV lockup on the card's
-// right edge now carries that information visually. The CANNABINOID_EFFECT
+// per founder direction — the rotated +/+/+ lockup on the card's
+// right edge now carries that information visually. The _EFFECT
 // map is preserved on /products (p-flavor-pill) and remains available for
 // future PD reuse if a copy block reintroduces effect language.
 
@@ -261,39 +261,39 @@ function renderLockup(tier: Tier, base: number, color: string): string {
 // ── FAQ DATA ─────────────────────────────────────────────────────────────
 // PDP shows three FAQs at point-of-purchase. Base flavors (Core SKUs) get
 // a format-justification question and an empty-stomach practical question.
-// Variant SKUs (+CBG / +CBN / +THCV) get cannabinoid education questions
+// Variant SKUs (+ / + / +) get education questions
 // instead — appropriate to the shopper context, and also reduces duplicate-
 // content overlap across the 24 PDP URLs. Both groups close on the same
-// lab-testing trust question. Selection is by product.cannabinoid presence,
+// lab-testing trust question. Selection is by product. presence,
 // so all 24 SKUs (live + non-live) are covered automatically. Copy locked
 // to v6 of canonical /faq master.
 const FAQS_BASE: Array<{ q: string; a: string }> = [
   {
     q: "Why is this different from a gummy or edible?",
-    a: "Emulsion and absorption. The Delta-9 THC in our seltzers is emulsified into microscopic droplets, which lets your body absorb it faster and more consistently than a typical gummy. That means onset around 30 to 40 minutes instead of 60 to 90, and a cleaner taper on the way out.",
+    a: "Emulsion and absorption. The in our seltzers is emulsified into microscopic droplets, which lets your body absorb it faster and more consistently than a typical gummy. That means onset around 30 to 40 minutes instead of 60 to 90, and a cleaner taper on the way out.",
   },
   {
     q: "Can I drink on an empty stomach?",
-    a: "You can, though without food the THC tends to absorb faster and the lift can arrive in a less predictable way. Eating something first lets you pace yourself and helps make for a more comfortable experience.",
+    a: "You can, though without food the tends to absorb faster and the lift can arrive in a less predictable way. Eating something first lets you pace yourself and helps make for a more comfortable experience.",
   },
   {
     q: "Is the product third-party lab tested?",
-    a: "Every batch. Full-panel testing by an accredited third-party lab covers cannabinoid potency and contaminants. Scan the QR code on any can to visit our website and navigate to the COAs page, where you can pull up the Certificate of Analysis for that batch.",
+    a: "Every batch. Full-panel testing by an accredited third-party lab covers potency and contaminants. Scan the QR code on any can to visit our website and navigate to the COAs page, where you can pull up the Certificate of Analysis for that batch.",
   },
 ];
 
 const FAQS_VARIANT: Array<{ q: string; a: string }> = [
   {
-    q: "What are CBG, CBN, and THCV?",
-    a: "Minor cannabinoids — the supporting cast alongside Delta-9 THC. CBG tracks toward focus and uplift, CBN toward relaxation and unwinding, THCV toward clarity and engagement. Every variant in the lineup blends 30mg of one of these alongside the stated Delta-9 dose, shifting the character of the experience without changing the THC level.",
+    q: "What are, and?",
+    a: " — the supporting cast alongside. tracks toward focus and uplift, toward relaxation and unwinding, toward clarity and engagement. Every variant in the lineup blends 30mg of one of these alongside the stated dose, shifting the character of the experience without changing the level.",
   },
   {
-    q: "How does THC actually work in the body?",
-    a: "THC and other cannabinoids work through the endocannabinoid system — a network of receptors in the brain and body that helps regulate mood, appetite, pain, and sleep. THC binds to those receptors (mainly the ones called CB1 and CB2) to produce the lift. Receptor density and tolerance vary by person, which is why the same can can feel different from one body to another.",
+    q: "How does actually work in the body?",
+    a: " and other work through the system — a network of receptors in the brain and body that helps regulate mood, appetite, pain, and sleep. binds to those receptors (mainly the ones called CB1 and CB2) to produce the lift. Receptor density and tolerance vary by person, which is why the same can can feel different from one body to another.",
   },
   {
     q: "Is the product third-party lab tested?",
-    a: "Every batch. Full-panel testing by an accredited third-party lab covers cannabinoid potency and contaminants. Scan the QR code on any can to visit our website and navigate to the COAs page, where you can pull up the Certificate of Analysis for that batch.",
+    a: "Every batch. Full-panel testing by an accredited third-party lab covers potency and contaminants. Scan the QR code on any can to visit our website and navigate to the COAs page, where you can pull up the Certificate of Analysis for that batch.",
   },
 ];
 
@@ -322,13 +322,13 @@ export const Route = createFileRoute("/neverpull/products_/$slug")({
         links: [{ rel: "canonical", href: "https://savorsunrise.com/products" }],
       };
     }
-    const variant = p.cannabinoid ? ` +${p.cannabinoid}` : "";
+    const variant = '';
     return {
       meta: [
-        { title: `${p.flavor}${variant} · ${p.tier}mg THC · SUNRISE` },
+        { title: `${p.flavor}${variant} · ${p.tier}mg · SUNRISE` },
         {
           name: "description",
-          content: `${p.flavor}${variant}. ${p.tier}mg THC hemp-infused seltzer. ${p.blurb}`,
+          content: `${p.flavor}${variant}. ${p.tier}mg seltzer. ${p.blurb}`,
         },
       ],
       links: [
@@ -343,13 +343,13 @@ function ProductDetailPage() {
   const { product } = Route.useLoaderData();
   const lockupRef = useRef<HTMLDivElement>(null);
   const stat12Ref = useRef<HTMLDivElement>(null);
-  // Cannabinoid lockup refs — painted in useEffect below. Each is null on
-  // non-variant SKUs (Core flavors have no cannabinoid) and on placeholder
+  // lockup refs — painted in useEffect below. Each is null on
+  // non-variant SKUs (Core flavors have no ) and on placeholder
   // paths that don't render that DOM node.
   const bcCbRef = useRef<HTMLSpanElement>(null);            // breadcrumb
-  const cannabinoidLockupRef = useRef<HTMLDivElement>(null); // big +30 MG / CBG potency lockup in S02 cannabinoid section
+  const cannabinoidLockupRef = useRef<HTMLDivElement>(null); // big +30 MG / potency lockup in S02 section
   // Related-card corner lockups — one slot per "Others in Tier" card. Null
-  // entries correspond to base-flavor siblings (no cannabinoid). Repopulated
+  // entries correspond to base-flavor siblings (no ). Repopulated
   // via React's ref callback whenever the SKU (and therefore the sibling
   // list) changes.
   const relatedCornerRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -376,7 +376,7 @@ function ProductDetailPage() {
         stat12Ref.current.innerHTML = render12ozStatBlock(base * 2.64, "#FEFBE0");
       }
 
-      // ── Cannabinoid lockups (variant SKUs only) ──────────────────────
+      // ── lockups (variant SKUs only) ──────────────────────
       if (!product.cannabinoid) return;
       const cb = product.cannabinoid;
       const plusLockup =
@@ -392,7 +392,7 @@ function ProductDetailPage() {
       if (bcCbRef.current) {
         bcCbRef.current.innerHTML = plusLockup(base * 0.30, "#1A1A1A");
       }
-      // S02 cannabinoid section: full +30 MG / CBG potency lockup in cream
+      // S02 section: full +30 MG / potency lockup in cream
       // against the flavor-color flood. The icon (rendered as a sibling
       // React element, not painted here) sits to its left as a co-anchor.
       if (cannabinoidLockupRef.current) {
@@ -415,7 +415,7 @@ function ProductDetailPage() {
     ? CANNABINOID_COPY[product.cannabinoid as Cannabinoid]
     : null;
 
-  // Paint related-card cannabinoid corner lockups. Runs after the related
+  // Paint related-card corner lockups. Runs after the related
   // grid renders (othersInTier in deps) so refs are attached. Only variant
   // siblings get a lockup; base-flavor refs stay null.
   useEffect(() => {
@@ -597,7 +597,7 @@ function ProductDetailPage() {
                 {product.cannabinoid && (
                   <>
                     {" "}
-                    <span ref={bcCbRef} aria-label={`+${product.cannabinoid}`} />
+                    <span ref={bcCbRef} />
                   </>
                 )}
               </li>
@@ -616,7 +616,7 @@ function ProductDetailPage() {
                   return img ? (
                     <img
                       src={img}
-                      alt={`SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${product.cannabinoid ? ` + ${product.cannabinoid}` : ""} seltzer can`}
+                      alt={`SUNRISE ${product.flavor} ${product.tier}mg  seltzer can`}
                       fetchPriority="high"
                     />
                   ) : null;
@@ -626,13 +626,13 @@ function ProductDetailPage() {
 
               <div className="pd-hero-meta">
                 {/* Hero meta column — flavor headline is the first element on
-                    every SKU. The cannabinoid lockup that previously sat
-                    above the headline on +CBG/+CBN/+THCV SKUs was removed:
-                    cannabinoid identity is communicated downstream via S02
-                    (which renders the +30 MG / cannabinoid potency lockup
+ every SKU. The lockup that previously sat
+ above the headline on +/+/+ SKUs was removed:
+ identity is communicated downstream via S02
+ (which renders the +30 MG / potency lockup
                     plus the icon and "Best for X" copy), so duplicating it
                     above the flavor name added visual noise without new
-                    information. Non-cannabinoid and cannabinoid SKUs now
+ information. Non- and SKUs now
                     render an identical hero meta column structure.         */}
                 <h1 className="pd-hero-flavor">{product.flavor}</h1>
 
@@ -775,46 +775,45 @@ function ProductDetailPage() {
           </div>
         </section>
 
-        {/* ── 03 · CANNABINOID STORY (variant only) ─────────────────────── */}
-        {/* Two-column band on flavor-color flood. Left: big +{cannabinoid}   */}
+        {/* ── 03 · STORY (variant only) ─────────────────────── */}
+        {/* Two-column band on flavor-color flood. Left: big +{} */}
         {/* lockup in cream. Right: italic "Best for {X}" subhead + three     */}
         {/* body lines of functional copy. Stats boxes removed per brand      */}
         {/* direction — the dose information lives on the hero now via the    */}
-        {/* potency lockup + inline +30mg cannabinoid lockup pairing.         */}
+        {/* potency lockup + inline +30mg lockup pairing. */}
         {product.cannabinoid && cbCopy && (
           <section
-            className="pd-cannabinoid"
+            className="pd-variant"
             style={{ background: product.color }}
           >
             <div className="container">
-              <div className="pd-cannabinoid-grid">
+              <div className="pd-variant-grid">
                 {/* Element 1 — icon. Inline-SVG component so the circle's
                     fill can be set dynamically to product.color (matching
                     the section's flood); the cream glyph is what reads
-                    visibly against the flood. Sized via .pd-cannabinoid-icon
+ visibly against the flood. Sized via.pd--icon
                     in CSS at base * 4.8 so it serves as the section's
                     primary visual anchor. */}
-                <CannabinoidIcon
+                <VariantIcon
                   cannabinoid={product.cannabinoid}
                   bgColor={product.color}
-                  className="pd-cannabinoid-icon"
+                  className="pd-variant-icon"
                 />
-                {/* Element 2 — full +30 MG / cannabinoid potency lockup in
-                    cream. Painted in useEffect via cannabinoidLockupRef. */}
+                {/* Element 2 — full +30 MG / potency lockup in
+ cream. Painted in useEffect via LockupRef. */}
                 <div
-                  className="pd-cannabinoid-lockup"
+                  className="pd-variant-lockup"
                   ref={cannabinoidLockupRef}
-                  aria-label={`+30 mg ${product.cannabinoid}`}
                 />
                 {/* Element 3 — copy block. "Best for X" subhead + three
-                    body lines describing the cannabinoid's effect profile. */}
-                <div className="pd-cannabinoid-right">
-                  <div className="pd-cannabinoid-bestfor">
+ body lines describing the 's effect profile. */}
+                <div className="pd-variant-right">
+                  <div className="pd-variant-bestfor">
                     Best for {cbCopy.bestFor}
                   </div>
-                  <p className="pd-cannabinoid-body">{cbCopy.body1}</p>
-                  <p className="pd-cannabinoid-body">{cbCopy.body2}</p>
-                  <p className="pd-cannabinoid-body">{cbCopy.body3}</p>
+                  <p className="pd-variant-body">{cbCopy.body1}</p>
+                  <p className="pd-variant-body">{cbCopy.body2}</p>
+                  <p className="pd-variant-body">{cbCopy.body3}</p>
                 </div>
               </div>
             </div>
@@ -897,7 +896,6 @@ function ProductDetailPage() {
                       <span
                         className="pd-related-corner"
                         ref={(el) => { relatedCornerRefs.current[i] = el; }}
-                        aria-label={`+${o.cannabinoid}`}
                       />
                     )}
                   </RelatedCan>
@@ -965,7 +963,7 @@ function ProductDetailPage() {
                     <img
                       className="pd-inside-can"
                       src={img}
-                      alt={`SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${product.cannabinoid ? ` + ${product.cannabinoid}` : ""} seltzer can`}
+                      alt={`SUNRISE ${product.flavor} ${product.tier}mg  seltzer can`}
                       loading="lazy"
                       decoding="async"
                     />
@@ -974,11 +972,11 @@ function ProductDetailPage() {
               </div>
               <div className="pd-inside-col pd-inside-col-right">
                 <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Emulsified<br />Hemp Extract</div>
+                  <div className="pd-inside-ing-name">Emulsified<br /> Extract</div>
                   <div className="pd-inside-ing-desc">
-                    The good stuff — expertly blended cannabis extract for a clean
-                    and consistent experience with every sip.
-                  </div>
+ The good stuff — expertly blended extract for a clean
+ and consistent experience with every sip.
+ </div>
                 </div>
                 <div className="pd-inside-ing">
                   <div className="pd-inside-ing-name">Naturally Sourced<br />Enhancers</div>

@@ -3,7 +3,7 @@
 //
 // Sources:
 //   - SUNRISE_Logo_with_TM.js
-//   - [5|10|30|60]MG_THC_Potency_Lockup.js
+// - [5|10|30|60]MG__Potency_Lockup.js
 //   - 12_OUNCE_CAN_Lockup.js
 
 export type WordmarkMode = "gradient" | "cream" | "dark";
@@ -47,7 +47,7 @@ function _renderLockup(dose: string, base: number, color: string): string {
       `<span style="display:inline; font-family:Montserrat, sans-serif; font-size:${base}px; font-weight:900; letter-spacing:${base * -0.105}px; color:${color}; line-height:1">${dose}</span>` +
       `<span style="display:inline-block; vertical-align:top; margin-left:${base * 0.15}px; margin-top:${base * 0.11}px">` +
         `<span style="display:block; font-family:Montserrat, sans-serif; font-size:${mg}px; font-weight:900; letter-spacing:${mg * -0.15}px; color:${color}; line-height:1; margin-left:${base * -0.013}px; margin-bottom:${base * -0.075}px">MG</span>` +
-        `<span style="display:block; font-family:Montserrat, sans-serif; font-size:${thc}px; font-weight:800; letter-spacing:${thc * -0.13}px; color:${color}; line-height:1">THC</span>` +
+        `<span style="display:block; font-family:Montserrat, sans-serif; font-size:${thc}px; font-weight:800; letter-spacing:${thc * -0.13}px; color:${color}; line-height:1">ACTIVE</span>` +
       `</span>` +
     `</span>`
   );
@@ -95,20 +95,20 @@ export function getBasePx(): number {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// CANNABINOID LOCKUPS — three families × three cannabinoids
+// LOCKUPS — three families × three
 //
 // Sources (locked .js specs):
-//   - [CBG|CBN|THCV]_Text_Lockup.js          → just the cannabinoid word
-//   - +[CBG|CBN|THCV]_Lockup.js              → plus sign + word
-//   - 30MG_[CBG|CBN|THCV]_Potency_Lockup.js  → +30 | MG / CBX stacked
+// - [||]_Text_Lockup.js → just the word
+// - +[||]_Lockup.js → plus sign + word
+// - 30MG_[||]_Potency_Lockup.js → +30 | MG / CBX stacked
 //
 // Default colors:
-//   CBG  #DC7F27 (orange)
-//   CBN  #2E1E3D (dark purple)
-//   THCV #CC1F39 (red)
+// #DC7F27 (orange)
+// #2E1E3D (dark purple)
+// #CC1F39 (red)
 // ═══════════════════════════════════════════════════════════════════════════
 
-// ── Text-only (cannabinoid word, no plus) ──────────────────────────────────
+// ── Text-only ( word, no plus) ──────────────────────────────────
 function _renderCannabinoidTextLockup(word: string, base: number, color: string): string {
   return (
     `<span style="display:inline-block; text-align:left; line-height:1">` +
@@ -118,16 +118,16 @@ function _renderCannabinoidTextLockup(word: string, base: number, color: string)
 }
 
 export function renderCBGTextLockup(base: number, color = "#DC7F27"): string {
-  return _renderCannabinoidTextLockup("CBG", base, color);
+  return _renderCannabinoidTextLockup("BLEND", base, color);
 }
 export function renderCBNTextLockup(base: number, color = "#2E1E3D"): string {
-  return _renderCannabinoidTextLockup("CBN", base, color);
+  return _renderCannabinoidTextLockup("BLEND", base, color);
 }
 export function renderTHCVTextLockup(base: number, color = "#CC1F39"): string {
-  return _renderCannabinoidTextLockup("THCV", base, color);
+  return _renderCannabinoidTextLockup("BLEND", base, color);
 }
 
-// ── Plus + cannabinoid word ────────────────────────────────────────────────
+// ── Plus + word ────────────────────────────────────────────────
 function _renderPlusCannabinoidLockup(word: string, base: number, color: string): string {
   return (
     `<span style="display:inline-block; text-align:left; line-height:1">` +
@@ -138,18 +138,18 @@ function _renderPlusCannabinoidLockup(word: string, base: number, color: string)
 }
 
 export function renderCBGLockup(base: number, color = "#DC7F27"): string {
-  return _renderPlusCannabinoidLockup("CBG", base, color);
+  return _renderPlusCannabinoidLockup("BLEND", base, color);
 }
 export function renderCBNLockup(base: number, color = "#2E1E3D"): string {
-  return _renderPlusCannabinoidLockup("CBN", base, color);
+  return _renderPlusCannabinoidLockup("BLEND", base, color);
 }
 export function renderTHCVLockup(base: number, color = "#CC1F39"): string {
-  return _renderPlusCannabinoidLockup("THCV", base, color);
+  return _renderPlusCannabinoidLockup("BLEND", base, color);
 }
 
-// ── +30mg [cannabinoid] potency lockup (stacked MG / CBX) ──────────────────
-// CBN and CBG share an mg-margin-left of +0.022; THCV is the outlier at -0.013
-// per the locked specs (mirrors the THC potency lockup's negative inset).
+// ── +30mg [] potency lockup (stacked MG / CBX) ──────────────────
+// and share an mg-margin-left of +0.022; is the outlier at -0.013
+// per the locked specs (mirrors the potency lockup's negative inset).
 function _render30mgCannabinoidLockup(
   word:string,
   base:number,
@@ -171,11 +171,11 @@ function _render30mgCannabinoidLockup(
 }
 
 export function render30mgCBGLockup(base: number, color = "#DC7F27"): string {
-  return _render30mgCannabinoidLockup("CBG", base, color, 0.022);
+  return _render30mgCannabinoidLockup("BLEND", base, color, 0.022);
 }
 export function render30mgCBNLockup(base: number, color = "#2E1E3D"): string {
-  return _render30mgCannabinoidLockup("CBN", base, color, 0.022);
+  return _render30mgCannabinoidLockup("BLEND", base, color, 0.022);
 }
 export function render30mgTHCVLockup(base: number, color = "#CC1F39"): string {
-  return _render30mgCannabinoidLockup("THCV", base, color, -0.013);
+  return _render30mgCannabinoidLockup("BLEND", base, color, -0.013);
 }

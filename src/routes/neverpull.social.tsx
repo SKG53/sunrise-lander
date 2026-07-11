@@ -11,7 +11,7 @@ export const Route = createFileRoute("/neverpull/social")({
       {
         name: "description",
         content:
-          "SUNRISE Beverage. Hemp-infused seltzer.",
+          "SUNRISE Beverage. seltzer.",
       },
       // Hidden from search engines — discoverable only via the footer easter egg.
       { name: "robots", content: "noindex, nofollow" },
@@ -110,11 +110,11 @@ function SocialPage() {
               </div>
               <div className="s04-col s04-col-right">
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Emulsified<br />Hemp Extract</div>
+                  <div className="s04-ing-name">Emulsified<br /> Extract</div>
                   <div className="s04-ing-desc">
-                    The good stuff — expertly blended cannabis extract for a clean
-                    and consistent experience with every sip.
-                  </div>
+ The good stuff — expertly blended extract for a clean
+ and consistent experience with every sip.
+ </div>
                 </div>
                 <div className="s04-ing">
                   <div className="s04-ing-name">Naturally Sourced<br />Enhancers</div>

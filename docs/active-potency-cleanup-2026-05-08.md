@@ -25,9 +25,9 @@ DNS, Cloudflare configuration, or any other external service.
 **60mg tier — 5 SKUs:**
 - `60mg-blueberry-lemonade`
 - `60mg-passionfruit-mango`
-- `60mg-blood-orange-cbg`
-- `60mg-blackberry-cbn`
-- `60mg-strawberry-kiwi-thcv`
+- `60mg-blood-orange-`
+- `60mg-blackberry-`
+- `60mg-strawberry-kiwi-`
 
 After cleanup, the site presents **two potency tiers** (10mg and 60mg)
 instead of four.
@@ -38,22 +38,22 @@ instead of four.
 - `5mg-blackberry`
 - `5mg-blood-orange`
 - `5mg-passionfruit-mango`
-- `5mg-blueberry-lemonade-cbg`
-- `5mg-black-cherry-cbn`
-- `5mg-strawberry-peach-thcv`
+- `5mg-blueberry-lemonade-`
+- `5mg-black-cherry-`
+- `5mg-strawberry-peach-`
 
-**10mg cannabinoid variants — 3 SKUs:**
-- `10mg-tangerine-cbg`
-- `10mg-blackberry-lemonade-cbn`
-- `10mg-blueberry-acai-thcv`
+**10mg variants — 3 SKUs:**
+- `10mg-tangerine-`
+- `10mg-blackberry-lemonade-`
+- `10mg-blueberry-acai-`
 
 **30mg tier — all 6 SKUs:**
 - `30mg-peach-mango`
 - `30mg-cherry-limeade`
 - `30mg-orange-lemonade`
-- `30mg-kiwi-watermelon-cbg`
-- `30mg-blueberry-pomegranate-cbn`
-- `30mg-strawberry-watermelon-thcv`
+- `30mg-kiwi-watermelon-`
+- `30mg-blueberry-pomegranate-`
+- `30mg-strawberry-watermelon-`
 
 **60mg — 1 SKU:**
 - `60mg-wild-cherry-peach`
@@ -102,8 +102,8 @@ CSS bundle.
 - S06 (`s06-tiers`) — `t5` and `t30` cards wrapped in
   `{SHOW_NON_LIVE_PRODUCTS && (...)}`
 - S07 image src swaps:
-  - `10mg-blueberry-acai-thcv.webp` → `10mg-strawberry.webp`
-  - `30mg-cherry-limeade.webp` → `60mg-blood-orange-cbg.webp`
+ - `10mg-blueberry-acai-.webp` → `10mg-strawberry.webp`
+ - `30mg-cherry-limeade.webp` → `60mg-blood-orange-.webp`
   - `5mg-blood-orange.webp` → `10mg-watermelon.webp`
 - Home FAQ copy at lines 40 and 48 rewritten around 10mg / 60mg as
   the two-tier ladder
@@ -125,14 +125,14 @@ CSS bundle.
 - Tier switcher `<button>` iteration filtered — only 10mg and 60mg
   buttons render
 - Flavor grid filtered — only `LIVE_SLUGS` render (hides 10mg
-  cannabinoid variants and 60mg Wild Cherry Peach)
+ variants and 60mg Wild Cherry Peach)
 - Deep-link guard — `/products?tier=5` and `/products?tier=30` URLs
   are silently ignored when flag is off; default 10mg panel renders
 - Meta description rewritten around two tiers
-- 4 FAQ rewrites: q1 (potency picking), q2 (cannabinoid variants —
+- 4 FAQ rewrites: q1 (potency picking), q2 ( variants —
   dropped "every tier has six" framing), q4 (mixing tiers — example
   changed from 10+30 to 10+60). q3 preserved verbatim (per-serving
-  values "5mg" and "30mg" THC are not tier names — see Section 8).
+ values "5mg" and "30mg" are not tier names — see Section 8).
 
 ### Products PLP CSS — `src/routes/products.css`
 
@@ -159,8 +159,8 @@ CSS bundle.
   (404 response). The 16 non-live PD pages are unreachable.
 - `othersInTier` filtered to live siblings only — related-card grid
   on the 8 live PD pages only links to other live SKUs
-- FAQ q1 ("How much THC is in each can") rewritten around 10mg / 60mg.
-  q3 preserved verbatim ("30mg per can" cannabinoid load is not a
+- FAQ q1 ("How much is in each can") rewritten around 10mg / 60mg.
+ q3 preserved verbatim ("30mg per can" load is not a
   tier reference — see Section 8).
 
 ### Products PD CSS — `src/routes/products_.$slug.css`

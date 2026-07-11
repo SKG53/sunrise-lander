@@ -163,15 +163,15 @@ function AgeVerificationPolicyPage() {
 
                 <h3 className="av-policy-heading">Compliance with law</h3>
                 <p>
-                  Our age-verification practices are designed to comply with
-                  applicable federal and state laws governing the sale of
-                  hemp-derived cannabinoid products, including the
-                  Agriculture Improvement Act of 2018 (the "2018 Farm Bill"),
-                  state hemp laws, and applicable consumer-protection
-                  regulations. State and local laws change frequently; we
-                  update our verification practices and our list of
-                  serviceable shipping destinations as needed.
-                </p>
+ Our age-verification practices are designed to comply with
+ applicable federal and state laws governing the sale of
+ products, including the
+ Agriculture Improvement Act of 2018 (the "2018 Farm Bill"),
+ state laws, and applicable consumer-protection
+ regulations. State and local laws change frequently; we
+ update our verification practices and our list of
+ serviceable shipping destinations as needed.
+ </p>
 
                 <h3 className="av-policy-heading">Contact</h3>
                 <p>

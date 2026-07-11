@@ -1,9 +1,9 @@
-// Inline cannabinoid icons (CBG / CBN / THCV).
+// Inline icons ( / / ).
 //
 // Each icon = colored circle background + cream-colored glyph paths.
 // The circle's fill is driven by the `bgColor` prop so the icon can
 // match its host section's background — used in the PD page S02
-// cannabinoid section, where the section is flooded with the SKU's
+// section, where the section is flooded with the SKU's
 // flavor color and the circle should match (rendering invisible)
 // while the cream glyph reads cleanly on top.
 //
@@ -91,8 +91,8 @@ const GLYPH_PATHS: Record<Cannabinoid, readonly string[]> = {
 };
 
 // ── Component ─────────────────────────────────────────────────────────────
-interface CannabinoidIconProps {
-  /** Which cannabinoid icon to render. */
+interface VariantIconProps {
+  /** Which icon to render. */
   cannabinoid: Cannabinoid;
   /** Fill for the background circle. Pass the host section's background
       color to make the circle render invisibly against it; the visible
@@ -106,12 +106,12 @@ interface CannabinoidIconProps {
   className?: string;
 }
 
-export function CannabinoidIcon({
+export function VariantIcon({
   cannabinoid,
   bgColor,
   glyphColor = "#FEFBE0",
   className,
-}: CannabinoidIconProps) {
+}: VariantIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

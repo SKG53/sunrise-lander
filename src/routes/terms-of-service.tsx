@@ -11,7 +11,7 @@ export const Route = createFileRoute("/terms-of-service")({
       {
         name: "description",
         content:
-          "Terms governing your use of the SUNRISE Beverage store and website. Includes hemp-derived product acknowledgment, age requirements, ordering, shipping, intellectual property, binding arbitration, and class action waiver.",
+          "Terms governing your use of the SUNRISE Beverage store and website. Includes product acknowledgment, age requirements, ordering, shipping, intellectual property, binding arbitration, and class action waiver.",
       },
     ],
     links: [
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/terms-of-service")({
 // v2 (this revision): comprehensive rewrite. Adds:
 //   · "Important Notice — Please Read Carefully" callout block (allcaps,
 //     tier-30 left border) flagging arbitration / class waiver / jury waiver
-//   · Section 1 Hemp-Derived Product Acknowledgment (was previously absent)
+// · Section 1 Product Acknowledgment (was previously absent)
 //   · Section 7 Age Verification (cross-references new Age Verification Policy)
 //   · Section 18 Limitation of Liability — adds aggregate-cap clause
 //   · Section 20 Informal Dispute Resolution
@@ -104,33 +104,33 @@ function TermsOfServicePage() {
                   </p>
                 </div>
 
-                <h3 className="tos-policy-heading">1. Hemp-Derived Product Acknowledgment</h3>
+                <h3 className="tos-policy-heading">1. Product Acknowledgment</h3>
                 <p>
-                  The products displayed and available for sale on this
-                  website (1) are hemp-derived cannabinoid products that
-                  comply with the federal legal limit of less than 0.3%
-                  Delta-9 tetrahydrocannabinol (THC) by dry weight, in
-                  accordance with the Agriculture Improvement Act of 2018
-                  ("2018 Farm Bill"); (2) do not claim to diagnose, treat,
-                  mitigate, cure, or prevent any disease; and (3) have not
-                  been evaluated or approved by the United States Food and
-                  Drug Administration (FDA) for safety, efficacy,
-                  effectiveness, or quality.
-                </p>
+ The products displayed and available for sale on this
+ website (1) are products that
+ comply with the federal legal limit of less than 0.3%
+ () by dry weight, in
+ accordance with the Agriculture Improvement Act of 2018
+ ("2018 Farm Bill"); (2) do not claim to diagnose, treat,
+ mitigate, cure, or prevent any disease; and (3) have not
+ been evaluated or approved by the United States Food and
+ Drug Administration (FDA) for safety, efficacy,
+ effectiveness, or quality.
+ </p>
                 <p>You expressly acknowledge that:</p>
                 <ul className="tos-policy-list">
                   <li>
-                    You are familiar with and assume full responsibility for
-                    complying with all federal, state, and local laws regarding
-                    the purchase, possession, and consumption of hemp-derived
-                    cannabinoid products in your jurisdiction.
-                  </li>
+ You are familiar with and assume full responsibility for
+ complying with all federal, state, and local laws regarding
+ the purchase, possession, and consumption of
+ products in your jurisdiction.
+ </li>
                   <li>
-                    Hemp-derived Delta-9 THC is an intoxicating substance.
-                    Effects vary by individual, dosage, and a number of
-                    personal factors. Onset may be delayed for thirty (30)
-                    minutes or longer, and effects may last several hours.
-                  </li>
+ is an intoxicating substance.
+ Effects vary by individual, dosage, and a number of
+ personal factors. Onset may be delayed for thirty (30)
+ minutes or longer, and effects may last several hours.
+ </li>
                   <li>
                     You will not operate a vehicle, heavy machinery, or any
                     equipment requiring full attention while consuming or
@@ -437,31 +437,31 @@ function TermsOfServicePage() {
 
                 <h3 className="tos-policy-heading">14. Prohibited Uses</h3>
                 <p>
-                  You may access and use the Services for lawful purposes
-                  only. You may not access or use the Services, directly or
-                  indirectly: (a) for any unlawful or malicious purpose; (b)
-                  to violate any international, federal, provincial, state,
-                  or local regulations, rules, laws, or ordinances, including
-                  any applicable hemp, controlled-substance, or alcohol
-                  regulations; (c) to infringe upon or violate our
-                  intellectual property rights or the intellectual property
-                  rights of others; (d) to harass, abuse, insult, harm,
-                  defame, slander, disparage, intimidate, or harm any of our
-                  employees or any other person; (e) to transmit false or
-                  misleading information; (f) to send, knowingly receive,
-                  upload, download, use, or re-use any material that does not
-                  comply with these Terms; (g) to transmit, or procure the
-                  sending of, any advertising or promotional material,
-                  including any "junk mail," "chain letter," "spam," or any
-                  other similar solicitation; (h) to impersonate or attempt
-                  to impersonate any other person or entity; (i) to purchase
-                  products on behalf of, or for resale to, any individual
-                  under 21 years of age; or (j) to engage in any other
-                  conduct that restricts or inhibits anyone's use or
-                  enjoyment of the Services, or which, as determined by us,
-                  may harm SUNRISE Beverage, Shopify, or users of the
-                  Services, or expose them to liability.
-                </p>
+ You may access and use the Services for lawful purposes
+ only. You may not access or use the Services, directly or
+ indirectly: (a) for any unlawful or malicious purpose; (b)
+ to violate any international, federal, provincial, state,
+ or local regulations, rules, laws, or ordinances, including
+ any applicable, controlled-substance, or alcohol
+ regulations; (c) to infringe upon or violate our
+ intellectual property rights or the intellectual property
+ rights of others; (d) to harass, abuse, insult, harm,
+ defame, slander, disparage, intimidate, or harm any of our
+ employees or any other person; (e) to transmit false or
+ misleading information; (f) to send, knowingly receive,
+ upload, download, use, or re-use any material that does not
+ comply with these Terms; (g) to transmit, or procure the
+ sending of, any advertising or promotional material,
+ including any "junk mail," "chain letter," "spam," or any
+ other similar solicitation; (h) to impersonate or attempt
+ to impersonate any other person or entity; (i) to purchase
+ products on behalf of, or for resale to, any individual
+ under 21 years of age; or (j) to engage in any other
+ conduct that restricts or inhibits anyone's use or
+ enjoyment of the Services, or which, as determined by us,
+ may harm SUNRISE Beverage, Shopify, or users of the
+ Services, or expose them to liability.
+ </p>
                 <p>
                   In addition, you agree not to: (a) upload or transmit
                   viruses or any other type of malicious code that will or
@@ -532,16 +532,16 @@ function TermsOfServicePage() {
                   amounts due up to and including the date of termination.
                 </p>
                 <p>
-                  The following sections will continue to apply following any
-                  termination: Hemp-Derived Product Acknowledgment,
-                  Intellectual Property, Feedback, Termination, Disclaimer of
-                  Warranties, Limitation of Liability, Indemnification,
-                  Informal Dispute Resolution, Binding Individual Arbitration,
-                  Class Action Waiver, Waiver of Jury Trial, Statute of
-                  Limitations, DMCA, Severability, Waiver; Entire Agreement,
-                  Assignment, Governing Law, Privacy Policy, and any other
-                  provisions that by their nature should survive termination.
-                </p>
+ The following sections will continue to apply following any
+ termination: Product Acknowledgment,
+ Intellectual Property, Feedback, Termination, Disclaimer of
+ Warranties, Limitation of Liability, Indemnification,
+ Informal Dispute Resolution, Binding Individual Arbitration,
+ Class Action Waiver, Waiver of Jury Trial, Statute of
+ Limitations, DMCA, Severability, Waiver; Entire Agreement,
+ Assignment, Governing Law, Privacy Policy, and any other
+ provisions that by their nature should survive termination.
+ </p>
 
                 <h3 className="tos-policy-heading">17. Disclaimer of Warranties</h3>
                 <p>

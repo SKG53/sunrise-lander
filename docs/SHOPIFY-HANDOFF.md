@@ -50,12 +50,12 @@ In `src/lib/shopify.ts` lines 5–8. Publishable values, safe to commit:
 
 `SHOPIFY_PRODUCT_MAP` in `src/lib/shopifyProductMap.ts` maps 4 tiers × 6 flavors:
 
-- 5mg: blackberry, blood-orange, passionfruit-mango, blueberry-lemonade (CBG→base), black-cherry (CBN→base), strawberry-peach (THCV→base)
-- 10mg: lemonade, strawberry, watermelon, tangerine (CBG), blackberry-lemonade (CBN), blueberry-acai (THCV)
-- 30mg: peach-mango, cherry-limeade, orange-lemonade, kiwi-watermelon (CBG), blueberry-pomegranate (CBN), strawberry-watermelon (THCV)
-- 60mg: wild-cherry-peach, blueberry-lemonade, passionfruit-mango, blood-orange (CBG), blackberry (CBN), strawberry-kiwi (THCV)
+- 5mg: blackberry, blood-orange, passionfruit-mango, blueberry-lemonade (→base), black-cherry (→base), strawberry-peach (→base)
+- 10mg: lemonade, strawberry, watermelon, tangerine (), blackberry-lemonade (), blueberry-acai ()
+- 30mg: peach-mango, cherry-limeade, orange-lemonade, kiwi-watermelon (), blueberry-pomegranate (), strawberry-watermelon ()
+- 60mg: wild-cherry-peach, blueberry-lemonade, passionfruit-mango, blood-orange (), blackberry (), strawberry-kiwi ()
 
-Each maps to `{ handle, defaultPackOption: "Single Can" | "4-Pack Carton" }`. All default to Single Can. Cannabinoid variants (CBG/CBN/THCV) collapse to the base flavor's Shopify product.
+Each maps to `{ handle, defaultPackOption: "Single Can" | "4-Pack Carton" }`. All default to Single Can. variants (//) collapse to the base flavor's Shopify product.
 
 ## 6. Cart schema (localStorage `shopify-cart`)
 

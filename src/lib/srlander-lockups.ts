@@ -2,18 +2,18 @@
 // SUNRISE LANDER — LOCKUP RENDERERS (LANDER-ONLY)
 //
 // Restricted vocabulary removed:
-//   "THC"                -> "ACTIVE"
-//   "CBG" / "CBN" / "THCV" -> "BLEND"
+// "" -> "ACTIVE"
+// "" / "" / "" -> "BLEND"
 //
 // Geometry, font, weights, sizes, letter-spacing and colors are IDENTICAL to
 // the canonical lockups in src/lib/sunrise-components.ts. Only the terminal
 // label string differs.
 //
 // NEVER use these on savorsunrise.com or any main-brand material — the
-// canonical THC/CBG/CBN/THCV lockups remain authoritative there.
+// canonical /// lockups remain authoritative there.
 //
 // Known cosmetic quirk, accepted: "ACTIVE" (6 chars) and "BLEND" (5) are wider
-// than "THC" (3) and "CBG" (3), so the label line runs wider than the number
+// than "" (3) and "" (3), so the label line runs wider than the number
 // above it. This is expected. Do not "fix" it.
 //
 // Requires Montserrat wght 800+900 (already loaded site-wide via __root.tsx).
@@ -47,10 +47,10 @@ export function render60mgActiveLockup(base: number, color = "#61213A"): string 
   return _renderActiveLockup("60", base, color);
 }
 
-// ── Inline +BLEND lockup (stands in for +CBG / +CBN / +THCV) ───────────────
-// Counterpart to renderCBGLockup / renderCBNLockup / renderTHCVLockup.
-// Pass the color of the cannabinoid it stands in for:
-//   CBG orange #DC7F27 | CBN purple #2E1E3D | THCV red #CC1F39
+// ── Inline +BLEND lockup (stands in for + / + / +) ───────────────
+// Counterpart to renderLockup / renderLockup / renderLockup.
+// Pass the color of the it stands in for:
+// orange #DC7F27 | purple #2E1E3D | red #CC1F39
 export function renderBlendLockup(base: number, color = "#DC7F27"): string {
   return (
     `<span style="display:inline-block; text-align:left; line-height:1">` +

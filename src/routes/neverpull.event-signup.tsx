@@ -123,7 +123,7 @@ function EventSignupPage() {
       if (r30) r30.innerHTML = render30mgLockup(lockupSize, tierColor['30'])
       if (r60) r60.innerHTML = render60mgLockup(lockupSize, tierColor['60'])
 
-      // Per-card tier badge + cannabinoid strip
+      // Per-card tier badge + strip
       const cardLockupBase = window.innerWidth <= 520 ? 28 : 44
       TIERS.forEach(({ tier, flavors }) => {
         flavors.forEach((f) => {
@@ -312,7 +312,7 @@ function EventSignupPage() {
                     <span
                       className="es-tier-lockup"
                       ref={(el) => { tierLockupRefs.current[tier] = el }}
-                      aria-label={`${tier} milligram THC`}
+                      aria-label={`${tier} milligram `}
                     />
                   </div>
                   <div className="es-card-grid">
@@ -328,9 +328,8 @@ function EventSignupPage() {
                             />
                             {f.cannabinoid && (
                               <span
-                                className="es-card-cannabinoid"
+                                className="es-card-variant"
                                 ref={(el) => { cardCannabinoidRefs.current[slug] = el }}
-                                aria-label={`+${f.cannabinoid}`}
                               />
                             )}
                           </div>

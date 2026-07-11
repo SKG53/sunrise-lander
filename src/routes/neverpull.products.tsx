@@ -26,9 +26,9 @@ export const Route = createFileRoute("/neverpull/products")({
         name: "description",
         // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
         // content:
-        //   "Twenty-four hemp-infused seltzer flavors across four potency tiers: 5mg, 10mg, 30mg, and 60mg THC. Simple ingredients, pure cane sugar, federally-legal Delta-9.",
+        // "Twenty-four seltzer flavors across four potency tiers: 5mg, 10mg, 30mg, and 60mg. Simple ingredients, pure cane sugar, federally-legal.",
         content:
-          "Hemp-infused seltzer in two potency tiers: 10mg and 60mg THC. Simple ingredients, pure cane sugar, federally-legal Delta-9.",
+          " seltzer in two potency tiers: 10mg and 60mg. Simple ingredients, pure cane sugar, federally-legal.",
       },
     ],
     links: [
@@ -39,14 +39,14 @@ export const Route = createFileRoute("/neverpull/products")({
 
 // ── ACTIVE POTENCY CLEANUP FLAG ───────────────────────────────────────
 // 2026-05-08: When false, hides non-live SKUs (5mg tier, 30mg tier,
-// 60mg Wild Cherry Peach, and 10mg cannabinoid variants) from the user-
+// 60mg Wild Cherry Peach, and 10mg variants) from the user-
 // facing site for active potency cleanup. Reverse: change
 // false → true and uncomment the related code blocks marked with the
 // matching "HIDDEN FOR ACTIVE POTENCY CLEANUP" tag throughout this file.
 // See docs/active-potency-cleanup-2026-05-08.md for full revival path.
 const SHOW_NON_LIVE_PRODUCTS = false;
 
-// Live SKU slugs — used to filter flavor grid so hidden cannabinoid
+// Live SKU slugs — used to filter flavor grid so hidden
 // variants and Wild Cherry Peach do not render when the flag is off.
 const LIVE_SLUGS = new Set<string>([
   "10mg-strawberry",
@@ -94,7 +94,7 @@ type TierData = {
 };
 
 // ── CANONICAL DATA ───────────────────────────────────────────────────────
-// Source: PAG v5 + Color Codes xlsx. Positions 1-3 = base, 4-6 = +CBG/+CBN/+THCV.
+// Source: PAG v5 + Color Codes xlsx. Positions 1-3 = base, 4-6 = +/+/+.
 const TIERS: Record<TierKey, TierData> = {
   "5": {
     color: "#DC7F27",
@@ -113,8 +113,8 @@ const TIERS: Record<TierKey, TierData> = {
   },
   "10": {
     color: "#CC1F39",
-    name: "Perfect Buzz",
-    short: "Perfect Buzz",
+    name: "The Perfect Pour",
+    short: "Perfect Pour",
     descriptors: "Smooth · Balanced · Social",
     copy: "Casual sips, afternoon resets, or social gatherings. The go-to tier — a steady, social lift.",
     flavors: [
@@ -161,8 +161,8 @@ const TIERS: Record<TierKey, TierData> = {
 // Unified lockup size across all four tiers.
 const LOCKUP_SIZE = 2.2;
 
-// Two-word effect phrases shown on flavor-card pills for +CBG / +CBN / +THCV
-// variants. Canonical per Brand memory ("+CBG = FOCUS + UPLIFT" etc.). Mirrors
+// Two-word effect phrases shown on flavor-card pills for + / + / +
+// variants. Canonical per Brand memory ("+ = FOCUS + UPLIFT" etc.). Mirrors
 // the eyebrow text on the matching S03 effect cards.
 const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
   CBG:  "Focus + Uplift",
@@ -172,7 +172,7 @@ const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
 
 // ── EFFECTS DATA (4-card Find Your SUNRISE grid) ─────────────────────────
 // Content is the finalized DTC Card 02 (front), verbatim. Positions:
-// 1 = CORE (classic THC), 2-4 = +CBG / +CBN / +THCV. `cann` null = core.
+// 1 = CORE (classic ), 2-4 = + / + / +. `cann` null = core.
 // `icon` points at public/images/effects/<x>.svg — each icon's disc fill is
 // its panel color and its motif is cream, so they sit flush on the tier bg.
 type EffectCardData = {
@@ -219,24 +219,24 @@ const EFFECTS: EffectCardData[] = [
 ];
 
 // Card-local symbol composer for the effect cards. Mirrors DTC Card 02's
-// "THC + <minor>" lockup: a small rotated, faded "THC" (the card's .thc-vert,
+// " + <minor>" lockup: a small rotated, faded "" (the card's.-vert,
 // 0.55 opacity) set left of the big cream mark. The big mark IS the locked
-// renderCBGLockup / renderCBNLockup / renderTHCVLockup verbatim. The small THC
+// renderLockup / renderLockup / renderLockup verbatim. The small
 // is styled here at the usage site rather than added to sunrise-components.ts.
 // `base` is the px size of the big mark (matches .p-effect-symbol scale).
 function renderEffectSymbol(cann: Cannabinoid | null, base: number, color: string): string {
   const thcWord = (sz: number) =>
     `<span style="display:inline-block; text-align:left; line-height:1">` +
-    `<span style="font-family:Montserrat, sans-serif; font-size:${sz}px; font-weight:900; letter-spacing:${sz * -0.105}px; color:${color}">THC</span>` +
+    `<span style="font-family:Montserrat, sans-serif; font-size:${sz}px; font-weight:900; letter-spacing:${sz * -0.105}px; color:${color}"></span>` +
     `</span>`;
   if (!cann) return thcWord(base);
-  const t = base * 0.545; // vertical THC = 24/44 of the big mark, per the card
+  const t = base * 0.545; // vertical = 24/44 of the big mark, per the card
   const w = base * 0.41;
   const h = base * 0.91;
   const vert =
     `<span style="display:inline-block; position:relative; width:${w}px; height:${h}px; flex-shrink:0">` +
     `<span style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-90deg); opacity:0.55; white-space:nowrap; line-height:1">` +
-    `<span style="font-family:Montserrat, sans-serif; font-size:${t}px; font-weight:900; letter-spacing:${t * -0.105}px; color:${color}">THC</span>` +
+    `<span style="font-family:Montserrat, sans-serif; font-size:${t}px; font-weight:900; letter-spacing:${t * -0.105}px; color:${color}"></span>` +
     `</span></span>`;
   const big =
     cann === "CBG" ? renderCBGLockup(base, color) :
@@ -258,12 +258,12 @@ const FAQS: Array<{ q: string; a: string }> = [
     a: "Depends on you and the moment. 5MG is light and social, 10MG more present, 30MG fuller and longer, 60MG a real evening for high-tolerance consumers. When in doubt, start lower.",
   },
   {
-    q: "I've never tried a hemp seltzer. Where should I start?",
+    q: "I've never tried a seltzer. Where should I start?",
     a: "Start lower than you think and work your way up. Begin with half a serving, wait the full window for the lift to arrive, and decide from there. A first session is for finding where your line is — not testing it.",
   },
   {
-    q: "What are CBG, CBN, and THCV?",
-    a: "Minor cannabinoids — the supporting cast alongside Delta-9 THC. CBG tracks toward focus and uplift, CBN toward relaxation and unwinding, THCV toward clarity and engagement. Every variant in the lineup blends 30mg of one of these alongside the stated Delta-9 dose, shifting the character of the experience without changing the THC level.",
+    q: "What are, and?",
+    a: " — the supporting cast alongside. tracks toward focus and uplift, toward relaxation and unwinding, toward clarity and engagement. Every variant in the lineup blends 30mg of one of these alongside the stated dose, shifting the character of the experience without changing the level.",
   },
   {
     q: "How long until I feel it?",
@@ -297,7 +297,7 @@ function ProductsPage() {
   };
 
   // Effect-card symbol refs (one per card). The symbol container itself is
-  // the mount point; renderEffectSymbol() paints THC / THC+<minor> into it.
+  // the mount point; renderEffectSymbol() paints / +<minor> into it.
   // Array indexed 0-3 to match EFFECTS positions. null when not yet attached.
   const effectRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -305,9 +305,9 @@ function ProductsPage() {
   // client-side at the headline's cap height via renderWordmark().
   const wordmarkRef = useRef<HTMLSpanElement>(null);
 
-  // Flavor-corner lockup refs — one per cannabinoid flavor (positions 4–6 of
+  // Flavor-corner lockup refs — one per flavor (positions 4–6 of
   // each tier). Repopulated on tier switch via React's ref callback; null
-  // slots correspond to base flavors (no cannabinoid).
+  // slots correspond to base flavors (no ).
   const cornerRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   // Read ?tier= URL param on mount so Home tier cards (and any other
@@ -369,7 +369,7 @@ function ProductsPage() {
         wordmarkRef.current.innerHTML = renderWordmark(base * 1.0, "gradient");
       }
 
-      // ── Effect-card symbols — THC (core) / THC + <minor> — cream on tier bg ──
+      // ── Effect-card symbols — (core) / + <minor> — cream on tier bg ──
       // Sized to .p-effect-symbol (calc(--base * 1.05)).
       EFFECTS.forEach((e, i) => {
         const ref = effectRefs.current[i];
@@ -377,7 +377,7 @@ function ProductsPage() {
         ref.innerHTML = renderEffectSymbol(e.cann, base * 1.05, "#FEFBE0");
       });
 
-      // ── Flavor-corner +CBG / +CBN / +THCV lockups — cream on tier bg ──
+      // ── Flavor-corner + / + / + lockups — cream on tier bg ──
       // Vertical strip on the right edge of the card, rotated -90deg via
       // CSS. Sized at base * 0.91 to match the PD page's related-card
       // lockup so the two grids feel consistent.
@@ -476,14 +476,13 @@ function ProductsPage() {
 
               <div className="p-flavor-grid">
                 {tier.flavors
-                  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides non-live flavor cards (10mg cannabinoid variants, 60mg Wild Cherry Peach)
+                  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides non-live flavor cards (10mg variants, 60mg Wild Cherry Peach)
                   .filter((f) => SHOW_NON_LIVE_PRODUCTS || LIVE_SLUGS.has(toSlug(activeTier, f)))
                   .map((f, i) => (
                   <a
                     key={i}
                     href={`/products/${toSlug(activeTier, f)}`}
                     className="p-flavor-card"
-                    aria-label={`${f.name} — ${tier.name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ""}`}
                     style={{ ["--flavor-color" as string]: f.flavorColor } as React.CSSProperties}
                   >
                     <div className="p-flavor-can" />
@@ -504,7 +503,6 @@ function ProductsPage() {
                       <span
                         className="p-flavor-corner"
                         ref={(el) => { cornerRefs.current[i] = el; }}
-                        aria-label={`+${f.cannabinoid}`}
                       />
                     )}
                   </a>
@@ -514,7 +512,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 04 · FIND YOUR SUNRISE (4 cards: THC + CBG/CBN/THCV) ─────── */}
+        {/* ── 04 · FIND YOUR SUNRISE (4 cards: + //) ─────── */}
         <section className="p-effects">
           <div className="container">
             <h2 className="p-effects-headline">
@@ -526,8 +524,8 @@ function ProductsPage() {
               />
             </h2>
             <p className="p-effects-subhead">
-              Every tier offers four paths — a classic THC core, or three enhanced with minor cannabinoids for a more specific experience.
-            </p>
+ Every tier offers four paths — a classic core, or three enhanced with for a more specific experience.
+ </p>
             <div className="p-effects-grid">
               {EFFECTS.map((e, i) => (
                 <div key={i} className="p-effect-card" style={{ background: e.bg }}>
@@ -535,7 +533,6 @@ function ProductsPage() {
                   <div
                     className="p-effect-symbol"
                     ref={(el) => { effectRefs.current[i] = el; }}
-                    aria-label={e.cann ? `THC + ${e.cann}` : "THC"}
                   />
                   <div className="p-effect-bestfor">Best for<br />{e.bestFor}</div>
                   <div className="p-effect-body">{e.body}</div>
@@ -556,9 +553,9 @@ function ProductsPage() {
                 <span>Real <span className="accent">effects</span></span>
               </h2>
               <p className="p-inside-lead">
-                Every SUNRISE seltzer starts with simple ingredients, pure cane sugar, and hemp extract
-                emulsified in small batches — nothing artificial, nothing you can't pronounce.
-              </p>
+ Every SUNRISE seltzer starts with simple ingredients, pure cane sugar, and extract
+ emulsified in small batches — nothing artificial, nothing you can't pronounce.
+ </p>
             </div>
 
             <div className="p-inside-pillars">
@@ -572,9 +569,9 @@ function ProductsPage() {
               <div className="p-inside-pillar">
                 <div className="p-inside-pillar-title">Consistency</div>
                 <p className="p-inside-pillar-body">
-                  Expertly emulsified hemp extracts deliver a reliable experience every
-                  single time. Can to can, batch to batch, sip to sip.
-                </p>
+ Expertly emulsified extracts deliver a reliable experience every
+ single time. Can to can, batch to batch, sip to sip.
+ </p>
               </div>
               <div className="p-inside-pillar">
                 <div className="p-inside-pillar-title">Transparency</div>
@@ -596,11 +593,11 @@ function ProductsPage() {
                   Every batch, <span className="accent">full-panel tested</span>
                 </h2>
                 <p className="p-transparency-body">
-                  Purified water, pure cane sugar, simple ingredients flavoring, emulsified
-                  hemp extract, B12. Nothing to hide. See the full breakdown or
-                  pull any flavor's COA — cannabinoid content, contaminant screen,
-                  batch and date.
-                </p>
+ Purified water, pure cane sugar, simple ingredients flavoring, emulsified
+ extract, B12. Nothing to hide. See the full breakdown or
+ pull any flavor's COA — content, contaminant screen,
+ batch and date.
+ </p>
               </div>
               <div className="p-transparency-ctas">
                 <a href="/#whats-inside" className="btn btn-secondary">

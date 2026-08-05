@@ -9,38 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
-import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
-import { Route as AgeVerificationPolicyRouteImport } from './routes/age-verification-policy'
-import { Route as AccessibilityStatementRouteImport } from './routes/accessibility-statement'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as NeverpullSocialRouteImport } from './routes/neverpull.social'
-import { Route as NeverpullSmsMarketingPolicyRouteImport } from './routes/neverpull.sms-marketing-policy'
-import { Route as NeverpullShippingPolicyRouteImport } from './routes/neverpull.shipping-policy'
-import { Route as NeverpullRefundPolicyRouteImport } from './routes/neverpull.refund-policy'
-import { Route as NeverpullProductsRouteImport } from './routes/neverpull.products'
-import { Route as NeverpullOghomeRouteImport } from './routes/neverpull.oghome'
-import { Route as NeverpullHbeRouteImport } from './routes/neverpull.hbe'
-import { Route as NeverpullFindRouteImport } from './routes/neverpull.find'
-import { Route as NeverpullFaqRouteImport } from './routes/neverpull.faq'
-import { Route as NeverpullEventSignupRouteImport } from './routes/neverpull.event-signup'
-import { Route as NeverpullContactRouteImport } from './routes/neverpull.contact'
+import { Route as AccessibilityStatementRouteImport } from './routes/accessibility-statement'
+import { Route as AgeVerificationPolicyRouteImport } from './routes/age-verification-policy'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as NeverpullAboutRouteImport } from './routes/neverpull.about'
+import { Route as NeverpullContactRouteImport } from './routes/neverpull.contact'
+import { Route as NeverpullEventSignupRouteImport } from './routes/neverpull.event-signup'
+import { Route as NeverpullFaqRouteImport } from './routes/neverpull.faq'
+import { Route as NeverpullFindRouteImport } from './routes/neverpull.find'
+import { Route as NeverpullHbeRouteImport } from './routes/neverpull.hbe'
+import { Route as NeverpullOghomeRouteImport } from './routes/neverpull.oghome'
+import { Route as NeverpullProductsRouteImport } from './routes/neverpull.products'
+import { Route as NeverpullRefundPolicyRouteImport } from './routes/neverpull.refund-policy'
+import { Route as NeverpullShippingPolicyRouteImport } from './routes/neverpull.shipping-policy'
+import { Route as NeverpullSmsMarketingPolicyRouteImport } from './routes/neverpull.sms-marketing-policy'
+import { Route as NeverpullSocialRouteImport } from './routes/neverpull.social'
 import { Route as NeverpullProductsSlugRouteImport } from './routes/neverpull.products_.$slug'
 
-const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
-  id: '/terms-of-service',
-  path: '/terms-of-service',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
-  id: '/privacy-policy',
-  path: '/privacy-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AgeVerificationPolicyRoute = AgeVerificationPolicyRouteImport.update({
-  id: '/age-verification-policy',
-  path: '/age-verification-policy',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccessibilityStatementRoute = AccessibilityStatementRouteImport.update({
@@ -48,14 +38,69 @@ const AccessibilityStatementRoute = AccessibilityStatementRouteImport.update({
   path: '/accessibility-statement',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AgeVerificationPolicyRoute = AgeVerificationPolicyRouteImport.update({
+  id: '/age-verification-policy',
+  path: '/age-verification-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NeverpullSocialRoute = NeverpullSocialRouteImport.update({
-  id: '/neverpull/social',
-  path: '/neverpull/social',
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullAboutRoute = NeverpullAboutRouteImport.update({
+  id: '/neverpull/about',
+  path: '/neverpull/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullContactRoute = NeverpullContactRouteImport.update({
+  id: '/neverpull/contact',
+  path: '/neverpull/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullEventSignupRoute = NeverpullEventSignupRouteImport.update({
+  id: '/neverpull/event-signup',
+  path: '/neverpull/event-signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullFaqRoute = NeverpullFaqRouteImport.update({
+  id: '/neverpull/faq',
+  path: '/neverpull/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullFindRoute = NeverpullFindRouteImport.update({
+  id: '/neverpull/find',
+  path: '/neverpull/find',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullHbeRoute = NeverpullHbeRouteImport.update({
+  id: '/neverpull/hbe',
+  path: '/neverpull/hbe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullOghomeRoute = NeverpullOghomeRouteImport.update({
+  id: '/neverpull/oghome',
+  path: '/neverpull/oghome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullProductsRoute = NeverpullProductsRouteImport.update({
+  id: '/neverpull/products',
+  path: '/neverpull/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullRefundPolicyRoute = NeverpullRefundPolicyRouteImport.update({
+  id: '/neverpull/refund-policy',
+  path: '/neverpull/refund-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullShippingPolicyRoute = NeverpullShippingPolicyRouteImport.update({
+  id: '/neverpull/shipping-policy',
+  path: '/neverpull/shipping-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NeverpullSmsMarketingPolicyRoute =
@@ -64,54 +109,9 @@ const NeverpullSmsMarketingPolicyRoute =
     path: '/neverpull/sms-marketing-policy',
     getParentRoute: () => rootRouteImport,
   } as any)
-const NeverpullShippingPolicyRoute = NeverpullShippingPolicyRouteImport.update({
-  id: '/neverpull/shipping-policy',
-  path: '/neverpull/shipping-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeverpullRefundPolicyRoute = NeverpullRefundPolicyRouteImport.update({
-  id: '/neverpull/refund-policy',
-  path: '/neverpull/refund-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeverpullProductsRoute = NeverpullProductsRouteImport.update({
-  id: '/neverpull/products',
-  path: '/neverpull/products',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeverpullOghomeRoute = NeverpullOghomeRouteImport.update({
-  id: '/neverpull/oghome',
-  path: '/neverpull/oghome',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeverpullHbeRoute = NeverpullHbeRouteImport.update({
-  id: '/neverpull/hbe',
-  path: '/neverpull/hbe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeverpullFindRoute = NeverpullFindRouteImport.update({
-  id: '/neverpull/find',
-  path: '/neverpull/find',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeverpullFaqRoute = NeverpullFaqRouteImport.update({
-  id: '/neverpull/faq',
-  path: '/neverpull/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeverpullEventSignupRoute = NeverpullEventSignupRouteImport.update({
-  id: '/neverpull/event-signup',
-  path: '/neverpull/event-signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeverpullContactRoute = NeverpullContactRouteImport.update({
-  id: '/neverpull/contact',
-  path: '/neverpull/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeverpullAboutRoute = NeverpullAboutRouteImport.update({
-  id: '/neverpull/about',
-  path: '/neverpull/about',
+const NeverpullSocialRoute = NeverpullSocialRouteImport.update({
+  id: '/neverpull/social',
+  path: '/neverpull/social',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NeverpullProductsSlugRoute = NeverpullProductsSlugRouteImport.update({
@@ -267,25 +267,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/terms-of-service': {
-      id: '/terms-of-service'
-      path: '/terms-of-service'
-      fullPath: '/terms-of-service'
-      preLoaderRoute: typeof TermsOfServiceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy-policy': {
-      id: '/privacy-policy'
-      path: '/privacy-policy'
-      fullPath: '/privacy-policy'
-      preLoaderRoute: typeof PrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/age-verification-policy': {
-      id: '/age-verification-policy'
-      path: '/age-verification-policy'
-      fullPath: '/age-verification-policy'
-      preLoaderRoute: typeof AgeVerificationPolicyRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/accessibility-statement': {
@@ -295,81 +281,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccessibilityStatementRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/age-verification-policy': {
+      id: '/age-verification-policy'
+      path: '/age-verification-policy'
+      fullPath: '/age-verification-policy'
+      preLoaderRoute: typeof AgeVerificationPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/neverpull/social': {
-      id: '/neverpull/social'
-      path: '/neverpull/social'
-      fullPath: '/neverpull/social'
-      preLoaderRoute: typeof NeverpullSocialRouteImport
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/neverpull/sms-marketing-policy': {
-      id: '/neverpull/sms-marketing-policy'
-      path: '/neverpull/sms-marketing-policy'
-      fullPath: '/neverpull/sms-marketing-policy'
-      preLoaderRoute: typeof NeverpullSmsMarketingPolicyRouteImport
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/neverpull/shipping-policy': {
-      id: '/neverpull/shipping-policy'
-      path: '/neverpull/shipping-policy'
-      fullPath: '/neverpull/shipping-policy'
-      preLoaderRoute: typeof NeverpullShippingPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/neverpull/refund-policy': {
-      id: '/neverpull/refund-policy'
-      path: '/neverpull/refund-policy'
-      fullPath: '/neverpull/refund-policy'
-      preLoaderRoute: typeof NeverpullRefundPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/neverpull/products': {
-      id: '/neverpull/products'
-      path: '/neverpull/products'
-      fullPath: '/neverpull/products'
-      preLoaderRoute: typeof NeverpullProductsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/neverpull/oghome': {
-      id: '/neverpull/oghome'
-      path: '/neverpull/oghome'
-      fullPath: '/neverpull/oghome'
-      preLoaderRoute: typeof NeverpullOghomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/neverpull/hbe': {
-      id: '/neverpull/hbe'
-      path: '/neverpull/hbe'
-      fullPath: '/neverpull/hbe'
-      preLoaderRoute: typeof NeverpullHbeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/neverpull/find': {
-      id: '/neverpull/find'
-      path: '/neverpull/find'
-      fullPath: '/neverpull/find'
-      preLoaderRoute: typeof NeverpullFindRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/neverpull/faq': {
-      id: '/neverpull/faq'
-      path: '/neverpull/faq'
-      fullPath: '/neverpull/faq'
-      preLoaderRoute: typeof NeverpullFaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/neverpull/event-signup': {
-      id: '/neverpull/event-signup'
-      path: '/neverpull/event-signup'
-      fullPath: '/neverpull/event-signup'
-      preLoaderRoute: typeof NeverpullEventSignupRouteImport
+    '/neverpull/about': {
+      id: '/neverpull/about'
+      path: '/neverpull/about'
+      fullPath: '/neverpull/about'
+      preLoaderRoute: typeof NeverpullAboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/neverpull/contact': {
@@ -379,11 +316,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NeverpullContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/neverpull/about': {
-      id: '/neverpull/about'
-      path: '/neverpull/about'
-      fullPath: '/neverpull/about'
-      preLoaderRoute: typeof NeverpullAboutRouteImport
+    '/neverpull/event-signup': {
+      id: '/neverpull/event-signup'
+      path: '/neverpull/event-signup'
+      fullPath: '/neverpull/event-signup'
+      preLoaderRoute: typeof NeverpullEventSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/faq': {
+      id: '/neverpull/faq'
+      path: '/neverpull/faq'
+      fullPath: '/neverpull/faq'
+      preLoaderRoute: typeof NeverpullFaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/find': {
+      id: '/neverpull/find'
+      path: '/neverpull/find'
+      fullPath: '/neverpull/find'
+      preLoaderRoute: typeof NeverpullFindRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/hbe': {
+      id: '/neverpull/hbe'
+      path: '/neverpull/hbe'
+      fullPath: '/neverpull/hbe'
+      preLoaderRoute: typeof NeverpullHbeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/oghome': {
+      id: '/neverpull/oghome'
+      path: '/neverpull/oghome'
+      fullPath: '/neverpull/oghome'
+      preLoaderRoute: typeof NeverpullOghomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/products': {
+      id: '/neverpull/products'
+      path: '/neverpull/products'
+      fullPath: '/neverpull/products'
+      preLoaderRoute: typeof NeverpullProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/refund-policy': {
+      id: '/neverpull/refund-policy'
+      path: '/neverpull/refund-policy'
+      fullPath: '/neverpull/refund-policy'
+      preLoaderRoute: typeof NeverpullRefundPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/shipping-policy': {
+      id: '/neverpull/shipping-policy'
+      path: '/neverpull/shipping-policy'
+      fullPath: '/neverpull/shipping-policy'
+      preLoaderRoute: typeof NeverpullShippingPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/sms-marketing-policy': {
+      id: '/neverpull/sms-marketing-policy'
+      path: '/neverpull/sms-marketing-policy'
+      fullPath: '/neverpull/sms-marketing-policy'
+      preLoaderRoute: typeof NeverpullSmsMarketingPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/social': {
+      id: '/neverpull/social'
+      path: '/neverpull/social'
+      fullPath: '/neverpull/social'
+      preLoaderRoute: typeof NeverpullSocialRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/neverpull/products_/$slug': {

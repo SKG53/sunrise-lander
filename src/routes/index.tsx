@@ -22,6 +22,11 @@ import kiwiWatermelon30 from '../assets/products/30mg-kiwi-watermelon-lifestyle.
 import orangeLemonade30 from '../assets/products/30mg-orange-lemonade-lifestyle.png.asset.json'
 import peachMango30 from '../assets/products/30mg-peach-mango-lifestyle.png.asset.json'
 import strawberryWatermelon30 from '../assets/products/30mg-strawberry-watermelon-lifestyle.webp.asset.json'
+import blackberry60 from '../assets/products/60mg-blackberry-lifestyle.png.asset.json'
+import bloodOrange60 from '../assets/products/60mg-blood-orange-lifestyle.png.asset.json'
+import blueberryLemonade60 from '../assets/products/60mg-blueberry-lemonade-lifestyle.png.asset.json'
+import passionfruitMango60 from '../assets/products/60mg-passionfruit-mango-lifestyle.png.asset.json'
+import wildCherryPeach60 from '../assets/products/60mg-wild-cherry-peach-lifestyle.png.asset.json'
 import {
   renderWordmark,
   getBasePx,
@@ -66,6 +71,11 @@ const HOME_PRODUCT_IMAGES: Record<string, string> = {
   '30mg-kiwi-watermelon-cbg': kiwiWatermelon30.url,
   '30mg-blueberry-pomegranate-cbn': blueberryPomegranate30.url,
   '30mg-strawberry-watermelon-thcv': strawberryWatermelon30.url,
+  '60mg-wild-cherry-peach': wildCherryPeach60.url,
+  '60mg-blueberry-lemonade': blueberryLemonade60.url,
+  '60mg-passionfruit-mango': passionfruitMango60.url,
+  '60mg-blood-orange-cbg': bloodOrange60.url,
+  '60mg-blackberry-cbn': blackberry60.url,
 }
 
 const TIERS: Record<TierKey, TierData> = {

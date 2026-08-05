@@ -16,6 +16,8 @@ import { useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { SiteFooter } from '../components/SiteFooter'
 import { getCanImage } from '../lib/canImages'
+import lemonade10 from '../assets/products/10mg-lemonade-lifestyle.png.asset.json'
+import strawberry10 from '../assets/products/10mg-strawberry-lifestyle.png.asset.json'
 import blueberryPomegranate30 from '../assets/products/30mg-blueberry-pomegranate-lifestyle.webp.asset.json'
 import cherryLimeade30 from '../assets/products/30mg-cherry-limeade-lifestyle.png.asset.json'
 import kiwiWatermelon30 from '../assets/products/30mg-kiwi-watermelon-lifestyle.webp.asset.json'
@@ -65,6 +67,8 @@ const LIVE_SLUGS = new Set<string>([
 ])
 
 const HOME_PRODUCT_IMAGES: Record<string, string> = {
+  '10mg-strawberry': strawberry10.url,
+  '10mg-lemonade': lemonade10.url,
   '30mg-peach-mango': peachMango30.url,
   '30mg-cherry-limeade': cherryLimeade30.url,
   '30mg-orange-lemonade': orangeLemonade30.url,

@@ -16,6 +16,12 @@ import { useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { SiteFooter } from '../components/SiteFooter'
 import { getCanImage } from '../lib/canImages'
+import blueberryPomegranate30 from '../assets/products/30mg-blueberry-pomegranate-lifestyle.webp.asset.json'
+import cherryLimeade30 from '../assets/products/30mg-cherry-limeade-lifestyle.png.asset.json'
+import kiwiWatermelon30 from '../assets/products/30mg-kiwi-watermelon-lifestyle.webp.asset.json'
+import orangeLemonade30 from '../assets/products/30mg-orange-lemonade-lifestyle.png.asset.json'
+import peachMango30 from '../assets/products/30mg-peach-mango-lifestyle.png.asset.json'
+import strawberryWatermelon30 from '../assets/products/30mg-strawberry-watermelon-lifestyle.webp.asset.json'
 import {
   renderWordmark,
   getBasePx,
@@ -52,6 +58,15 @@ const LIVE_SLUGS = new Set<string>([
   '60mg-wild-cherry-peach','60mg-blueberry-lemonade','60mg-passionfruit-mango',
   '60mg-blood-orange-cbg','60mg-blackberry-cbn','60mg-strawberry-kiwi-thcv',
 ])
+
+const HOME_PRODUCT_IMAGES: Record<string, string> = {
+  '30mg-peach-mango': peachMango30.url,
+  '30mg-cherry-limeade': cherryLimeade30.url,
+  '30mg-orange-lemonade': orangeLemonade30.url,
+  '30mg-kiwi-watermelon-cbg': kiwiWatermelon30.url,
+  '30mg-blueberry-pomegranate-cbn': blueberryPomegranate30.url,
+  '30mg-strawberry-watermelon-thcv': strawberryWatermelon30.url,
+}
 
 const TIERS: Record<TierKey, TierData> = {
   '5':  { color: '#DC7F27', name: 'Subtle Lift', short: 'Subtle Lift', descriptors: 'Light · Bright · Casual',
@@ -320,7 +335,7 @@ function LanderHome() {
                   <div className="p-flavor-grid">
                     {liveFlavors(tier).map((f, i) => {
                       const slug = toSlug(tier, f)
-                      const img = getCanImage(slug)
+                      const img = HOME_PRODUCT_IMAGES[slug] ?? getCanImage(slug)
                       return (
                         <a
                           key={slug}

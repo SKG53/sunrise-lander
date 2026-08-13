@@ -162,13 +162,8 @@ function LanderHome() {
   const heroWmRef = useRef<HTMLDivElement>(null)
   // One lockup slot per stacked panel (was: one slot for the single panel).
   const panelLockupRefs = useRef<Record<string, HTMLDivElement | null>>({})
-  const switch5Ref = useRef<HTMLDivElement>(null)
-  const switch10Ref = useRef<HTMLDivElement>(null)
-  const switch30Ref = useRef<HTMLDivElement>(null)
-  const switch60Ref = useRef<HTMLDivElement>(null)
-  const switchRefs: Record<TierKey, RefObject<HTMLDivElement | null>> = {
-    '5': switch5Ref, '10': switch10Ref, '30': switch30Ref, '60': switch60Ref,
-  }
+  // One switcher-lockup slot per panel selector (one selector per panel now).
+  const switchLockupRefs = useRef<Record<string, HTMLDivElement | null>>({})
   // Corner blend-lockups are now keyed `${tier}-${index}` — a flat array can no
   // longer identify a card once all three tiers are on the page at once.
   const cornerRefs = useRef<Record<string, HTMLSpanElement | null>>({})

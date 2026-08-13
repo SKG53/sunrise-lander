@@ -128,8 +128,18 @@
    ───────────────────────────────────────────────────────────────────────── */
 .lh-switcher .p-panel-stack {
   display: grid;
-  gap: calc(var(--base) * 0.5);
+  gap: 0;
   margin-top: calc(var(--base) * 0.5);
+}
+
+.lh-switcher .p-tier-block {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.5);
+}
+
+.lh-switcher .p-tier-block .p-switcher-bar {
+  margin-top: 0;
 }
 
 .lh-switcher .p-panel-stack .p-panel {

@@ -20,7 +20,7 @@ import './contact.css'
 import './home.css'
 import './products.css'
 
-const EVENT_NAME = ' Beverage Expo'
+import { HBE_EVENT_NAME as EVENT_NAME } from '@/lib/eventNames'
 
 // ── PRODUCTS SECTION DATA (mirrors /products page) ───────────────────────
 type Cannabinoid = 'CBG' | 'CBN' | 'THCV'

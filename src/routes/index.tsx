@@ -187,21 +187,24 @@ function LanderHome() {
         return ''
       }
 
-      LIVE_TIERS.forEach((tier) => {
+      LIVE_TIERS.forEach((panelTier) => {
         // Panel lockup — one per stacked panel, always cream on the tier fill.
-        const panelRef = panelLockupRefs.current[tier]
-        if (panelRef) panelRef.innerHTML = lockupFor(tier, base * LOCKUP_SIZE, '#FEFBE0')
+        const panelRef = panelLockupRefs.current[panelTier]
+        if (panelRef) panelRef.innerHTML = lockupFor(panelTier, base * LOCKUP_SIZE, '#FEFBE0')
 
-        // Switcher lockup — cream when it's the tier you're scrolled to.
-        const switchRef = switchRefs[tier].current
-        if (switchRef) {
-          const color = tier === activeTier ? '#FEFBE0' : TIERS[tier].color
-          switchRef.innerHTML = lockupFor(tier, base * 1.2, color)
-        }
+        // Switcher lockups — one selector per panel, each button gets the
+        // ACTIVE lockup color for its own tier, cream when that tier is active.
+        LIVE_TIERS.forEach((buttonTier) => {
+          const switchRef = switchLockupRefs.current[`${panelTier}-${buttonTier}`]
+          if (switchRef) {
+            const color = buttonTier === activeTier ? '#FEFBE0' : TIERS[buttonTier].color
+            switchRef.innerHTML = lockupFor(buttonTier, base * 1.2, color)
+          }
+        })
 
         // Corner blend-lockups for every card in every panel, not just one tier.
-        liveFlavors(tier).forEach((f, i) => {
-          const ref = cornerRefs.current[`${tier}-${i}`]
+        liveFlavors(panelTier).forEach((f, i) => {
+          const ref = cornerRefs.current[`${panelTier}-${i}`]
           if (!ref || !f.cannabinoid) return
           ref.innerHTML = renderBlendLockup(base * 0.91, '#FEFBE0')
         })

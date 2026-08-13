@@ -289,7 +289,7 @@ function LanderHome() {
                 <span className="accent">sip and pour.</span>
               </h2>
               <p className="p-hero-body">
-                Try one and try them all. Savor the SUNRISE with each and every one — all made with natural flavors.
+                Try one and try them all. Created with simple ingredients and delicious flavors, savor the SUNRISE with each and every one.
               </p>
             </div>
           </div>

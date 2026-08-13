@@ -162,8 +162,13 @@ function LanderHome() {
   const heroWmRef = useRef<HTMLDivElement>(null)
   // One lockup slot per stacked panel (was: one slot for the single panel).
   const panelLockupRefs = useRef<Record<string, HTMLDivElement | null>>({})
-  // One switcher-lockup slot per panel selector (one selector per panel now).
-  const switchLockupRefs = useRef<Record<string, HTMLDivElement | null>>({})
+  const switch5Ref = useRef<HTMLDivElement>(null)
+  const switch10Ref = useRef<HTMLDivElement>(null)
+  const switch30Ref = useRef<HTMLDivElement>(null)
+  const switch60Ref = useRef<HTMLDivElement>(null)
+  const switchRefs: Record<TierKey, RefObject<HTMLDivElement | null>> = {
+    '5': switch5Ref, '10': switch10Ref, '30': switch30Ref, '60': switch60Ref,
+  }
   // Corner blend-lockups are now keyed `${tier}-${index}` — a flat array can no
   // longer identify a card once all three tiers are on the page at once.
   const cornerRefs = useRef<Record<string, HTMLSpanElement | null>>({})
@@ -187,24 +192,21 @@ function LanderHome() {
         return ''
       }
 
-      LIVE_TIERS.forEach((panelTier) => {
+      LIVE_TIERS.forEach((tier) => {
         // Panel lockup — one per stacked panel, always cream on the tier fill.
-        const panelRef = panelLockupRefs.current[panelTier]
-        if (panelRef) panelRef.innerHTML = lockupFor(panelTier, base * LOCKUP_SIZE, '#FEFBE0')
+        const panelRef = panelLockupRefs.current[tier]
+        if (panelRef) panelRef.innerHTML = lockupFor(tier, base * LOCKUP_SIZE, '#FEFBE0')
 
-        // Switcher lockups — one selector per panel, each button gets the
-        // ACTIVE lockup color for its own tier, cream when that tier is active.
-        LIVE_TIERS.forEach((buttonTier) => {
-          const switchRef = switchLockupRefs.current[`${panelTier}-${buttonTier}`]
-          if (switchRef) {
-            const color = buttonTier === activeTier ? '#FEFBE0' : TIERS[buttonTier].color
-            switchRef.innerHTML = lockupFor(buttonTier, base * 1.2, color)
-          }
-        })
+        // Switcher lockup — cream when it's the tier you're scrolled to.
+        const switchRef = switchRefs[tier].current
+        if (switchRef) {
+          const color = tier === activeTier ? '#FEFBE0' : TIERS[tier].color
+          switchRef.innerHTML = lockupFor(tier, base * 1.2, color)
+        }
 
         // Corner blend-lockups for every card in every panel, not just one tier.
-        liveFlavors(panelTier).forEach((f, i) => {
-          const ref = cornerRefs.current[`${panelTier}-${i}`]
+        liveFlavors(tier).forEach((f, i) => {
+          const ref = cornerRefs.current[`${tier}-${i}`]
           if (!ref || !f.cannabinoid) return
           ref.innerHTML = renderBlendLockup(base * 0.91, '#FEFBE0')
         })
@@ -287,7 +289,7 @@ function LanderHome() {
                 <span className="accent">sip and pour.</span>
               </h2>
               <p className="p-hero-body">
-                Try one and try them all. Created with simple ingredients and delicious flavors, savor the SUNRISE with each and every one.
+                Try one and try them all. Savor the SUNRISE with each and every one — all made with natural flavors.
               </p>
             </div>
           </div>
@@ -296,98 +298,98 @@ function LanderHome() {
         {/* ── TIER SWITCHER + PANEL ─────────────────────────────────────── */}
         <section className="p-switcher lh-switcher">
           <div className="container">
+            {/* Jump-nav. Non-sticky: it sits at the top of the section and
+                scrolls away. Clicking a tier scrolls to its panel; the active
+                state is driven by the scroll-spy above, not by a click. */}
+            <nav className="p-switcher-bar" aria-label="Jump to potency">
+              {LIVE_TIERS.map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  className={'p-switch' + (activeTier === k ? ' active' : '')}
+                  onClick={() => goToTier(k)}
+                  style={activeTier === k ? { background: TIERS[k].color } : undefined}
+                  aria-current={activeTier === k ? 'true' : undefined}
+                >
+                  <div className="p-switch-lockup" ref={switchRefs[k]} />
+                  <div className="p-switch-name" style={activeTier !== k ? { color: TIERS[k].color } : undefined}>
+                    {TIERS[k].short.split(' ').map((word, wi) => (
+                      <span key={wi}>{word}</span>
+                    ))}
+                  </div>
+                </button>
+              ))}
+            </nav>
+
             {/* FLAT STACK — every tier on the page, one box above the next.
-                Each panel carries its own switcher bar above it, so the nav
-                is always visible directly above the section the visitor is in. */}
+                Equal box heights are enforced in index.css (grid-auto-rows:1fr)
+                so the stack reads as three matched cards rather than three
+                differently-sized ones. */}
             <div className="p-panel-stack">
               {LIVE_TIERS.map((tier) => (
-                <div key={tier} className="p-tier-block">
-                  <nav className="p-switcher-bar" aria-label={`${TIERS[tier].name} potency selector`}>
-                    {LIVE_TIERS.map((k) => (
-                      <button
-                        key={k}
-                        type="button"
-                        className={'p-switch' + (activeTier === k ? ' active' : '')}
-                        onClick={() => goToTier(k)}
-                        style={activeTier === k ? { background: TIERS[k].color } : undefined}
-                        aria-current={activeTier === k ? 'true' : undefined}
-                      >
-                        <div
-                          className="p-switch-lockup"
-                          ref={(el) => { switchLockupRefs.current[`${tier}-${k}`] = el }}
-                        />
-                        <div className="p-switch-name" style={activeTier !== k ? { color: TIERS[k].color } : undefined}>
-                          {TIERS[k].short.split(' ').map((word, wi) => (
-                            <span key={wi}>{word}</span>
-                          ))}
-                        </div>
-                      </button>
-                    ))}
-                  </nav>
-
-                  <div
-                    id={panelDomId(tier)}
-                    data-tier={tier}
-                    ref={(el) => { panelRefs.current[tier] = el }}
-                    className="p-panel"
-                    style={{
-                      background: TIERS[tier].color,
-                      ['--p-tier-color' as string]: TIERS[tier].color,
-                    } as React.CSSProperties}
-                  >
-                    <div className="p-panel-head">
-                      <div
-                        className="p-panel-lockup"
-                        ref={(el) => { panelLockupRefs.current[tier] = el }}
-                      />
-                      <div className="p-panel-head-text">
-                        <div className="p-panel-eyebrow">{TIERS[tier].descriptors}</div>
-                        <h3 className="p-panel-tier-name">{TIERS[tier].name}</h3>
-                        <p className="p-panel-copy">{TIERS[tier].copy}</p>
-                      </div>
+                <div
+                  key={tier}
+                  id={panelDomId(tier)}
+                  data-tier={tier}
+                  ref={(el) => { panelRefs.current[tier] = el }}
+                  className="p-panel"
+                  style={{
+                    background: TIERS[tier].color,
+                    ['--p-tier-color' as string]: TIERS[tier].color,
+                  } as React.CSSProperties}
+                >
+                  <div className="p-panel-head">
+                    <div
+                      className="p-panel-lockup"
+                      ref={(el) => { panelLockupRefs.current[tier] = el }}
+                    />
+                    <div className="p-panel-head-text">
+                      <div className="p-panel-eyebrow">{TIERS[tier].descriptors}</div>
+                      <h3 className="p-panel-tier-name">{TIERS[tier].name}</h3>
+                      <p className="p-panel-copy">{TIERS[tier].copy}</p>
                     </div>
+                  </div>
 
-                    <div className="p-flavor-grid">
-                      {liveFlavors(tier).map((f, i) => {
-                        const slug = toSlug(tier, f)
-                        const img = HOME_PRODUCT_IMAGES[slug] ?? getCanImage(slug)
-                        return (
-                          <a
-                            key={slug}
-                            href={`https://www.savorsunrise.com/products/${slug}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-flavor-card"
-                            style={{ ['--flavor-color' as string]: f.flavorColor } as React.CSSProperties}
-                          >
-                            {img ? (
-                              <div className="p-flavor-can has-image">
-                                <img src={img} alt={`SUNRISE ${f.name}`} loading="lazy" />
-                              </div>
-                            ) : (
-                              <div className="p-flavor-can" />
-                            )}
-                            <div className="p-flavor-meta">
-                              <div className="p-flavor-name">{f.name}</div>
-                              <div className="p-flavor-descriptor">{f.descriptor}</div>
-                              {f.cannabinoid && (
-                                <div className="p-flavor-pill">{CANNABINOID_EFFECT[f.cannabinoid]}</div>
-                              )}
+                  <div className="p-flavor-grid">
+                    {liveFlavors(tier).map((f, i) => {
+                      const slug = toSlug(tier, f)
+                      const img = HOME_PRODUCT_IMAGES[slug] ?? getCanImage(slug)
+                      return (
+                        <a
+                          key={slug}
+                          href={`https://www.savorsunrise.com/products/${slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-flavor-card"
+                          style={{ ['--flavor-color' as string]: f.flavorColor } as React.CSSProperties}
+                        >
+                          {img ? (
+                            <div className="p-flavor-can has-image">
+                              <img src={img} alt={`SUNRISE ${f.name}`} loading="lazy" />
                             </div>
-                            <div className="p-flavor-cta">
-                              <span className="p-flavor-cta-label">Learn More</span>
-                              <span className="p-flavor-cta-arrow">→</span>
-                            </div>
+                          ) : (
+                            <div className="p-flavor-can" />
+                          )}
+                          <div className="p-flavor-meta">
+                            <div className="p-flavor-name">{f.name}</div>
+                            <div className="p-flavor-descriptor">{f.descriptor}</div>
                             {f.cannabinoid && (
-                              <span
-                                className="p-flavor-corner"
-                                ref={(el) => { cornerRefs.current[`${tier}-${i}`] = el }}
-                              />
+                              <div className="p-flavor-pill">{CANNABINOID_EFFECT[f.cannabinoid]}</div>
                             )}
-                          </a>
-                        )
-                      })}
-                    </div>
+                          </div>
+                          <div className="p-flavor-cta">
+                            <span className="p-flavor-cta-label">Learn More</span>
+                            <span className="p-flavor-cta-arrow">→</span>
+                          </div>
+                          {f.cannabinoid && (
+                            <span
+                              className="p-flavor-corner"
+                              ref={(el) => { cornerRefs.current[`${tier}-${i}`] = el }}
+                            />
+                          )}
+                        </a>
+                      )
+                    })}
                   </div>
                 </div>
               ))}

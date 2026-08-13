@@ -24,7 +24,7 @@ import cherryLimeade30 from '../assets/products/30mg-cherry-limeade-lifestyle-v3
 import kiwiWatermelon30 from '../assets/products/30mg-kiwi-watermelon-lifestyle-v3.webp.asset.json'
 import orangeLemonade30 from '../assets/products/30mg-orange-lemonade-lifestyle-v3.webp.asset.json'
 import peachMango30 from '../assets/products/30mg-peach-mango-lifestyle-v3.webp.asset.json'
-import strawberryWatermelon30 from '../assets/products/30mg-strawberry-watermelon-lifestyle-v3.webp.asset.json'
+import strawberryWatermelon30 from '../assets/products/30mg-strawberry-watermelon-lifestyle-v4.png.asset.json'
 import blackberry60 from '../assets/products/60mg-blackberry-lifestyle-v3.png.asset.json'
 import bloodOrange60 from '../assets/products/60mg-blood-orange-lifestyle-v3.png.asset.json'
 import blueberryLemonade60 from '../assets/products/60mg-blueberry-lemonade-lifestyle-v3.png.asset.json'

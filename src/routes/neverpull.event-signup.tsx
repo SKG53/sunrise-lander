@@ -17,7 +17,7 @@ import {
 } from '../lib/sunrise-components'
 import './contact.css'
 
-const EVENT_NAME = 'SUNRISE Event'
+import { EVENT_SIGNUP_EVENT_NAME as EVENT_NAME } from '@/lib/eventNames'
 
 // ── PRODUCT GRID DATA ────────────────────────────────────────────────────
 type Cannabinoid = 'CBG' | 'CBN' | 'THCV'

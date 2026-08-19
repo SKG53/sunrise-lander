@@ -54,7 +54,10 @@ export const Route = createFileRoute('/api/public/spin-wheel-hubspot')({
           email,
           contact_type: 'DTC Customer',
           contact_source: 'Website',
-          web_signup_source: 'Website Pop-up',
+          // 'SRBev Website Pop-up' distinguishes lander spins from main-site
+          // spins (main stamps 'Website Pop-up'). Option value == label in
+          // HubSpot, so this exact string is both what's sent and what's shown.
+          web_signup_source: 'SRBev Website Pop-up',
           lifecyclestage: 'lead',
         }
 
@@ -74,7 +77,7 @@ export const Route = createFileRoute('/api/public/spin-wheel-hubspot')({
         // the web signup source.
         if (createRes.status === 409) {
           const updateProperties: Record<string, string> = {
-            web_signup_source: 'Website Pop-up',
+            web_signup_source: 'SRBev Website Pop-up',
           }
           const updateRes = await fetch(
             `${GATEWAY_URL}/crm/v3/objects/contacts/${encodeURIComponent(email)}?idProperty=email`,

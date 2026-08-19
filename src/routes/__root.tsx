@@ -1,9 +1,11 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import sunriseCss from "../styles/sunrise-shell.css?url";
 import { useCartSync } from "../hooks/useCartSync";
 import { AnnouncementBar } from "../components/AnnouncementBar";
+import { SpinWheel } from "../components/SpinWheel";
 
 // Sitewide Organization JSON-LD (schema.org). Minimal, factual fields only —
 // no postal address (the only address on file is the BIAB production entity,
@@ -116,10 +118,38 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   useCartSync();
+
+  // Option B cross-domain hand-off: once a visitor has actually spun the wheel
+  // here (SpinWheel sets localStorage "sunrise:spin-done"), tag every outbound
+  // savorsunrise.com link with ?ref=srbev at click time. The main site reads
+  // that marker and suppresses its own Spin & Save for these visitors only.
+  // Capture-phase so the href is rewritten before navigation; decoupled from
+  // any single component so it covers all current and future main-site links.
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      try {
+        if (localStorage.getItem("sunrise:spin-done") !== "1") return;
+      } catch {
+        return;
+      }
+      const target = e.target as HTMLElement | null;
+      const anchor = target?.closest?.("a");
+      if (!anchor) return;
+      const href = anchor.getAttribute("href");
+      if (!href || !href.includes("savorsunrise.com")) return;
+      if (/[?&]ref=/.test(href)) return; // already tagged
+      const sep = href.includes("?") ? "&" : "?";
+      anchor.setAttribute("href", `${href}${sep}ref=srbev`);
+    };
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
+  }, []);
+
   return (
     <>
       <AnnouncementBar />
       <Outlet />
+      <SpinWheel />
     </>
   );
 }

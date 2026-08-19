@@ -382,7 +382,7 @@ export function SpinWheel() {
                 {copied ? "Copied!" : "Copy"}
               </span>
             </button>
-            <a className="spin-btn spin-btn-primary" href="/neverpull/products" onClick={close}>
+            <a className="spin-btn spin-btn-primary" href="/" onClick={close}>
               Shop Now
             </a>
             <p className="spin-fine">

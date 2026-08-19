@@ -1,0 +1,372 @@
+/* ==========================================================================
+   SPIN-TO-WIN — marketing popup shown right after the 21+ age gate.
+   Visual language mirrors .age-gate (cream card, near-black type, pill
+   buttons) but with the tier color palette on the wheel itself. Sizing is
+   driven by var(--base) so it scales with the site's responsive system.
+   ========================================================================== */
+
+.spin {
+  position: fixed;
+  inset: 0;
+  z-index: 9998; /* one below .age-gate — gate always wins if both mount */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 0.4);
+}
+.spin-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.78);
+}
+.spin-card {
+  position: relative;
+  background: var(--cream);
+  border-radius: calc(var(--base) * 0.18);
+  padding: calc(var(--base) * 0.8) calc(var(--base) * 0.9) calc(var(--base) * 0.7);
+  width: 100%;
+  max-width: calc(var(--base) * 9.5);
+  box-shadow: 0 calc(var(--base) * 0.3) calc(var(--base) * 1.0) rgba(0, 0, 0, 0.25);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 94vh;
+  overflow-y: auto;
+}
+
+.spin-close {
+  position: absolute;
+  top: calc(var(--base) * 0.22);
+  right: calc(var(--base) * 0.3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: calc(var(--base) * 0.6);
+  line-height: 1;
+  color: rgba(26, 26, 26, 0.45);
+  transition: color 200ms ease-out;
+}
+.spin-close:hover { color: var(--near-black); }
+
+.spin-wordmark {
+  margin: 0 auto calc(var(--base) * 0.3);
+  line-height: 0;
+}
+/* Center the SUNRISE text ignoring the trailing ™ so the mark is optically centered. */
+.spin-wordmark > span {
+  transform: translateX(calc(var(--base) * 0.09));
+}
+.spin-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.68);
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin: 0 0 calc(var(--base) * 0.4);
+}
+
+/* ── WHEEL ──────────────────────────────────────────────────────────────
+   Pointer is a fixed gold triangle at 12 o'clock; the SVG rotates beneath
+   it. Rotation + transition are set inline by the component so the spin
+   duration and easing stay next to the timing logic that fires the state
+   change. With 10 segments, the wheel is sized a little larger so the
+   longest label (SHIPPING) still fits.                                                           */
+.spin-wheel-wrap {
+  position: relative;
+  width: calc(var(--base) * 7);
+  height: calc(var(--base) * 7);
+  margin: 0 auto calc(var(--base) * 0.45);
+}
+.spin-wheel {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 calc(var(--base) * 0.06) calc(var(--base) * 0.16) rgba(0, 0, 0, 0.22));
+}
+.spin-rim {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 5;
+}
+.spin-hub {
+  fill: var(--cream);
+  stroke: var(--gold);
+  stroke-width: 4;
+}
+.spin-seg-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  fill: #FEFBE0;
+}
+.spin-seg-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  fill: rgba(254, 251, 224, 0.85);
+}
+/* Longer words (SHIPPING) need tighter metrics to stay inside the segment. */
+.spin-seg-sub-long {
+  font-size: 4.5px;
+  letter-spacing: 0.02em;
+}
+/* Pointer sits above the rim and points down into the winning segment. */
+.spin-pointer {
+  position: absolute;
+  top: calc(var(--base) * -0.1);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  z-index: 2;
+  border-left: calc(var(--base) * 0.2) solid transparent;
+  border-right: calc(var(--base) * 0.2) solid transparent;
+  border-top: calc(var(--base) * 0.36) solid var(--gold);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* ── COPY + PRIZE ───────────────────────────────────────────────────────── */
+.spin-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.28);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-body);
+  margin: 0 0 calc(var(--base) * 0.4);
+}
+.spin-prize-wrap {
+  position: relative;
+  display: inline-block;
+  margin: 0 0 calc(var(--base) * 0.35);
+}
+.spin-prize {
+  position: relative;
+  z-index: 2;
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.78);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tier-30);
+  margin: 0;
+}
+
+/* Fireworks burst behind the prize announcement. */
+.spin-fireworks {
+  position: absolute;
+  inset: -40% -28%;
+  z-index: 0;
+  pointer-events: none;
+}
+.spin-burst {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  animation: spin-burst-pop 1.5s ease-out forwards;
+}
+.spin-burst::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--base) * -0.25);
+  left: calc(var(--base) * -0.25);
+  width: calc(var(--base) * 0.5);
+  height: calc(var(--base) * 0.5);
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  box-shadow: 0 0 calc(var(--base) * 0.35) calc(var(--base) * 0.15) currentColor;
+  animation: spin-burst-flash 0.7s ease-out forwards;
+}
+.spin-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--base) * 0.14);
+  height: calc(var(--base) * 0.7);
+  margin-left: calc(var(--base) * -0.07);
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 calc(var(--base) * 0.3) calc(var(--base) * 0.06) currentColor;
+  transform-origin: top center;
+  opacity: 0;
+  animation: spin-particle-fly 1.5s ease-out forwards;
+}
+
+@keyframes spin-burst-pop {
+  0% { opacity: 0; transform: scale(0); }
+  15% { opacity: 1; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+
+@keyframes spin-burst-flash {
+  0% { opacity: 0.9; transform: scale(0); }
+  40% { opacity: 0.7; transform: scale(1.8); }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+
+@keyframes spin-particle-fly {
+  0% {
+    transform: rotate(var(--rotate)) translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% { opacity: 0.95; }
+  100% {
+    transform: rotate(var(--rotate)) translateY(calc(var(--base) * 2.6)) scale(0.1);
+    opacity: 0;
+  }
+}
+
+/* ── FORM ───────────────────────────────────────────────────────────────── */
+.spin-form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.22);
+  width: 100%;
+  max-width: calc(var(--base) * 6.4);
+}
+.spin-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.24);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+.spin-input {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.28);
+  padding: calc(var(--base) * 0.28) calc(var(--base) * 0.35);
+  border: 2px solid rgba(26, 26, 26, 0.25);
+  border-radius: calc(var(--base) * 0.12);
+  background: #fff;
+  color: var(--near-black);
+  width: 100%;
+}
+.spin-input:focus {
+  outline: none;
+  border-color: var(--near-black);
+}
+.spin-error {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 600;
+  color: var(--tier-10);
+  margin: 0;
+}
+
+/* ── BUTTONS ────────────────────────────────────────────────────────────
+   Scoped like .age-gate-btn so the global .btn wipe/arrow pseudos don't
+   apply here.                                                             */
+.spin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--base) * 0.25);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--base) * 0.27);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.85);
+  border-radius: 9999px;
+  cursor: pointer;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  outline: none;
+  transition: color 200ms ease-out, border-color 200ms ease-out;
+}
+/* Site-wide hover gesture: left-to-right wipe + dancing arrow (see .btn). */
+.spin-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--btn-wipe-fill, transparent);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 400ms ease-out;
+  z-index: -1;
+}
+.spin-btn::after {
+  content: "→";
+  display: inline-block;
+  font-size: 1.35em;
+  line-height: 1;
+  position: relative;
+  top: calc(var(--base) * -0.055);
+  transition: color 200ms ease-out;
+}
+.spin-btn:hover { color: var(--btn-hover-text, currentColor); }
+.spin-btn:hover::before { clip-path: inset(0 0 0 0); }
+.spin-btn:hover::after { animation: btn-arrow-dance 400ms ease-out; }
+.spin-btn-primary {
+  background: var(--tier-10);
+  color: var(--cream);
+  border: 2px solid var(--tier-10);
+  min-width: calc(var(--base) * 4.6);
+  --btn-wipe-fill: var(--cream);
+  --btn-hover-text: var(--tier-10);
+}
+.spin-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ── CODE REVEAL ────────────────────────────────────────────────────────── */
+.spin-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--base) * 0.3);
+  width: 100%;
+  max-width: calc(var(--base) * 6.4);
+  margin: 0 auto calc(var(--base) * 0.4);
+  padding: calc(var(--base) * 0.26) calc(var(--base) * 0.36);
+  background: #fff;
+  border: 2px dashed var(--gold);
+  border-radius: calc(var(--base) * 0.12);
+  cursor: pointer;
+}
+.spin-code-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.34);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: var(--near-black);
+}
+.spin-code-copy {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.06);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.spin-copy-icon {
+  width: calc(var(--base) * 0.55);
+  height: calc(var(--base) * 0.55);
+  color: var(--gold);
+}
+.spin-fine {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 500;
+  color: rgba(26, 26, 26, 0.6);
+  margin: calc(var(--base) * 0.35) 0 0;
+}
+
+@media (max-width: 480px) {
+  .spin-card { padding: calc(var(--base) * 0.7) calc(var(--base) * 0.6) calc(var(--base) * 0.6); }
+  .spin-wheel-wrap { width: calc(var(--base) * 5.6); height: calc(var(--base) * 5.6); }
+}

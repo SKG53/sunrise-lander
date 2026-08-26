@@ -886,3 +886,5 @@ main { flex: 1; width: 100%; }
   }
   .age-gate-actions { gap: calc(var(--base) * 0.2); }
 }
+
+/* connector-apply test — inert marker CONN_APPLY_TEST_9Q2, safe to remove */

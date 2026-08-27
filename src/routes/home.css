@@ -984,6 +984,13 @@
 @media (max-width: 768px) {
   .home-hero { height: 440px; }
   .hero-strip { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
+  /* Keep "CRAFTED BEVERAGES" on one line on phones (tighter tracking + no wrap). */
+  .hero-subtitle {
+    font-size: calc(var(--base) * 0.5);
+    letter-spacing: 0.22em;
+    padding-left: 0.22em;
+    white-space: nowrap;
+  }
   .s08-inner { height: calc(var(--base) * 11); }
   .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }

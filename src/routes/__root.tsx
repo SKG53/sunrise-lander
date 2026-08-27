@@ -48,7 +48,7 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=1100" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
       // Site-wide noindex: this is a burner presell lander for paid traffic —
       // it must not be indexed or cross-associated with savorsunrise.com.
       // (Meta's ad-preview scraper ignores robots, so OG link previews still work.)

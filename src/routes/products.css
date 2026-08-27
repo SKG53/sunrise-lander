@@ -872,3 +872,53 @@
   .p-faq-q-text { font-size: calc(var(--base) * 0.38); }
   .p-inside-headline > span { white-space: normal; }
 }
+
+/* ── Potency panel accordion (mobile) — ported from the main site ──────────────
+   Only the active tier's panel shows; its descriptor text collapses behind a
+   bouncing + toggle (flavor grid stays visible for the active tier). Scoped to
+   .p-panel--collapsible so /neverpull/hbe's static panel is untouched. */
+.p-panel-toggle { display: none; }   /* desktop: full detail shown, no accordion */
+.p-switch-soon { position: relative; cursor: default; pointer-events: none; }
+@media (max-width: 768px) {
+  .p-panel-stack .p-panel--collapsible:not(.p-panel--active) { display: none; }
+  .p-panel--collapsible .p-panel-head {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: calc(var(--base) * 0.4) calc(var(--base) * 0.6);
+  }
+  .p-panel--collapsible .p-panel-toggle {
+    display: block;
+    justify-self: end;
+    align-self: center;
+    background: none;
+    border: 0;
+    padding: 0 calc(var(--base) * 0.2);
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    color: var(--cream);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: calc(var(--base) * 1.9);
+    line-height: 1;
+    animation: p-plus-bounce 0.9s ease-in-out infinite;
+  }
+  .p-panel--collapsible .p-panel-head-text {
+    grid-column: 1 / -1;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.25s ease;
+  }
+  .p-panel--collapsible.p-panel--open .p-panel-head-text {
+    max-height: calc(var(--base) * 14);
+    opacity: 1;
+  }
+}
+@keyframes p-plus-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .p-panel-toggle { animation: none; }
+}

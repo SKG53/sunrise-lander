@@ -222,7 +222,22 @@ function LanderHome() {
       LIVE_TIERS.forEach((tier) => {
         // Panel lockup — one per stacked panel, always cream on the tier fill.
         const panelRef = panelLockupRefs.current[tier]
-        if (panelRef) panelRef.innerHTML = lockupFor(tier, base * LOCKUP_SIZE, '#FEFBE0')
+        if (panelRef) {
+          panelRef.innerHTML = lockupFor(tier, base * LOCKUP_SIZE, '#FEFBE0')
+          // ACTIVE lockups are wider than the main site's THC marks, so on phones
+          // the widest (60mg) overflows the panel head and shifts the layout. Scale
+          // it down to fit the head width (leaving room for the +/- toggle).
+          if (window.innerWidth <= 768) {
+            const head = panelRef.parentElement
+            if (head) {
+              const avail = head.clientWidth - base * 2.4
+              const natural = panelRef.scrollWidth
+              if (avail > 0 && natural > avail) {
+                panelRef.innerHTML = lockupFor(tier, base * LOCKUP_SIZE * (avail / natural), '#FEFBE0')
+              }
+            }
+          }
+        }
 
         // Switcher lockup — cream when it's the tier you're scrolled to.
         const switchRef = switchRefs[tier].current

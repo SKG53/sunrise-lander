@@ -879,6 +879,18 @@
    .p-panel--collapsible so /neverpull/hbe's static panel is untouched. */
 .p-panel-toggle { display: none; }   /* desktop: full detail shown, no accordion */
 .p-switch-soon { position: relative; cursor: default; pointer-events: none; }
+.p-switch-soon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(120, 120, 120, 0.32);
+  z-index: 1;
+}
+.p-switch-soon .p-switch-name {
+  position: relative;
+  z-index: 2;
+  color: var(--near-black);
+}
 @media (max-width: 768px) {
   .p-panel-stack .p-panel--collapsible:not(.p-panel--active) { display: none; }
   .p-panel--collapsible .p-panel-head {

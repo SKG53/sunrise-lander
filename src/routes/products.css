@@ -892,7 +892,7 @@
   color: var(--near-black);
 }
 @media (max-width: 768px) {
-  .p-panel-stack .p-panel--collapsible:not(.p-panel--active) { display: none; }
+  
   .p-panel--collapsible .p-panel-head {
     grid-template-columns: auto 1fr;
     align-items: center;

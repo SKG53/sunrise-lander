@@ -864,7 +864,7 @@
 @media (max-width: 520px) {
   /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis replaces
      grid-template-columns. Original: .p-flavor-grid { grid-template-columns: 1fr; } */
-  .p-flavor-card { flex-basis: 100%; }
+  .p-flavor-card { flex-basis: calc((100% - (var(--base) * 0.4)) / 2); }
   .p-effects-grid { grid-template-columns: 1fr; }
   .p-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .p-ptp-ctas { flex-direction: column; width: 100%; }

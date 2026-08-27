@@ -183,7 +183,21 @@ function LanderHome() {
   useEffect(() => {
     const paint = () => {
       const base = getBasePx()
-      if (heroWmRef.current) heroWmRef.current.innerHTML = renderWordmark(base * 2.8, 'cream')
+      if (heroWmRef.current) {
+        const slot = heroWmRef.current
+        slot.innerHTML = renderWordmark(base * 2.8, 'cream')
+        // Auto-fit the wordmark to the overlay width so it never overflows the
+        // 4-across hero on phones (mirrors the main site's hero fit logic).
+        const overlay = slot.parentElement
+        if (overlay) {
+          const sidePad = base * 0.8 * 2 // matches .hero-overlay horizontal padding
+          const avail = overlay.clientWidth - sidePad
+          const natural = slot.scrollWidth
+          if (avail > 0 && natural > avail * 0.9) {
+            slot.innerHTML = renderWordmark((base * 2.8) * (avail * 0.9) / natural, 'cream')
+          }
+        }
+      }
 
       const lockupFor = (tier: TierKey, size: number, color: string): string => {
         if (tier === '10') return render10mgActiveLockup(size, color)

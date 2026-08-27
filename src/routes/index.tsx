@@ -36,6 +36,7 @@ import {
   getBasePx,
 } from '../lib/sunrise-components'
 import {
+  render5mgActiveLockup,
   render10mgActiveLockup,
   render30mgActiveLockup,
   render60mgActiveLockup,
@@ -157,6 +158,15 @@ function LanderHome() {
   // no longer gates content — it only drives the switcher bar's highlight,
   // which is now a scroll-spy / jump-nav rather than a content toggle.
   const [activeTier, setActiveTier] = useState<TierKey>(LIVE_TIERS[0])
+  // Collapsible tier detail (mobile): which panels have their descriptor text
+  // expanded. Mirrors the main site's p-panel--collapsible accordion.
+  const [openPanels, setOpenPanels] = useState<Set<TierKey>>(() => new Set())
+  const togglePanel = (k: TierKey) =>
+    setOpenPanels((cur) => {
+      const next = new Set(cur)
+      next.has(k) ? next.delete(k) : next.add(k)
+      return next
+    })
 
   // Refs for brand-mark painting
   const heroWmRef = useRef<HTMLDivElement>(null)
@@ -198,6 +208,9 @@ function LanderHome() {
           }
         }
       }
+
+      if (switch5Ref.current)
+        switch5Ref.current.innerHTML = render5mgActiveLockup(base * 1.2, TIERS['5'].color)
 
       const lockupFor = (tier: TierKey, size: number, color: string): string => {
         if (tier === '10') return render10mgActiveLockup(size, color)
@@ -316,6 +329,12 @@ function LanderHome() {
                 scrolls away. Clicking a tier scrolls to its panel; the active
                 state is driven by the scroll-spy above, not by a click. */}
             <nav className="p-switcher-bar" aria-label="Jump to potency">
+              {/* 5mg — COMING SOON. Inert card (matches the main site); makes the
+                  picker a 4-up 2x2 grid. Uses the compliant ACTIVE lockup. */}
+              <div className="p-switch p-switch-soon" aria-label="5mg tier — coming soon">
+                <div className="p-switch-lockup" ref={switch5Ref} />
+                <div className="p-switch-name"><span>Coming</span><span>Soon</span></div>
+              </div>
               {LIVE_TIERS.map((k) => (
                 <button
                   key={k}
@@ -346,7 +365,7 @@ function LanderHome() {
                   id={panelDomId(tier)}
                   data-tier={tier}
                   ref={(el) => { panelRefs.current[tier] = el }}
-                  className="p-panel"
+                  className={`p-panel p-panel--collapsible${activeTier === tier ? " p-panel--active" : ""}${openPanels.has(tier) ? " p-panel--open" : ""}`}
                   style={{
                     background: TIERS[tier].color,
                     ['--p-tier-color' as string]: TIERS[tier].color,
@@ -357,6 +376,13 @@ function LanderHome() {
                       className="p-panel-lockup"
                       ref={(el) => { panelLockupRefs.current[tier] = el }}
                     />
+                    <button
+                      type="button"
+                      className="p-panel-toggle"
+                      aria-expanded={openPanels.has(tier)}
+                      aria-label={openPanels.has(tier) ? "Hide tier details" : "Show tier details"}
+                      onClick={() => togglePanel(tier)}
+                    >{openPanels.has(tier) ? "−" : "+"}</button>
                     <div className="p-panel-head-text">
                       <div className="p-panel-eyebrow">{TIERS[tier].descriptors}</div>
                       <h3 className="p-panel-tier-name">{TIERS[tier].name}</h3>

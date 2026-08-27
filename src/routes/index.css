@@ -128,6 +128,7 @@
    ───────────────────────────────────────────────────────────────────────── */
 .lh-switcher .p-panel-stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: calc(var(--base) * 0.5);
   margin-top: calc(var(--base) * 0.5);
 }
@@ -136,6 +137,7 @@
   /* The stack owns the vertical rhythm now — products.css put the gap on the
      panel's own margin-top, which would double up between stacked boxes. */
   margin-top: 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   /* Jump-nav scroll target: keep the panel head clear of the viewport edge. */

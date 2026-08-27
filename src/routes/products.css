@@ -859,7 +859,7 @@
   }
   .p-inside-pillars { grid-template-columns: 1fr; }
   .p-inside-headline { font-size: calc(var(--base) * 1.0); }
-  .p-hero-headline { font-size: calc(var(--base) * 1.35); }
+  .p-hero-headline { font-size: calc(var(--base) * 1.25); white-space: nowrap; }
 }
 @media (max-width: 520px) {
   /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis replaces

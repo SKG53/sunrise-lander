@@ -982,8 +982,9 @@
   .s03-card-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {
-  .home-hero { height: 440px; }
-  .hero-strip { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
+  .home-hero { height: 220px; }
+  /* Hero strips stay 4-across (left→right) on mobile to match desktop composition
+     and the main site; the wordmark is auto-fit to available width in index.tsx. */
   /* Keep "CRAFTED BEVERAGES" on one line on phones (tighter tracking + no wrap). */
   .hero-subtitle {
     font-size: calc(var(--base) * 0.5);

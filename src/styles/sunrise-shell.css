@@ -897,10 +897,3 @@ main { flex: 1; width: 100%; }
     line-height: 1.6;
   }
 }
-
-@media (max-width: 768px) {
-  /* The global mobile `p { font-size:16px }` rule above also catches the
-     age-gate legal disclosure, blowing the fine print up to body size. Scope it
-     back down under .age-gate-card so it out-specifies that rule. */
-  .age-gate-card .age-gate-disclosure { font-size: 11px; line-height: 1.45; }
-}

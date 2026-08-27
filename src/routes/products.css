@@ -80,6 +80,7 @@
   color: var(--near-black);
   margin: 0 auto calc(var(--base) * 0.6);
   max-width: 18ch;
+  text-align: center;
 }
 .p-hero-headline .accent { color: var(--tier-10); }
 .p-hero-body {
@@ -972,4 +973,22 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .p-panel--collapsible .p-flavor-cta-label--short { animation: none; }
+}
+
+/* ── Cannabinoid/BLEND corner tag on mobile — confine to the can's aspect and
+   center the rotated lockup (ported from the main site; without this the wide
+   "BLEND" lockup runs off the card). ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .p-flavor-corner {
+    display: block;
+    bottom: auto;
+    height: 0;
+    padding-bottom: 133.333%;
+  }
+  .p-flavor-corner > * {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+  }
 }

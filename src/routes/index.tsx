@@ -424,8 +424,8 @@ function LanderHome() {
                             )}
                           </div>
                           <div className="p-flavor-cta">
-                            <span className="p-flavor-cta-label p-flavor-cta-label--full">Learn More</span>
-                            <span className="p-flavor-cta-label p-flavor-cta-label--short">Learn<br />More</span>
+                            <span className="p-flavor-cta-label p-flavor-cta-label--full">Buy Now</span>
+                            <span className="p-flavor-cta-label p-flavor-cta-label--short">Shop</span>
                             <span className="p-flavor-cta-arrow">→</span>
                           </div>
                           {f.cannabinoid && (

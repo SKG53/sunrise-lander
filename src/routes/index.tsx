@@ -226,7 +226,7 @@ function LanderHome() {
           // ACTIVE lockups are wider than the main site's THC marks, so use a
           // smaller panel-lockup scale on phones to keep the widest (60mg) within
           // the panel head; desktop keeps the full LOCKUP_SIZE.
-          const lkSize = window.innerWidth <= 768 ? base * 1.25 : base * LOCKUP_SIZE
+          const lkSize = window.innerWidth <= 768 ? base * 1.75 : base * LOCKUP_SIZE
           panelRef.innerHTML = lockupFor(tier, lkSize, '#FEFBE0')
         }
 

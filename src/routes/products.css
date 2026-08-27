@@ -896,7 +896,17 @@
   .p-panel--collapsible .p-panel-head {
     grid-template-columns: auto 1fr;
     align-items: center;
-    gap: calc(var(--base) * 0.4) calc(var(--base) * 0.6);
+    column-gap: calc(var(--base) * 0.6);
+    row-gap: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+    margin-bottom: calc(var(--base) * 0.4);
+  }
+  .p-panel--collapsible.p-panel--open .p-panel-head {
+    row-gap: calc(var(--base) * 0.4);
+    padding-bottom: calc(var(--base) * 0.9);
+    border-bottom: 1px solid rgba(254, 251, 224, 0.25);
+    margin-bottom: calc(var(--base) * 0.9);
   }
   .p-panel--collapsible .p-panel-toggle {
     display: block;
@@ -933,4 +943,29 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .p-panel-toggle { animation: none; }
+}
+
+/* ── Flavor-card CTA on mobile — centered "Learn More", no arrow, word hops ──
+   Ported/adapted from the main site (single label on the lander). Scoped to
+   .p-panel--collapsible so /neverpull/hbe keeps its CTA as-is. */
+@media (max-width: 768px) {
+  .p-panel--collapsible .p-flavor-cta-arrow { display: none; }
+  .p-panel--collapsible .p-flavor-cta { font-size: 12px; white-space: nowrap; }
+  .p-panel--collapsible .p-flavor-cta-label {
+    display: inline-block;
+    animation: p-flavor-shop-hop 1.4s ease-in-out infinite;
+  }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(1) .p-flavor-cta-label { animation-duration: 1.30s; animation-delay: -0.20s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(2) .p-flavor-cta-label { animation-duration: 1.55s; animation-delay: -0.65s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(3) .p-flavor-cta-label { animation-duration: 1.42s; animation-delay: -0.40s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(4) .p-flavor-cta-label { animation-duration: 1.68s; animation-delay: -0.90s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(5) .p-flavor-cta-label { animation-duration: 1.36s; animation-delay: -0.15s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(6) .p-flavor-cta-label { animation-duration: 1.60s; animation-delay: -0.75s; }
+}
+@keyframes p-flavor-shop-hop {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .p-panel--collapsible .p-flavor-cta-label { animation: none; }
 }

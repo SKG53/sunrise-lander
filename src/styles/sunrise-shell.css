@@ -914,6 +914,13 @@ main { flex: 1; width: 100%; }
   .age-gate-actions { gap: calc(var(--base) * 0.2); }
 }
 
+@media (max-width: 768px) {
+  /* The global mobile `p { font-size:16px }` rule also catches the age-gate
+     legal disclosure, blowing the fine print up to body size. Scope it back
+     down under .age-gate-card so it out-specifies that rule. */
+  .age-gate-card .age-gate-disclosure { font-size: 11px; line-height: 1.45; }
+}
+
 /* ── MOBILE BODY COPY SIZE ───────────────────────────────────────────────────
    All type derives from --base, which clamp-floors at 32px on phones, so body
    copy rendered ~11–13px across the site. Lift every paragraph to a readable

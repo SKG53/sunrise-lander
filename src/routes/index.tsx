@@ -399,7 +399,7 @@ function LanderHome() {
                   <div className="p-flavor-grid">
                     {liveFlavors(tier).map((f, i) => {
                       const slug = toSlug(tier, f)
-                      const img = HOME_PRODUCT_IMAGES[slug] ?? getCanImage(slug)
+                      const img = getCanImage(slug) ?? HOME_PRODUCT_IMAGES[slug]
                       return (
                         <a
                           key={slug}

@@ -241,7 +241,12 @@ function LanderHome() {
         liveFlavors(tier).forEach((f, i) => {
           const ref = cornerRefs.current[`${tier}-${i}`]
           if (!ref || !f.cannabinoid) return
-          ref.innerHTML = renderBlendLockup(base * 0.91, '#FEFBE0')
+          const iconFile = { CBG: 'cbg', CBN: 'cbn', THCV: 'thcv' }[f.cannabinoid]
+          ref.innerHTML =
+            `<span style="display:inline-flex; align-items:center; gap:${base * 0.12}px">` +
+              renderBlendLockup(base * 0.91, f.flavorColor) +
+              `<img src="/images/effects/${iconFile}.svg" alt="" aria-hidden="true" style="width:${base * 0.9}px; height:${base * 0.9}px; display:block" />` +
+            `</span>`
         })
       })
     }
@@ -424,7 +429,7 @@ function LanderHome() {
                             )}
                           </div>
                           <div className="p-flavor-cta">
-                            <span className="p-flavor-cta-label p-flavor-cta-label--full">Order Now</span>
+                            <span className="p-flavor-cta-label p-flavor-cta-label--full">Shop</span>
                             <span className="p-flavor-cta-label p-flavor-cta-label--short">Shop</span>
                             <span className="p-flavor-cta-arrow">→</span>
                           </div>

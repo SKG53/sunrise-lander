@@ -419,13 +419,14 @@
   text-align: center;
 }
 .p-flavor-descriptor {
+  display: none; /* removed per request — flavor taste descriptor (effect pill retained) */
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.22);
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--cream);
-  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
 }
 .p-flavor-pill {
   display: inline-block;
@@ -491,7 +492,9 @@
 }
 .p-flavor-cta-arrow {
   display: inline-block;
-  font-size: 1.15em;
+  font-size: 1.25em;
+  font-weight: 900;
+  -webkit-text-stroke: 0.7px currentColor;
   line-height: 1;
 }
 @media (hover: hover) {

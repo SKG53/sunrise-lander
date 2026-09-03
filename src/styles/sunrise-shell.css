@@ -286,6 +286,13 @@ main { flex: 1; width: 100%; }
   .announcement-bar-slide { font-size: calc(var(--base) * 0.36); }
 }
 
+/* Mobile: match the main site's announcement bar exactly (same fixed px, so the
+   vertical size and slide font size are identical across both sites). */
+@media (max-width: 768px) {
+  .announcement-bar { padding-block: 18px; padding-inline: 14px; }
+  .announcement-bar-slide { font-size: 14px; letter-spacing: 0.08em; }
+}
+
 /* Mini fireworks — the Spin & Save particle style, scaled for the bar. */
 .announcement-bar-fw { position: absolute; inset: -6px -2%; z-index: 1; pointer-events: none; overflow: visible; }
 .ann-burst { position: absolute; width: 0; height: 0; opacity: 0; animation: ann-burst-pop 1.2s ease-out forwards; }

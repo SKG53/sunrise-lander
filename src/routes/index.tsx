@@ -402,9 +402,10 @@ function LanderHome() {
               type="button"
               className="lh-fys-shop"
               onClick={() => {
-                document
-                  .getElementById('shop-collection')
-                  ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                // Let the Spin & Save wheel decide: if still eligible this
+                // session it opens (then scrolls to the picker on close); if
+                // already seen it just scrolls. Logic lives in SpinWheel.
+                window.dispatchEvent(new Event('srbev:shop-collection'))
               }}
             >
               Shop the whole collection

@@ -362,39 +362,75 @@ function LanderHome() {
     <>
       <main>
         <LanderHeader />
-        {/* ── HERO — matches home page (4 tier strips + wordmark + subtitle) */}
-        <section className="home-hero">
-          <div className="hero-strip">
-            <div className="hero-strip-col tier-5-bg" />
-            <div className="hero-strip-col tier-10-bg" />
-            <div className="hero-strip-col tier-30-bg" />
-            <div className="hero-strip-col tier-60-bg" />
-          </div>
-          <div className="hero-overlay">
-            {/* The tagline is a CLOSING anchor in the brand voice — never an
-                opener. It does not belong in the hero, which is the first thing
-                on the page. See the hero-subtitle note below. */}
-            <h1 className="sr-only">SUNRISE — Crafted Beverages</h1>
-            <div className="hero-wordmark-slot" ref={heroWmRef} />
-            {/* "Crafted Beverages" — NOT the tagline.
+        {/* ── HERO — Find your SUNRISE + four fly-in product cards ───────── */}
+        <section className="lh-fys">
+          <div className="container">
+            <h1 className="lh-fys-headline">
+              <span>Find your</span>
+              <span className="lh-fys-wm" ref={heroWmRef} aria-label="SUNRISE" />
+            </h1>
 
-                A prior pass set this to "Refresh the way the world drinks" while
- purging Beverage Expo strings. But "Crafted Beverages" was
-                never an HBE reference — it is the main store's hero subtitle —
-                so it was collateral, and it broke a brand rule: the tagline is
-                a closing anchor ONLY, never an opener. Sitting directly under
-                the wordmark at the top of the page is the most opening position
-                there is.
+            <div className="lh-fys-cards">
+              {FYS_CARDS.map((c, i) => {
+                const img = getCanImage(c.slug)
+                const ink = fysInk(c.color)
+                return (
+                  <a
+                    key={c.slug}
+                    ref={(el) => { fysCardRefs.current[i] = el }}
+                    href={`https://www.savorsunrise.com/products/${c.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`lh-fys-card fly-${c.from}`}
+                    style={{ ['--fc' as string]: c.color } as React.CSSProperties}
+                  >
+                    <div className="lh-fys-top">
+                      <div className="lh-fys-caphead">
+                        <span
+                          className="lh-fys-lockup"
+                          ref={(el) => { fysLockupRefs.current[i] = el }}
+                        />
+                        {c.blend && <span className="lh-fys-blend" ref={fysBlendRef} />}
+                      </div>
+                      <div className="lh-fys-well">
+                        {img && (
+                          <img className="lh-fys-can" src={img} alt={`SUNRISE ${c.name}`} loading="eager" />
+                        )}
+                      </div>
+                    </div>
+                    <div className="lh-fys-bottom">
+                      <div className="lh-fys-name">{c.name}</div>
+                      <div
+                        className="lh-fys-desc"
+                        style={{ color: ink === '#1A1A1A' ? '#1A1A1A' : c.color }}
+                      >
+                        {c.descriptor}
+                      </div>
+                      <span className="lh-fys-buy" style={{ background: c.color, color: ink }}>
+                        Buy now →
+                      </span>
+                    </div>
+                  </a>
+                )
+              })}
+            </div>
 
-                "Crafted Beverages" carries zero restricted vocabulary, so it
-                satisfies the reason the string was being changed in the first
-                place, without spending the tagline. */}
-            <div className="hero-subtitle">Crafted Beverages</div>
-          </div>
-          <div className="hero-scroll-cue" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
+            <button
+              type="button"
+              className="lh-fys-shop"
+              onClick={() => {
+                document
+                  .getElementById('shop-collection')
+                  ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
+            >
+              Shop the whole collection
+              <span className="lh-fys-caret" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+            </button>
           </div>
         </section>
 

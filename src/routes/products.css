@@ -359,8 +359,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background: var(--cream);
-  border: 1px solid var(--cream);
+  background: var(--flavor-color, var(--cream));
+  border: 1px solid var(--flavor-color, var(--cream));
   border-radius: 6px;
   overflow: hidden;
   text-decoration: none;
@@ -401,7 +401,7 @@
 }
 .p-flavor-meta {
   padding: calc(var(--base) * 0.42) calc(var(--base) * 0.38) calc(var(--base) * 0.32);
-  background: var(--cream);
+  background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -414,7 +414,7 @@
   font-weight: 900;
   letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: var(--near-black);
+  color: var(--cream);
   line-height: 1.15;
   text-align: center;
 }
@@ -424,20 +424,20 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--green-accent);
+  color: var(--cream);
   text-align: center;
 }
 .p-flavor-pill {
   display: inline-block;
   align-self: center;
   padding: calc(var(--base) * 0.08) calc(var(--base) * 0.24);
-  border: 1px solid var(--flavor-color, var(--warm-gray-faint));
+  border: 1px solid var(--cream);
   border-radius: 9999px;
   font-size: calc(var(--base) * 0.18);
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--flavor-color, var(--near-black));
+  color: var(--cream);
   margin-top: calc(var(--base) * 0.15);
 }
 
@@ -455,8 +455,8 @@
 .p-flavor-cta {
   margin: auto calc(var(--base) * 0.38) calc(var(--base) * 0.42);
   padding: calc(var(--base) * 0.32) calc(var(--base) * 0.5);
-  background: var(--flavor-color, var(--near-black));
-  border: 2px solid var(--flavor-color, var(--near-black));
+  background: var(--cream);
+  border: 2px solid var(--cream);
   border-radius: 9999px;
   display: flex;
   justify-content: center;
@@ -467,7 +467,7 @@
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--cream);
+  color: var(--flavor-color, var(--near-black));
   position: relative;
   overflow: hidden;
 }
@@ -475,7 +475,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: var(--cream);
+  background: var(--flavor-color, var(--near-black));
   clip-path: inset(0 100% 0 0);
   transition: clip-path 400ms ease-out;
   z-index: 0;
@@ -499,7 +499,7 @@
 }
 .p-flavor-card:hover .p-flavor-cta-label,
 .p-flavor-card:hover .p-flavor-cta-arrow {
-  color: var(--flavor-color, var(--near-black));
+  color: var(--cream);
 }
 .p-flavor-card:hover .p-flavor-cta-arrow {
   animation: p-flavor-arrow-dance 400ms ease-out;

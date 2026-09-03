@@ -143,13 +143,12 @@ type FysCard = {
   name: string
   descriptor: string
   color: string
-  from: 'left' | 'right'
+  from: 'left' | 'right' | 'center'
 }
 const FYS_CARDS: FysCard[] = [
-  { slug: '10mg-strawberry',         tier: '10', name: 'Strawberry',         descriptor: 'Fresh + Fruity',  color: '#CC1F39', from: 'left'  },
-  { slug: '30mg-orange-lemonade',    tier: '30', name: 'Orange Lemonade',    descriptor: 'Bright + Tart',   color: '#FAA819', from: 'left'  },
-  { slug: '60mg-blackberry-cbn',     tier: '60', name: 'Blackberry',         descriptor: 'Dark + Smooth',   color: '#2E1E3D', from: 'right' },
-  { slug: '60mg-passionfruit-mango', tier: '60', name: 'Passionfruit Mango', descriptor: 'Bright + Breezy', color: '#60203A', from: 'right' },
+  { slug: '10mg-strawberry',      tier: '10', name: 'Strawberry',      descriptor: 'Fresh + Fruity', color: '#CC1F39', from: 'left'   },
+  { slug: '30mg-orange-lemonade', tier: '30', name: 'Orange Lemonade', descriptor: 'Bright + Tart',  color: '#FAA819', from: 'center' },
+  { slug: '60mg-blackberry-cbn',  tier: '60', name: 'Blackberry',      descriptor: 'Dark + Smooth',  color: '#2E1E3D', from: 'right'  },
 ]
 
 // Relative-luminance ink pick (WCAG). Dark flavor fields get cream ink; light
@@ -310,7 +309,7 @@ function LanderHome() {
       FYS_CARDS.forEach((_, i) => fysCardRefs.current[i]?.classList.add('settled'))
       return
     }
-    const waves = [[0, 3], [1, 2]]
+    const waves = [[0, 2], [1]]
     let t = 170
     const timers: number[] = []
     waves.forEach((wave) => {
@@ -391,7 +390,7 @@ function LanderHome() {
                         {c.descriptor}
                       </div>
                       <span className="lh-fys-buy" style={{ background: c.color, color: '#FEFBE0' }}>
-                        Buy now →
+                        Shop <span className="lh-fys-buy-arrow" aria-hidden="true">→</span>
                       </span>
                     </div>
                   </a>

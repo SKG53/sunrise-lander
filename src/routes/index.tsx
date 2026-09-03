@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { SiteFooter } from '../components/SiteFooter'
+import { LanderHeader } from '../components/LanderHeader'
 import { getCanImage } from '../lib/canImages'
 import lemonade10 from '../assets/products/10mg-lemonade-lifestyle-v3.png.asset.json'
 import strawberry10 from '../assets/products/10mg-strawberry-lifestyle-v3.png.asset.json'
@@ -283,6 +284,7 @@ function LanderHome() {
   return (
     <>
       <main>
+        <LanderHeader />
         {/* ── HERO — matches home page (4 tier strips + wordmark + subtitle) */}
         <section className="home-hero">
           <div className="hero-strip">

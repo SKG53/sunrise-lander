@@ -450,7 +450,7 @@ function LanderHome() {
         </section>
 
         {/* ── TIER SWITCHER + PANEL ─────────────────────────────────────── */}
-        <section className="p-switcher lh-switcher">
+        <section className="p-switcher lh-switcher" id="shop-collection">
           <div className="container">
             {/* Jump-nav. Non-sticky: it sits at the top of the section and
                 scrolls away. Clicking a tier scrolls to its panel; the active

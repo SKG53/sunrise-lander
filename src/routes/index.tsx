@@ -131,6 +131,38 @@ const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
   THCV: 'Elevate + Engage',
 }
 
+// ── HERO "Find your SUNRISE" cards ──────────────────────────────────────────
+// Four hand-picked SKUs for the top-of-page hero. Compliant lockups only
+// (ACTIVE / +BLEND — never THC/THCV); cans come from getCanImage (blurred,
+// cream-bg). Assembly order for the fly-in: outer pair first (index 0 from the
+// left, 3 from the right), then the inner pair (1 from left, 2 from right).
+type FysCard = {
+  slug: string
+  tier: '10' | '30' | '60'
+  name: string
+  descriptor: string
+  color: string
+  blend?: boolean
+  from: 'left' | 'right'
+}
+const FYS_CARDS: FysCard[] = [
+  { slug: '10mg-strawberry',         tier: '10', name: 'Strawberry',         descriptor: 'Fresh + Fruity',  color: '#CC1F39', from: 'left'  },
+  { slug: '30mg-orange-lemonade',    tier: '30', name: 'Orange Lemonade',    descriptor: 'Bright + Tart',   color: '#FAA819', from: 'left'  },
+  { slug: '60mg-blackberry-cbn',     tier: '60', name: 'Blackberry',         descriptor: 'Dark + Smooth',   color: '#2E1E3D', blend: true, from: 'right' },
+  { slug: '60mg-passionfruit-mango', tier: '60', name: 'Passionfruit Mango', descriptor: 'Bright + Breezy', color: '#60203A', from: 'right' },
+]
+
+// Relative-luminance ink pick (WCAG). Dark flavor fields get cream ink; light
+// ones (e.g. Orange Lemonade #FAA819) flip to near-black so the lockup, label
+// and button text stay legible against both the colored top and the button.
+function fysInk(hex: string): string {
+  const n = hex.replace('#', '')
+  const chan = (i: number) => parseInt(n.slice(i, i + 2), 16) / 255
+  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4))
+  const L = 0.2126 * lin(chan(0)) + 0.7152 * lin(chan(2)) + 0.0722 * lin(chan(4))
+  return L > 0.3 ? '#1A1A1A' : '#FEFBE0'
+}
+
 // The tiers that actually render, in scroll order. Single source of truth for
 // both the switcher bar and the stacked panels so the two can never disagree.
 const LIVE_TIERS: TierKey[] = (['5', '10', '30', '60'] as TierKey[])

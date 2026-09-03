@@ -497,6 +497,17 @@
   -webkit-text-stroke: 0.7px currentColor;
   line-height: 1;
 }
+/* Match the hero card Shop buttons: heavier weight + tighter tracking, and an
+   arrow that nudges left<->right continuously at all widths (previously the
+   bounce was mobile-only; the mobile block below re-declares it harmlessly). */
+.p-panel--collapsible .p-flavor-cta { font-weight: 800; letter-spacing: 0.07em; }
+.p-panel--collapsible .p-flavor-cta-arrow { animation: p-flavor-arrow-bounce 1.4s ease-in-out infinite; }
+.p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(1) .p-flavor-cta-arrow { animation-duration: 1.30s; animation-delay: -0.20s; }
+.p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(2) .p-flavor-cta-arrow { animation-duration: 1.55s; animation-delay: -0.65s; }
+.p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(3) .p-flavor-cta-arrow { animation-duration: 1.42s; animation-delay: -0.40s; }
+.p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(4) .p-flavor-cta-arrow { animation-duration: 1.68s; animation-delay: -0.90s; }
+.p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(5) .p-flavor-cta-arrow { animation-duration: 1.36s; animation-delay: -0.15s; }
+.p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(6) .p-flavor-cta-arrow { animation-duration: 1.60s; animation-delay: -0.75s; }
 @media (hover: hover) {
   .p-flavor-card:hover .p-flavor-cta::before {
     clip-path: inset(0 0 0 0);

@@ -171,7 +171,7 @@
 
 .lh-fys-cards {
   display: flex; justify-content: center; align-items: stretch; gap: calc(var(--base) * 0.5);
-  width: 100%; max-width: calc(var(--base) * 21); margin: 0 auto calc(var(--base) * 1.1);
+  width: 100%; max-width: calc(var(--base) * 17); margin: 0 auto calc(var(--base) * 1.1);
 }
 .lh-fys-card {
   flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;
@@ -182,7 +182,7 @@
 }
 .lh-fys-top {
   position: relative; background: var(--fc); display: flex; flex-direction: column;
-  align-items: center; padding: calc(var(--base) * 0.34) calc(var(--base) * 0.3) 0;
+  align-items: center; padding: calc(var(--base) * 0.34) calc(var(--base) * 0.3) calc(var(--base) * 0.36);
   gap: calc(var(--base) * 0.18); aspect-ratio: 0.82 / 1; overflow: hidden;
 }
 .lh-fys-caphead {
@@ -201,18 +201,25 @@
 }
 .lh-fys-name { font-weight: 800; font-size: calc(var(--base) * 0.4); letter-spacing: 0.005em; text-transform: uppercase; color: var(--near-black); line-height: 1.05; text-align: center; }
 .lh-fys-desc { font-weight: 700; font-size: calc(var(--base) * 0.28); letter-spacing: 0.05em; text-transform: uppercase; line-height: 1; }
-/* margin-top:auto pins every Buy now to the bottom edge so they align across
+/* margin-top:auto pins every Shop button to the bottom edge so they align across
    cards regardless of 1- vs 2-line names (main-site behavior). */
 .lh-fys-buy {
   margin-top: auto; display: inline-flex; align-items: center; gap: 0.5em;
   font-weight: 800; font-size: calc(var(--base) * 0.28); letter-spacing: 0.07em; text-transform: uppercase;
   padding: calc(var(--base) * 0.3) calc(var(--base) * 0.66); border-radius: 9999px; line-height: 1;
 }
+/* Button arrow nudges left<->right continuously (desktop + mobile), matching the
+   lower flavor cards. Reuses p-flavor-arrow-bounce (defined in products.css). */
+.lh-fys-buy-arrow { display: inline-block; font-weight: 900; animation: p-flavor-arrow-bounce 1.4s ease-in-out infinite; }
+.lh-fys-cards .lh-fys-card:nth-child(1) .lh-fys-buy-arrow { animation-duration: 1.34s; animation-delay: -0.20s; }
+.lh-fys-cards .lh-fys-card:nth-child(2) .lh-fys-buy-arrow { animation-duration: 1.52s; animation-delay: -0.60s; }
+.lh-fys-cards .lh-fys-card:nth-child(3) .lh-fys-buy-arrow { animation-duration: 1.42s; animation-delay: -0.38s; }
 
-/* Fly-in — outer pair (0,3) then inner pair (1,2); .settled painted by JS. */
-.lh-fys-card.fly-left  { transform: translateX(-150%) rotate(-7deg); }
-.lh-fys-card.fly-right { transform: translateX(150%) rotate(7deg); }
-.lh-fys-card.settled   { opacity: 1; transform: translateX(0) rotate(0); transition: transform 0.72s cubic-bezier(0.22, 1.1, 0.36, 1), opacity 0.5s ease-out; }
+/* Fly-in — outer pair (0,2) then center (1); .settled painted by JS. */
+.lh-fys-card.fly-left   { transform: translateX(-150%) rotate(-7deg); }
+.lh-fys-card.fly-right  { transform: translateX(150%) rotate(7deg); }
+.lh-fys-card.fly-center { transform: translateY(18%) scale(0.94); }
+.lh-fys-card.settled    { opacity: 1; transform: translateX(0) translateY(0) rotate(0) scale(1); transition: transform 0.72s cubic-bezier(0.22, 1.1, 0.36, 1), opacity 0.5s ease-out; }
 
 .lh-fys-shop {
   display: inline-flex; align-items: center; gap: 0.55em; cursor: pointer; border: 0;
@@ -239,6 +246,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .lh-fys-card { transition: none !important; }
-  .lh-fys-card.fly-left, .lh-fys-card.fly-right { transform: none; opacity: 1; }
-  .lh-fys-caret { animation: none; }
+  .lh-fys-card.fly-left, .lh-fys-card.fly-right, .lh-fys-card.fly-center { transform: none; opacity: 1; }
+  .lh-fys-caret, .lh-fys-buy-arrow { animation: none; }
 }

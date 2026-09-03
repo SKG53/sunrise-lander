@@ -217,6 +217,11 @@ function LanderHome() {
   const cornerRefs = useRef<Record<string, HTMLSpanElement | null>>({})
   // Panel elements, for jump-scroll + scroll-spy.
   const panelRefs = useRef<Record<string, HTMLDivElement | null>>({})
+  // Hero "Find your SUNRISE" cards — potency/blend lockups (painted) + the
+  // card anchors (for the fly-in reveal).
+  const fysLockupRefs = useRef<Record<number, HTMLSpanElement | null>>({})
+  const fysBlendRef = useRef<HTMLSpanElement | null>(null)
+  const fysCardRefs = useRef<Record<number, HTMLAnchorElement | null>>({})
 
   const goToTier = (tier: TierKey) => {
     setActiveTier(tier)

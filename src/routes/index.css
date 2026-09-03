@@ -182,19 +182,18 @@
 }
 .lh-fys-top {
   position: relative; background: var(--fc); display: flex; flex-direction: column;
-  padding: calc(var(--base) * 0.34); gap: calc(var(--base) * 0.26);
+  align-items: center; padding: calc(var(--base) * 0.34) calc(var(--base) * 0.3) 0;
+  gap: calc(var(--base) * 0.18); aspect-ratio: 0.82 / 1; overflow: hidden;
 }
 .lh-fys-caphead {
-  position: relative; min-height: calc(var(--base) * 0.98); display: flex;
-  align-items: flex-start; justify-content: space-between; gap: calc(var(--base) * 0.2);
+  width: 100%; display: flex; align-items: flex-start; justify-content: flex-start;
 }
 .lh-fys-lockup { line-height: 0; }
-.lh-fys-blend { line-height: 0; white-space: nowrap; margin-top: calc(var(--base) * 0.02); }
-.lh-fys-well {
-  background: var(--cream); border-radius: calc(var(--base) * 0.16); aspect-ratio: 0.78 / 1;
-  display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
+/* Transparent cutout can, floating directly on the colored top (main-site look). */
+.lh-fys-can {
+  flex: 1; min-height: 0; width: 100%; object-fit: contain; object-position: bottom center;
+  filter: drop-shadow(0 calc(var(--base) * 0.13) calc(var(--base) * 0.16) rgba(0, 0, 0, 0.32));
 }
-.lh-fys-can { height: 99%; width: auto; max-width: 96%; object-fit: contain; object-position: bottom; }
 
 .lh-fys-bottom {
   background: var(--cream); padding: calc(var(--base) * 0.48) calc(var(--base) * 0.36) calc(var(--base) * 0.52);
@@ -202,8 +201,10 @@
 }
 .lh-fys-name { font-weight: 800; font-size: calc(var(--base) * 0.4); letter-spacing: 0.005em; text-transform: uppercase; color: var(--near-black); line-height: 1.05; text-align: center; }
 .lh-fys-desc { font-weight: 700; font-size: calc(var(--base) * 0.28); letter-spacing: 0.05em; text-transform: uppercase; line-height: 1; }
+/* margin-top:auto pins every Buy now to the bottom edge so they align across
+   cards regardless of 1- vs 2-line names (main-site behavior). */
 .lh-fys-buy {
-  margin-top: calc(var(--base) * 0.14); display: inline-flex; align-items: center; gap: 0.5em;
+  margin-top: auto; display: inline-flex; align-items: center; gap: 0.5em;
   font-weight: 800; font-size: calc(var(--base) * 0.28); letter-spacing: 0.07em; text-transform: uppercase;
   padding: calc(var(--base) * 0.3) calc(var(--base) * 0.66); border-radius: 9999px; line-height: 1;
 }
@@ -226,7 +227,7 @@
 @keyframes lh-fys-bounce { 0%, 100% { transform: translateY(-15%); } 50% { transform: translateY(30%); } }
 
 /* Scroll target for the CTA — top of the potency picker, clear of the sticky header. */
-.p-switcher.lh-switcher { scroll-margin-top: calc(var(--base) * 2); }
+.p-switcher.lh-switcher { scroll-margin-top: calc(var(--base) * 1.4); }
 
 @media (max-width: 768px) {
   .lh-fys-headline { flex-direction: column; align-items: center; gap: 0.08em; font-size: calc(var(--base) * 1.3); }

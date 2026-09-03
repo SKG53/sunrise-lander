@@ -15,8 +15,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { SiteFooter } from '../components/SiteFooter'
-import { LanderHeader } from '../components/LanderHeader'
 import { getCanImage } from '../lib/canImages'
+import { HERO_CANS } from '../lib/heroCans'
 import lemonade10 from '../assets/products/10mg-lemonade-lifestyle-v3.png.asset.json'
 import strawberry10 from '../assets/products/10mg-strawberry-lifestyle-v3.png.asset.json'
 import watermelon10 from '../assets/products/10mg-watermelon-lifestyle-v3.png.asset.json'
@@ -132,23 +132,23 @@ const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
 }
 
 // ── HERO "Find your SUNRISE" cards ──────────────────────────────────────────
-// Four hand-picked SKUs for the top-of-page hero. Compliant lockups only
-// (ACTIVE / +BLEND — never THC/THCV); cans come from getCanImage (blurred,
-// cream-bg). Assembly order for the fly-in: outer pair first (index 0 from the
-// left, 3 from the right), then the inner pair (1 from left, 2 from right).
+// Four hand-picked SKUs for the top-of-page hero. Potency shown as the compliant
+// ACTIVE lockup (never THC); no blend mark in this section. Cans are transparent
+// cutouts (HERO_CANS) sitting directly on the colored top, like the main site.
+// Fly-in order: outer pair first (index 0 from the left, 3 from the right), then
+// the inner pair (1 from left, 2 from right).
 type FysCard = {
   slug: string
   tier: '10' | '30' | '60'
   name: string
   descriptor: string
   color: string
-  blend?: boolean
   from: 'left' | 'right'
 }
 const FYS_CARDS: FysCard[] = [
   { slug: '10mg-strawberry',         tier: '10', name: 'Strawberry',         descriptor: 'Fresh + Fruity',  color: '#CC1F39', from: 'left'  },
   { slug: '30mg-orange-lemonade',    tier: '30', name: 'Orange Lemonade',    descriptor: 'Bright + Tart',   color: '#FAA819', from: 'left'  },
-  { slug: '60mg-blackberry-cbn',     tier: '60', name: 'Blackberry',         descriptor: 'Dark + Smooth',   color: '#2E1E3D', blend: true, from: 'right' },
+  { slug: '60mg-blackberry-cbn',     tier: '60', name: 'Blackberry',         descriptor: 'Dark + Smooth',   color: '#2E1E3D', from: 'right' },
   { slug: '60mg-passionfruit-mango', tier: '60', name: 'Passionfruit Mango', descriptor: 'Bright + Breezy', color: '#60203A', from: 'right' },
 ]
 
@@ -217,10 +217,9 @@ function LanderHome() {
   const cornerRefs = useRef<Record<string, HTMLSpanElement | null>>({})
   // Panel elements, for jump-scroll + scroll-spy.
   const panelRefs = useRef<Record<string, HTMLDivElement | null>>({})
-  // Hero "Find your SUNRISE" cards — potency/blend lockups (painted) + the
-  // card anchors (for the fly-in reveal).
+  // Hero "Find your SUNRISE" cards — potency lockups (painted) + the card
+  // anchors (for the fly-in reveal).
   const fysLockupRefs = useRef<Record<number, HTMLSpanElement | null>>({})
-  const fysBlendRef = useRef<HTMLSpanElement | null>(null)
   const fysCardRefs = useRef<Record<number, HTMLAnchorElement | null>>({})
 
   const goToTier = (tier: TierKey) => {
@@ -239,25 +238,17 @@ function LanderHome() {
         heroWmRef.current.innerHTML = renderWordmark(wmSize, 'gradient')
       }
 
-      // Hero card potency lockups (ACTIVE) + the single +BLEND mark. Ink is
-      // luminance-picked so it stays legible on light flavor fields.
+      // Hero card potency lockups (ACTIVE) — always cream, sized large to anchor
+      // the colored top (matches the main-site card treatment).
       FYS_CARDS.forEach((c, i) => {
         const ref = fysLockupRefs.current[i]
         if (!ref) return
-        const ink = fysInk(c.color)
-        const lkSize = window.innerWidth <= 768 ? base * 0.5 : base * 0.56
+        const lkSize = window.innerWidth <= 768 ? base * 0.66 : base * 0.82
         ref.innerHTML =
-          c.tier === '10' ? render10mgActiveLockup(lkSize, ink) :
-          c.tier === '30' ? render30mgActiveLockup(lkSize, ink) :
-          render60mgActiveLockup(lkSize, ink)
+          c.tier === '10' ? render10mgActiveLockup(lkSize, '#FEFBE0') :
+          c.tier === '30' ? render30mgActiveLockup(lkSize, '#FEFBE0') :
+          render60mgActiveLockup(lkSize, '#FEFBE0')
       })
-      if (fysBlendRef.current) {
-        const c = FYS_CARDS.find((x) => x.blend)
-        if (c) {
-          const blSize = window.innerWidth <= 768 ? base * 0.46 : base * 0.52
-          fysBlendRef.current.innerHTML = renderBlendLockup(blSize, fysInk(c.color))
-        }
-      }
 
       if (switch5Ref.current)
         switch5Ref.current.innerHTML = render5mgActiveLockup(base * 1.2, TIERS['5'].color)
@@ -361,7 +352,6 @@ function LanderHome() {
   return (
     <>
       <main>
-        <LanderHeader />
         {/* ── HERO — Find your SUNRISE + four fly-in product cards ───────── */}
         <section className="lh-fys">
           <div className="container">
@@ -372,8 +362,8 @@ function LanderHome() {
 
             <div className="lh-fys-cards">
               {FYS_CARDS.map((c, i) => {
-                const img = getCanImage(c.slug)
-                const ink = fysInk(c.color)
+                const img = HERO_CANS[c.slug]
+                const descColor = fysInk(c.color) === '#1A1A1A' ? '#1A1A1A' : c.color
                 return (
                   <a
                     key={c.slug}
@@ -390,23 +380,17 @@ function LanderHome() {
                           className="lh-fys-lockup"
                           ref={(el) => { fysLockupRefs.current[i] = el }}
                         />
-                        {c.blend && <span className="lh-fys-blend" ref={fysBlendRef} />}
                       </div>
-                      <div className="lh-fys-well">
-                        {img && (
-                          <img className="lh-fys-can" src={img} alt={`SUNRISE ${c.name}`} loading="eager" />
-                        )}
-                      </div>
+                      {img && (
+                        <img className="lh-fys-can" src={img} alt={`SUNRISE ${c.name}`} loading="eager" />
+                      )}
                     </div>
                     <div className="lh-fys-bottom">
                       <div className="lh-fys-name">{c.name}</div>
-                      <div
-                        className="lh-fys-desc"
-                        style={{ color: ink === '#1A1A1A' ? '#1A1A1A' : c.color }}
-                      >
+                      <div className="lh-fys-desc" style={{ color: descColor }}>
                         {c.descriptor}
                       </div>
-                      <span className="lh-fys-buy" style={{ background: c.color, color: ink }}>
+                      <span className="lh-fys-buy" style={{ background: c.color, color: '#FEFBE0' }}>
                         Buy now →
                       </span>
                     </div>

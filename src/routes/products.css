@@ -360,7 +360,7 @@
   display: flex;
   flex-direction: column;
   background: var(--flavor-color, var(--cream));
-  border: 1px solid var(--flavor-color, var(--cream));
+  border: 2px solid var(--cream);
   border-radius: 6px;
   overflow: hidden;
   text-decoration: none;
@@ -494,15 +494,17 @@
   font-size: 1.15em;
   line-height: 1;
 }
-.p-flavor-card:hover .p-flavor-cta::before {
-  clip-path: inset(0 0 0 0);
-}
-.p-flavor-card:hover .p-flavor-cta-label,
-.p-flavor-card:hover .p-flavor-cta-arrow {
-  color: var(--cream);
-}
-.p-flavor-card:hover .p-flavor-cta-arrow {
-  animation: p-flavor-arrow-dance 400ms ease-out;
+@media (hover: hover) {
+  .p-flavor-card:hover .p-flavor-cta::before {
+    clip-path: inset(0 0 0 0);
+  }
+  .p-flavor-card:hover .p-flavor-cta-label,
+  .p-flavor-card:hover .p-flavor-cta-arrow {
+    color: var(--cream);
+  }
+  .p-flavor-card:hover .p-flavor-cta-arrow {
+    animation: p-flavor-arrow-dance 400ms ease-out;
+  }
 }
 @keyframes p-flavor-arrow-dance {
   0%   { transform: translateX(0);                       opacity: 1; }
@@ -951,28 +953,29 @@
    Ported/adapted from the main site (single label on the lander). Scoped to
    .p-panel--collapsible so /neverpull/hbe keeps its CTA as-is. */
 @media (max-width: 768px) {
-  .p-panel--collapsible .p-flavor-cta-arrow { display: none; }
-  .p-panel--collapsible .p-flavor-cta { font-size: 12px; text-align: center; }
-  .p-panel--collapsible .p-flavor-cta-label--full { display: none; }
-  .p-panel--collapsible .p-flavor-cta-label--short {
+  .p-panel--collapsible .p-flavor-cta { font-size: 11px; letter-spacing: 0.06em; }
+  /* Mobile: single "Order Now" label + arrow that bounces left<->right at a
+     per-card cadence. Hover is gated behind @media (hover: hover) so touch
+     never triggers the wipe; the bounce replaces the old short-label hop. */
+  .p-panel--collapsible .p-flavor-cta-label--short { display: none; }
+  .p-panel--collapsible .p-flavor-cta-label--full { display: inline-block; }
+  .p-panel--collapsible .p-flavor-cta-arrow {
     display: inline-block;
-    text-align: center;
-    line-height: 1.1;
-    animation: p-flavor-shop-hop 1.4s ease-in-out infinite;
+    animation: p-flavor-arrow-bounce 1.4s ease-in-out infinite;
   }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(1) .p-flavor-cta-label--short { animation-duration: 1.30s; animation-delay: -0.20s; }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(2) .p-flavor-cta-label--short { animation-duration: 1.55s; animation-delay: -0.65s; }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(3) .p-flavor-cta-label--short { animation-duration: 1.42s; animation-delay: -0.40s; }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(4) .p-flavor-cta-label--short { animation-duration: 1.68s; animation-delay: -0.90s; }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(5) .p-flavor-cta-label--short { animation-duration: 1.36s; animation-delay: -0.15s; }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(6) .p-flavor-cta-label--short { animation-duration: 1.60s; animation-delay: -0.75s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(1) .p-flavor-cta-arrow { animation-duration: 1.30s; animation-delay: -0.20s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(2) .p-flavor-cta-arrow { animation-duration: 1.55s; animation-delay: -0.65s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(3) .p-flavor-cta-arrow { animation-duration: 1.42s; animation-delay: -0.40s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(4) .p-flavor-cta-arrow { animation-duration: 1.68s; animation-delay: -0.90s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(5) .p-flavor-cta-arrow { animation-duration: 1.36s; animation-delay: -0.15s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(6) .p-flavor-cta-arrow { animation-duration: 1.60s; animation-delay: -0.75s; }
 }
-@keyframes p-flavor-shop-hop {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-3px); }
+@keyframes p-flavor-arrow-bounce {
+  0%, 100% { transform: translateX(calc(var(--base) * -0.22)); }
+  50%      { transform: translateX(calc(var(--base) * 0.22)); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .p-panel--collapsible .p-flavor-cta-label--short { animation: none; }
+  .p-panel--collapsible .p-flavor-cta-arrow { animation: none; }
 }
 
 /* ── Cannabinoid/BLEND corner tag on mobile — confine to the can's aspect and

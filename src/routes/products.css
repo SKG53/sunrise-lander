@@ -359,8 +359,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background: var(--flavor-color, var(--cream));
-  border: 2px solid var(--cream);
+  background: var(--cream);
+  border: 1.5px solid var(--flavor-color, var(--cream));
   border-radius: 6px;
   overflow: hidden;
   text-decoration: none;
@@ -390,18 +390,19 @@
   content: 'Can Image';
 }
 .p-flavor-can.has-image {
-  background: transparent;
-  padding: 0;
+  background: var(--flavor-color);
+  padding: calc(var(--base) * 0.3) calc(var(--base) * 0.28) 0;
 }
 .p-flavor-can img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 calc(var(--base) * 0.11) calc(var(--base) * 0.14) rgba(0, 0, 0, 0.3));
 }
 .p-flavor-meta {
   padding: calc(var(--base) * 0.42) calc(var(--base) * 0.38) calc(var(--base) * 0.32);
-  background: transparent;
+  background: var(--cream);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -414,16 +415,15 @@
   font-weight: 900;
   letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: var(--cream);
+  color: var(--near-black);
   line-height: 1.15;
   text-align: center;
 }
 .p-flavor-descriptor {
-  display: none; /* removed per request — flavor taste descriptor (effect pill retained) */
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.22);
   font-weight: 700;
-  color: var(--cream);
+  color: var(--flavor-color, var(--near-black));
   text-transform: uppercase;
   letter-spacing: 0.06em;
   line-height: 1.2;
@@ -432,13 +432,13 @@
   display: inline-block;
   align-self: center;
   padding: calc(var(--base) * 0.08) calc(var(--base) * 0.24);
-  border: 1px solid var(--cream);
+  border: 1px solid var(--flavor-color, var(--near-black));
   border-radius: 9999px;
   font-size: calc(var(--base) * 0.18);
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--cream);
+  color: var(--flavor-color, var(--near-black));
   margin-top: calc(var(--base) * 0.15);
 }
 
@@ -456,8 +456,8 @@
 .p-flavor-cta {
   margin: auto calc(var(--base) * 0.38) calc(var(--base) * 0.42);
   padding: calc(var(--base) * 0.32) calc(var(--base) * 0.5);
-  background: var(--cream);
-  border: 2px solid var(--cream);
+  background: var(--flavor-color, var(--near-black));
+  border: 2px solid var(--flavor-color, var(--near-black));
   border-radius: 9999px;
   display: flex;
   justify-content: center;
@@ -468,7 +468,7 @@
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--flavor-color, var(--near-black));
+  color: var(--cream);
   position: relative;
   overflow: hidden;
 }
@@ -476,7 +476,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: var(--flavor-color, var(--near-black));
+  background: var(--cream);
   clip-path: inset(0 100% 0 0);
   transition: clip-path 400ms ease-out;
   z-index: 0;
@@ -514,7 +514,7 @@
   }
   .p-flavor-card:hover .p-flavor-cta-label,
   .p-flavor-card:hover .p-flavor-cta-arrow {
-    color: var(--cream);
+    color: var(--flavor-color, var(--near-black));
   }
   .p-flavor-card:hover .p-flavor-cta-arrow {
     animation: p-flavor-arrow-dance 400ms ease-out;

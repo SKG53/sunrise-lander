@@ -151,17 +151,6 @@ const FYS_CARDS: FysCard[] = [
   { slug: '60mg-blackberry-cbn',  tier: '60', name: 'Blackberry',      descriptor: 'Dark + Smooth',  color: '#2E1E3D', from: 'right'  },
 ]
 
-// Relative-luminance ink pick (WCAG). Dark flavor fields get cream ink; light
-// ones (e.g. Orange Lemonade #FAA819) flip to near-black so the lockup, label
-// and button text stay legible against both the colored top and the button.
-function fysInk(hex: string): string {
-  const n = hex.replace('#', '')
-  const chan = (i: number) => parseInt(n.slice(i, i + 2), 16) / 255
-  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4))
-  const L = 0.2126 * lin(chan(0)) + 0.7152 * lin(chan(2)) + 0.0722 * lin(chan(4))
-  return L > 0.3 ? '#1A1A1A' : '#FEFBE0'
-}
-
 // The tiers that actually render, in scroll order. Single source of truth for
 // both the switcher bar and the stacked panels so the two can never disagree.
 const LIVE_TIERS: TierKey[] = (['5', '10', '30', '60'] as TierKey[])
@@ -285,8 +274,8 @@ function LanderHome() {
           const iconSz = base * 0.54
           ref.innerHTML =
             `<span style="display:inline-flex; align-items:center; gap:${base * 0.08}px">` +
-              renderBlendLockup(base * 0.55, f.flavorColor) +
-              `<span style="width:${iconSz}px; height:${iconSz}px; flex:none; display:block; background:${f.flavorColor}; -webkit-mask:url(/images/effects/${iconFile}-glyph.svg) center/contain no-repeat; mask:url(/images/effects/${iconFile}-glyph.svg) center/contain no-repeat"></span>` +
+              renderBlendLockup(base * 0.55, '#FEFBE0') +
+              `<span style="width:${iconSz}px; height:${iconSz}px; flex:none; display:block; background:#FEFBE0; -webkit-mask:url(/images/effects/${iconFile}-glyph.svg) center/contain no-repeat; mask:url(/images/effects/${iconFile}-glyph.svg) center/contain no-repeat"></span>` +
             `</span>`
         })
       })
@@ -362,7 +351,7 @@ function LanderHome() {
             <div className="lh-fys-cards">
               {FYS_CARDS.map((c, i) => {
                 const img = HERO_CANS[c.slug]
-                const descColor = fysInk(c.color) === '#1A1A1A' ? '#1A1A1A' : c.color
+                const descColor = c.color
                 return (
                   <a
                     key={c.slug}
@@ -504,7 +493,7 @@ function LanderHome() {
                   <div className="p-flavor-grid">
                     {liveFlavors(tier).map((f, i) => {
                       const slug = toSlug(tier, f)
-                      const img = getCanImage(slug) ?? HOME_PRODUCT_IMAGES[slug]
+                      const img = HERO_CANS[slug] ?? getCanImage(slug) ?? HOME_PRODUCT_IMAGES[slug]
                       return (
                         <a
                           key={slug}

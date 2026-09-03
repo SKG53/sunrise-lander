@@ -131,6 +131,38 @@ const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
   THCV: 'Elevate + Engage',
 }
 
+// ── HERO "Find your SUNRISE" cards ──────────────────────────────────────────
+// Four hand-picked SKUs for the top-of-page hero. Compliant lockups only
+// (ACTIVE / +BLEND — never THC/THCV); cans come from getCanImage (blurred,
+// cream-bg). Assembly order for the fly-in: outer pair first (index 0 from the
+// left, 3 from the right), then the inner pair (1 from left, 2 from right).
+type FysCard = {
+  slug: string
+  tier: '10' | '30' | '60'
+  name: string
+  descriptor: string
+  color: string
+  blend?: boolean
+  from: 'left' | 'right'
+}
+const FYS_CARDS: FysCard[] = [
+  { slug: '10mg-strawberry',         tier: '10', name: 'Strawberry',         descriptor: 'Fresh + Fruity',  color: '#CC1F39', from: 'left'  },
+  { slug: '30mg-orange-lemonade',    tier: '30', name: 'Orange Lemonade',    descriptor: 'Bright + Tart',   color: '#FAA819', from: 'left'  },
+  { slug: '60mg-blackberry-cbn',     tier: '60', name: 'Blackberry',         descriptor: 'Dark + Smooth',   color: '#2E1E3D', blend: true, from: 'right' },
+  { slug: '60mg-passionfruit-mango', tier: '60', name: 'Passionfruit Mango', descriptor: 'Bright + Breezy', color: '#60203A', from: 'right' },
+]
+
+// Relative-luminance ink pick (WCAG). Dark flavor fields get cream ink; light
+// ones (e.g. Orange Lemonade #FAA819) flip to near-black so the lockup, label
+// and button text stay legible against both the colored top and the button.
+function fysInk(hex: string): string {
+  const n = hex.replace('#', '')
+  const chan = (i: number) => parseInt(n.slice(i, i + 2), 16) / 255
+  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4))
+  const L = 0.2126 * lin(chan(0)) + 0.7152 * lin(chan(2)) + 0.0722 * lin(chan(4))
+  return L > 0.3 ? '#1A1A1A' : '#FEFBE0'
+}
+
 // The tiers that actually render, in scroll order. Single source of truth for
 // both the switcher bar and the stacked panels so the two can never disagree.
 const LIVE_TIERS: TierKey[] = (['5', '10', '30', '60'] as TierKey[])
@@ -185,6 +217,11 @@ function LanderHome() {
   const cornerRefs = useRef<Record<string, HTMLSpanElement | null>>({})
   // Panel elements, for jump-scroll + scroll-spy.
   const panelRefs = useRef<Record<string, HTMLDivElement | null>>({})
+  // Hero "Find your SUNRISE" cards — potency/blend lockups (painted) + the
+  // card anchors (for the fly-in reveal).
+  const fysLockupRefs = useRef<Record<number, HTMLSpanElement | null>>({})
+  const fysBlendRef = useRef<HTMLSpanElement | null>(null)
+  const fysCardRefs = useRef<Record<number, HTMLAnchorElement | null>>({})
 
   const goToTier = (tier: TierKey) => {
     setActiveTier(tier)
@@ -194,19 +231,31 @@ function LanderHome() {
   useEffect(() => {
     const paint = () => {
       const base = getBasePx()
+      // Hero heading — "Find your SUNRISE". Gradient wordmark sized to sit at
+      // the same cap height as "FIND YOUR" (matches the products-page
+      // .p-effects-headline: base*1.5 desktop / base*1.25 mobile).
       if (heroWmRef.current) {
-        const slot = heroWmRef.current
-        slot.innerHTML = renderWordmark(base * 2.8, 'cream')
-        // Auto-fit the wordmark to the overlay width so it never overflows the
-        // 4-across hero on phones (mirrors the main site's hero fit logic).
-        const overlay = slot.parentElement
-        if (overlay) {
-          const sidePad = base * 0.8 * 2 // matches .hero-overlay horizontal padding
-          const avail = overlay.clientWidth - sidePad
-          const natural = slot.scrollWidth
-          if (avail > 0 && natural > avail * 0.9) {
-            slot.innerHTML = renderWordmark((base * 2.8) * (avail * 0.9) / natural, 'cream')
-          }
+        const wmSize = window.innerWidth <= 768 ? base * 1.25 : base * 1.5
+        heroWmRef.current.innerHTML = renderWordmark(wmSize, 'gradient')
+      }
+
+      // Hero card potency lockups (ACTIVE) + the single +BLEND mark. Ink is
+      // luminance-picked so it stays legible on light flavor fields.
+      FYS_CARDS.forEach((c, i) => {
+        const ref = fysLockupRefs.current[i]
+        if (!ref) return
+        const ink = fysInk(c.color)
+        const lkSize = window.innerWidth <= 768 ? base * 0.5 : base * 0.56
+        ref.innerHTML =
+          c.tier === '10' ? render10mgActiveLockup(lkSize, ink) :
+          c.tier === '30' ? render30mgActiveLockup(lkSize, ink) :
+          render60mgActiveLockup(lkSize, ink)
+      })
+      if (fysBlendRef.current) {
+        const c = FYS_CARDS.find((x) => x.blend)
+        if (c) {
+          const blSize = window.innerWidth <= 768 ? base * 0.46 : base * 0.52
+          fysBlendRef.current.innerHTML = renderBlendLockup(blSize, fysInk(c.color))
         }
       }
 
@@ -258,6 +307,34 @@ function LanderHome() {
     return () => window.removeEventListener('resize', paint)
   }, [activeTier])
 
+  // HERO FLY-IN: the four cards assemble on load — outer pair first (Strawberry
+  // from the left, Passionfruit Mango from the right), then the inner pair
+  // (Orange Lemonade from left, Blackberry from right). Reduced-motion users get
+  // the settled state with no travel.
+  useEffect(() => {
+    const reduce =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce) {
+      FYS_CARDS.forEach((_, i) => fysCardRefs.current[i]?.classList.add('settled'))
+      return
+    }
+    const waves = [[0, 3], [1, 2]]
+    let t = 170
+    const timers: number[] = []
+    waves.forEach((wave) => {
+      wave.forEach((idx) => {
+        timers.push(
+          window.setTimeout(() => {
+            fysCardRefs.current[idx]?.classList.add('settled')
+          }, t),
+        )
+      })
+      t += 360
+    })
+    return () => timers.forEach((id) => clearTimeout(id))
+  }, [])
+
   // SCROLL-SPY: the switcher bar is now navigation, not a toggle. Highlight
   // whichever panel currently occupies the upper-middle of the viewport so the
   // bar still reads as "you are here" while the visitor scrolls the full line.
@@ -285,39 +362,75 @@ function LanderHome() {
     <>
       <main>
         <LanderHeader />
-        {/* ── HERO — matches home page (4 tier strips + wordmark + subtitle) */}
-        <section className="home-hero">
-          <div className="hero-strip">
-            <div className="hero-strip-col tier-5-bg" />
-            <div className="hero-strip-col tier-10-bg" />
-            <div className="hero-strip-col tier-30-bg" />
-            <div className="hero-strip-col tier-60-bg" />
-          </div>
-          <div className="hero-overlay">
-            {/* The tagline is a CLOSING anchor in the brand voice — never an
-                opener. It does not belong in the hero, which is the first thing
-                on the page. See the hero-subtitle note below. */}
-            <h1 className="sr-only">SUNRISE — Crafted Beverages</h1>
-            <div className="hero-wordmark-slot" ref={heroWmRef} />
-            {/* "Crafted Beverages" — NOT the tagline.
+        {/* ── HERO — Find your SUNRISE + four fly-in product cards ───────── */}
+        <section className="lh-fys">
+          <div className="container">
+            <h1 className="lh-fys-headline">
+              <span>Find your</span>
+              <span className="lh-fys-wm" ref={heroWmRef} aria-label="SUNRISE" />
+            </h1>
 
-                A prior pass set this to "Refresh the way the world drinks" while
- purging Beverage Expo strings. But "Crafted Beverages" was
-                never an HBE reference — it is the main store's hero subtitle —
-                so it was collateral, and it broke a brand rule: the tagline is
-                a closing anchor ONLY, never an opener. Sitting directly under
-                the wordmark at the top of the page is the most opening position
-                there is.
+            <div className="lh-fys-cards">
+              {FYS_CARDS.map((c, i) => {
+                const img = getCanImage(c.slug)
+                const ink = fysInk(c.color)
+                return (
+                  <a
+                    key={c.slug}
+                    ref={(el) => { fysCardRefs.current[i] = el }}
+                    href={`https://www.savorsunrise.com/products/${c.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`lh-fys-card fly-${c.from}`}
+                    style={{ ['--fc' as string]: c.color } as React.CSSProperties}
+                  >
+                    <div className="lh-fys-top">
+                      <div className="lh-fys-caphead">
+                        <span
+                          className="lh-fys-lockup"
+                          ref={(el) => { fysLockupRefs.current[i] = el }}
+                        />
+                        {c.blend && <span className="lh-fys-blend" ref={fysBlendRef} />}
+                      </div>
+                      <div className="lh-fys-well">
+                        {img && (
+                          <img className="lh-fys-can" src={img} alt={`SUNRISE ${c.name}`} loading="eager" />
+                        )}
+                      </div>
+                    </div>
+                    <div className="lh-fys-bottom">
+                      <div className="lh-fys-name">{c.name}</div>
+                      <div
+                        className="lh-fys-desc"
+                        style={{ color: ink === '#1A1A1A' ? '#1A1A1A' : c.color }}
+                      >
+                        {c.descriptor}
+                      </div>
+                      <span className="lh-fys-buy" style={{ background: c.color, color: ink }}>
+                        Buy now →
+                      </span>
+                    </div>
+                  </a>
+                )
+              })}
+            </div>
 
-                "Crafted Beverages" carries zero restricted vocabulary, so it
-                satisfies the reason the string was being changed in the first
-                place, without spending the tagline. */}
-            <div className="hero-subtitle">Crafted Beverages</div>
-          </div>
-          <div className="hero-scroll-cue" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
+            <button
+              type="button"
+              className="lh-fys-shop"
+              onClick={() => {
+                document
+                  .getElementById('shop-collection')
+                  ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
+            >
+              Shop the whole collection
+              <span className="lh-fys-caret" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+            </button>
           </div>
         </section>
 
@@ -337,7 +450,7 @@ function LanderHome() {
         </section>
 
         {/* ── TIER SWITCHER + PANEL ─────────────────────────────────────── */}
-        <section className="p-switcher lh-switcher">
+        <section className="p-switcher lh-switcher" id="shop-collection">
           <div className="container">
             {/* Jump-nav. Non-sticky: it sits at the top of the section and
                 scrolls away. Clicking a tier scrolls to its panel; the active

@@ -307,6 +307,34 @@ function LanderHome() {
     return () => window.removeEventListener('resize', paint)
   }, [activeTier])
 
+  // HERO FLY-IN: the four cards assemble on load — outer pair first (Strawberry
+  // from the left, Passionfruit Mango from the right), then the inner pair
+  // (Orange Lemonade from left, Blackberry from right). Reduced-motion users get
+  // the settled state with no travel.
+  useEffect(() => {
+    const reduce =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce) {
+      FYS_CARDS.forEach((_, i) => fysCardRefs.current[i]?.classList.add('settled'))
+      return
+    }
+    const waves = [[0, 3], [1, 2]]
+    let t = 170
+    const timers: number[] = []
+    waves.forEach((wave) => {
+      wave.forEach((idx) => {
+        timers.push(
+          window.setTimeout(() => {
+            fysCardRefs.current[idx]?.classList.add('settled')
+          }, t),
+        )
+      })
+      t += 360
+    })
+    return () => timers.forEach((id) => clearTimeout(id))
+  }, [])
+
   // SCROLL-SPY: the switcher bar is now navigation, not a toggle. Highlight
   // whichever panel currently occupies the upper-middle of the viewport so the
   // bar still reads as "you are here" while the visitor scrolls the full line.

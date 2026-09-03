@@ -375,6 +375,19 @@ main { flex: 1; width: 100%; }
 .nav-cta.solid { background: var(--tier-10); color: var(--cream); border: 1.5px solid var(--tier-10); }
 .nav-cta.solid:hover { background: var(--tier-10-hover); border-color: var(--tier-10-hover); }
 
+/* ── LANDER HEADER (index / route only) ─────────────────────────────────────
+   Reuses .site-header for a byte-identical cream bar + height. Only diverges
+   in two ways: (1) there is no .site-nav to carry the right-push, so nav-right
+   takes the auto margin itself; (2) the lander has no mobile drawer, so the
+   COAs/Shop CTAs must stay visible on mobile (undoing the shared header's
+   .site-header .nav-cta { display:none } collapse). Combined-class selector
+   (0,0,3,0) beats the shared rule (0,0,2,0) regardless of source order.
+   ========================================================================== */
+.site-header.lander-header .nav-right { margin-left: auto; }
+@media (max-width: 768px) {
+  .site-header.lander-header .nav-cta { display: inline-block; }
+}
+
 /* ── HAMBURGER BUTTON ───────────────────────────────────────────────────────
    Visible only below 768px (toggled in the responsive block at the bottom of
    this file). 44×44 px touch target — meets Apple HIG / WCAG minimum.

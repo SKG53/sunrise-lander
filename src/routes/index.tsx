@@ -231,19 +231,31 @@ function LanderHome() {
   useEffect(() => {
     const paint = () => {
       const base = getBasePx()
+      // Hero heading — "Find your SUNRISE". Gradient wordmark sized to sit at
+      // the same cap height as "FIND YOUR" (matches the products-page
+      // .p-effects-headline: base*1.5 desktop / base*1.25 mobile).
       if (heroWmRef.current) {
-        const slot = heroWmRef.current
-        slot.innerHTML = renderWordmark(base * 2.8, 'cream')
-        // Auto-fit the wordmark to the overlay width so it never overflows the
-        // 4-across hero on phones (mirrors the main site's hero fit logic).
-        const overlay = slot.parentElement
-        if (overlay) {
-          const sidePad = base * 0.8 * 2 // matches .hero-overlay horizontal padding
-          const avail = overlay.clientWidth - sidePad
-          const natural = slot.scrollWidth
-          if (avail > 0 && natural > avail * 0.9) {
-            slot.innerHTML = renderWordmark((base * 2.8) * (avail * 0.9) / natural, 'cream')
-          }
+        const wmSize = window.innerWidth <= 768 ? base * 1.25 : base * 1.5
+        heroWmRef.current.innerHTML = renderWordmark(wmSize, 'gradient')
+      }
+
+      // Hero card potency lockups (ACTIVE) + the single +BLEND mark. Ink is
+      // luminance-picked so it stays legible on light flavor fields.
+      FYS_CARDS.forEach((c, i) => {
+        const ref = fysLockupRefs.current[i]
+        if (!ref) return
+        const ink = fysInk(c.color)
+        const lkSize = window.innerWidth <= 768 ? base * 0.5 : base * 0.56
+        ref.innerHTML =
+          c.tier === '10' ? render10mgActiveLockup(lkSize, ink) :
+          c.tier === '30' ? render30mgActiveLockup(lkSize, ink) :
+          render60mgActiveLockup(lkSize, ink)
+      })
+      if (fysBlendRef.current) {
+        const c = FYS_CARDS.find((x) => x.blend)
+        if (c) {
+          const blSize = window.innerWidth <= 768 ? base * 0.46 : base * 0.52
+          fysBlendRef.current.innerHTML = renderBlendLockup(blSize, fysInk(c.color))
         }
       }
 

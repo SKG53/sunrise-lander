@@ -10,9 +10,11 @@
 // Shopify — each code is limited to one use per customer — so a new browsing
 // session re-showing the wheel costs nothing.
 //
-// GATING (differs from main): the lander has NO age gate, so there is no
-// age-verified precondition or event — the popup evaluates on mount and shows
-// unless already seen/spun this session.
+// GATING (differs from main): the lander has NO age gate. Rather than showing
+// on mount, the popup is delayed so it never interrupts cold paid traffic — it
+// appears on the first of: scroll past 65% of the hero cards, a 6s fallback, or
+// desktop exit-intent, after a 4s floor. The "Shop the whole collection" button
+// opens it immediately (bypassing the floor). Shows once per session.
 //
 // CROSS-DOMAIN MARKER (lander-only): on reward reveal we set localStorage
 // SPIN_DONE_KEY. __root reads it to append ?ref=srbev to outbound
@@ -148,6 +150,9 @@ export function SpinWheel() {
   const [copied, setCopied] = useState(false);
   const reduced = useRef(false);
   const wmRef = useRef<HTMLDivElement>(null);
+  // Set when the wheel is opened by the "Shop the whole collection" button, so
+  // that on close we still honor the original intent and scroll to the picker.
+  const pendingScroll = useRef(false);
 
   const close = useCallback(() => {
     try {
@@ -156,22 +161,95 @@ export function SpinWheel() {
       /* private browsing — popup simply reappears next mount */
     }
     setPhase("hidden");
+    // If the wheel was opened by the "Shop the whole collection" button, honor
+    // that original intent once it closes: smooth-scroll to the picker. The
+    // small delay lets the scroll-lock (body overflow) release first.
+    if (pendingScroll.current) {
+      pendingScroll.current = false;
+      window.setTimeout(() => {
+        document
+          .getElementById("shop-collection")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 60);
+    }
   }, []);
 
-  // Show once per session. NOTE: unlike the main site, the lander has no age
-  // gate, so there is no age-verified precondition or event to wait on — the
-  // popup evaluates on mount and shows unless already seen/spun this session.
+  // Show once per session, but never the instant the page loads — an immediate
+  // popup on cold paid traffic interrupts before the visitor has seen a can.
+  // Triggers (whichever fires first, after a 4s floor): scrolled past 65% of the
+  // hero cards, a 6s fallback, or desktop exit-intent (cursor leaves via the top
+  // edge). The "Shop the whole collection" button also opens it immediately via
+  // the srbev:shop-collection event and bypasses the floor (a click is intent);
+  // when the wheel then closes, close() scrolls on to the picker as the button
+  // originally promised. Once already seen this session, the button just scrolls.
   useEffect(() => {
     reduced.current =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    let seen = true;
     try {
-      if (sessionStorage.getItem(STORAGE_KEY) === "true") return;
+      seen = sessionStorage.getItem(STORAGE_KEY) === "true";
     } catch {
-      return;
+      seen = true;
     }
-    setPhase((p) => (p === "hidden" ? "idle" : p));
+
+    const FLOOR_MS = 4000;
+    const FALLBACK_MS = 6000;
+    const mountedAt = Date.now();
+    let done = seen; // once revealed (or already seen), auto-triggers go inert
+    const timers: number[] = [];
+
+    const scrollToCollection = () => {
+      document
+        .getElementById("shop-collection")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    const onScroll = () => {
+      if (Date.now() - mountedAt < FLOOR_MS) return;
+      const el = document.querySelector(".lh-fys-cards");
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      // Fire once 65% of the cards block has scrolled above the viewport top.
+      if (r.top + r.height * 0.65 <= 0) reveal();
+    };
+    const onMouseOut = (e: MouseEvent) => {
+      if (Date.now() - mountedAt < FLOOR_MS) return;
+      if (e.relatedTarget) return; // moved to another element, not out of window
+      if ((e.clientY ?? 1) <= 0) reveal(); // left via the top edge (exit-intent)
+    };
+    const onShopIntent = () => {
+      if (done) {
+        scrollToCollection(); // already seen this session — just honor the scroll
+        return;
+      }
+      pendingScroll.current = true; // scroll to the picker once the wheel closes
+      reveal();
+    };
+    const cleanup = () => {
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("mouseout", onMouseOut);
+      timers.forEach((t) => clearTimeout(t));
+    };
+    const reveal = () => {
+      if (done) return;
+      done = true;
+      cleanup();
+      setPhase((p) => (p === "hidden" ? "idle" : p));
+    };
+
+    if (!seen) {
+      window.addEventListener("scroll", onScroll, { passive: true });
+      document.addEventListener("mouseout", onMouseOut);
+      timers.push(window.setTimeout(reveal, FALLBACK_MS));
+    }
+    // The Shop button works whether or not the wheel is still eligible.
+    window.addEventListener("srbev:shop-collection", onShopIntent);
+
+    return () => {
+      cleanup();
+      window.removeEventListener("srbev:shop-collection", onShopIntent);
+    };
   }, []);
 
   // Body scroll lock + ESC to dismiss while visible.

@@ -149,3 +149,95 @@
 /* No flex:1 / align-content:center here on purpose — those existed only to
    redistribute the slack that grid-auto-rows: 1fr created. With panels sized
    to content there is no slack to redistribute. */
+
+/* ── HERO · Find your SUNRISE (index route only) ─────────────────────────────
+   Replaces the old 4-strip/wordmark hero. Heading uses the products-page
+   treatment (near-black "FIND YOUR" + gradient SUNRISE). Four product cards
+   fly in — outer pair first, then inner pair — then a red CTA scrolls to the
+   potency picker. Compliant throughout: potency = ACTIVE lockups, the one
+   enhanced SKU shows +BLEND (never THC/THCV). Cans are the cream-bg blurred
+   assets, so each sits in a cream photo-well inside the colored top; ink flips
+   to near-black on light flavor fields (Orange Lemonade) via fysInk(). */
+.lh-fys { padding: calc(var(--base) * 1.15) 0 calc(var(--base) * 1.35); text-align: center; }
+.lh-fys .container { display: flex; flex-direction: column; align-items: center; }
+
+.lh-fys-headline {
+  font-family: 'Montserrat', sans-serif; font-size: calc(var(--base) * 1.5); font-weight: 900;
+  letter-spacing: 0.015em; text-transform: uppercase; color: var(--near-black); line-height: 1;
+  display: flex; align-items: flex-end; justify-content: center; gap: 0.4em;
+  margin: 0 0 calc(var(--base) * 0.95);
+}
+.lh-fys-wm { display: inline-flex; }
+
+.lh-fys-cards {
+  display: flex; justify-content: center; align-items: stretch; gap: calc(var(--base) * 0.5);
+  width: 100%; max-width: calc(var(--base) * 21); margin: 0 auto calc(var(--base) * 1.1);
+}
+.lh-fys-card {
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;
+  border-radius: calc(var(--base) * 0.3); overflow: hidden; text-decoration: none;
+  background: var(--cream); border: 1.5px solid var(--fc);
+  box-shadow: 0 calc(var(--base) * 0.12) calc(var(--base) * 0.32) rgba(26, 26, 26, 0.12);
+  opacity: 0; will-change: transform, opacity;
+}
+.lh-fys-top {
+  position: relative; background: var(--fc); display: flex; flex-direction: column;
+  padding: calc(var(--base) * 0.34); gap: calc(var(--base) * 0.26);
+}
+.lh-fys-caphead {
+  position: relative; min-height: calc(var(--base) * 0.98); display: flex;
+  align-items: flex-start; justify-content: space-between; gap: calc(var(--base) * 0.2);
+}
+.lh-fys-lockup { line-height: 0; }
+.lh-fys-blend { line-height: 0; white-space: nowrap; margin-top: calc(var(--base) * 0.02); }
+.lh-fys-well {
+  background: var(--cream); border-radius: calc(var(--base) * 0.16); aspect-ratio: 0.78 / 1;
+  display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
+}
+.lh-fys-can { height: 99%; width: auto; max-width: 96%; object-fit: contain; object-position: bottom; }
+
+.lh-fys-bottom {
+  background: var(--cream); padding: calc(var(--base) * 0.48) calc(var(--base) * 0.36) calc(var(--base) * 0.52);
+  display: flex; flex-direction: column; align-items: center; gap: calc(var(--base) * 0.2); flex: 1;
+}
+.lh-fys-name { font-weight: 800; font-size: calc(var(--base) * 0.4); letter-spacing: 0.005em; text-transform: uppercase; color: var(--near-black); line-height: 1.05; text-align: center; }
+.lh-fys-desc { font-weight: 700; font-size: calc(var(--base) * 0.28); letter-spacing: 0.05em; text-transform: uppercase; line-height: 1; }
+.lh-fys-buy {
+  margin-top: calc(var(--base) * 0.14); display: inline-flex; align-items: center; gap: 0.5em;
+  font-weight: 800; font-size: calc(var(--base) * 0.28); letter-spacing: 0.07em; text-transform: uppercase;
+  padding: calc(var(--base) * 0.3) calc(var(--base) * 0.66); border-radius: 9999px; line-height: 1;
+}
+
+/* Fly-in — outer pair (0,3) then inner pair (1,2); .settled painted by JS. */
+.lh-fys-card.fly-left  { transform: translateX(-150%) rotate(-7deg); }
+.lh-fys-card.fly-right { transform: translateX(150%) rotate(7deg); }
+.lh-fys-card.settled   { opacity: 1; transform: translateX(0) rotate(0); transition: transform 0.72s cubic-bezier(0.22, 1.1, 0.36, 1), opacity 0.5s ease-out; }
+
+.lh-fys-shop {
+  display: inline-flex; align-items: center; gap: 0.55em; cursor: pointer; border: 0;
+  font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: calc(var(--base) * 0.36);
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream); background: var(--tier-10);
+  border-radius: 9999px; padding: calc(var(--base) * 0.42) calc(var(--base) * 1.0); line-height: 1;
+  transition: background 0.2s ease;
+}
+.lh-fys-shop:hover { background: var(--tier-10-hover); }
+.lh-fys-caret { display: inline-flex; animation: lh-fys-bounce 1.1s ease-in-out infinite; }
+.lh-fys-caret svg { display: block; width: calc(var(--base) * 0.4); height: calc(var(--base) * 0.4); }
+@keyframes lh-fys-bounce { 0%, 100% { transform: translateY(-15%); } 50% { transform: translateY(30%); } }
+
+/* Scroll target for the CTA — top of the potency picker, clear of the sticky header. */
+.p-switcher.lh-switcher { scroll-margin-top: calc(var(--base) * 2); }
+
+@media (max-width: 768px) {
+  .lh-fys-headline { flex-direction: column; align-items: center; gap: 0.08em; font-size: calc(var(--base) * 1.3); }
+  .lh-fys-cards { flex-wrap: wrap; gap: calc(var(--base) * 0.4); }
+  .lh-fys-card { flex: 1 1 calc((100% - var(--base) * 0.4) / 2); max-width: calc((100% - var(--base) * 0.4) / 2); }
+  .lh-fys-name { font-size: calc(var(--base) * 0.42); }
+  .lh-fys-desc { font-size: calc(var(--base) * 0.3); }
+  .lh-fys-buy { font-size: calc(var(--base) * 0.3); padding: calc(var(--base) * 0.3) calc(var(--base) * 0.6); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lh-fys-card { transition: none !important; }
+  .lh-fys-card.fly-left, .lh-fys-card.fly-right { transform: none; opacity: 1; }
+  .lh-fys-caret { animation: none; }
+}

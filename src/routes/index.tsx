@@ -242,10 +242,11 @@ function LanderHome() {
           const ref = cornerRefs.current[`${tier}-${i}`]
           if (!ref || !f.cannabinoid) return
           const iconFile = { CBG: 'cbg', CBN: 'cbn', THCV: 'thcv' }[f.cannabinoid]
+          const iconSz = base * 0.54
           ref.innerHTML =
-            `<span style="display:inline-flex; align-items:center; gap:${base * 0.12}px">` +
-              renderBlendLockup(base * 0.91, f.flavorColor) +
-              `<img src="/images/effects/${iconFile}.svg" alt="" aria-hidden="true" style="width:${base * 0.9}px; height:${base * 0.9}px; display:block" />` +
+            `<span style="display:inline-flex; align-items:center; gap:${base * 0.08}px">` +
+              renderBlendLockup(base * 0.55, f.flavorColor) +
+              `<span style="width:${iconSz}px; height:${iconSz}px; flex:none; display:block; background:${f.flavorColor}; -webkit-mask:url(/images/effects/${iconFile}-glyph.svg) center/contain no-repeat; mask:url(/images/effects/${iconFile}-glyph.svg) center/contain no-repeat"></span>` +
             `</span>`
         })
       })

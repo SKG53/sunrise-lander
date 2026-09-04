@@ -360,7 +360,7 @@
   display: flex;
   flex-direction: column;
   background: var(--cream);
-  border: 1.5px solid var(--flavor-color, var(--cream));
+  border: 1px solid var(--cream);
   border-radius: 6px;
   overflow: hidden;
   text-decoration: none;
@@ -390,14 +390,15 @@
   content: 'Can Image';
 }
 .p-flavor-can.has-image {
+  aspect-ratio: auto;
   background: var(--flavor-color);
-  padding: calc(var(--base) * 0.3) calc(var(--base) * 0.28) 0;
+  padding: calc(var(--base) * 0.55) calc(var(--base) * 0.28);
 }
 .p-flavor-can img {
   width: 100%;
-  height: 100%;
+  height: calc(var(--base) * 4.75);
   object-fit: contain;
-  object-position: bottom center;
+  object-position: center;
   filter: drop-shadow(0 calc(var(--base) * 0.11) calc(var(--base) * 0.14) rgba(0, 0, 0, 0.3));
 }
 .p-flavor-meta {

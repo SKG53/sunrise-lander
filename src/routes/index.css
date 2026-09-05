@@ -249,3 +249,61 @@
   .lh-fys-card.fly-left, .lh-fys-card.fly-right, .lh-fys-card.fly-center { transform: none; opacity: 1; }
   .lh-fys-caret, .lh-fys-buy-arrow { animation: none; }
 }
+
+/* ── srbev age-gate splash (index route only) ────────────────────────────────
+   Minimal paid-traffic landing: auto-scrolling can marquee + inline age gate.
+   Background/announcement bar come from the shell. The old full lander keeps
+   using the .lh-fys rules above (preserved at /neverpull/oghome-fys). */
+.srb { min-height: 60vh; }
+
+/* Cans marquee — adapted from the main site's about-page strip. */
+.srb-marquee { overflow: hidden; padding: calc(var(--base) * 0.9) 0 calc(var(--base) * 0.5); }
+.srb-marquee-track { display: flex; width: max-content; animation: srb-marquee 48s linear infinite; }
+.srb-marquee:hover .srb-marquee-track { animation-play-state: paused; }
+@keyframes srb-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.srb-marquee-can {
+  flex: 0 0 auto; width: calc(var(--base) * 3.2); height: auto; object-fit: contain;
+  margin-right: calc(var(--base) * 0.5);
+}
+
+/* Inline age gate. */
+.srb-gate {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: calc(var(--base) * 0.45); max-width: calc(var(--base) * 16); margin: 0 auto;
+  padding: calc(var(--base) * 0.6) var(--section-pad-x) calc(var(--base) * 2.2);
+}
+.srb-gate-wm { display: inline-flex; line-height: 1; }
+.srb-gate-heading {
+  font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: calc(var(--base) * 0.9);
+  letter-spacing: 0.01em; color: var(--near-black); line-height: 1.1; margin: 0;
+}
+.srb-gate-heading-refused { color: var(--tier-10); }
+.srb-gate-actions {
+  display: flex; gap: calc(var(--base) * 0.5); flex-wrap: wrap; justify-content: center;
+  margin-top: calc(var(--base) * 0.2);
+}
+.srb-gate-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: calc(var(--base) * 0.34);
+  letter-spacing: 0.08em; text-transform: uppercase; padding: calc(var(--base) * 0.42) calc(var(--base) * 1.1);
+  border-radius: 9999px; line-height: 1; cursor: pointer; text-decoration: none;
+  border: 2px solid var(--near-black); transition: background 0.2s ease, color 0.2s ease;
+}
+.srb-gate-btn-primary { background: var(--tier-10); border-color: var(--tier-10); color: var(--cream); }
+.srb-gate-btn-primary:hover { background: var(--tier-10-hover); border-color: var(--tier-10-hover); }
+.srb-gate-btn-secondary { background: transparent; color: var(--near-black); }
+.srb-gate-btn-secondary:hover { background: var(--near-black); color: var(--cream); }
+.srb-gate-disclosure {
+  font-family: 'Montserrat', sans-serif; font-size: calc(var(--base) * 0.26); letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--near-black); opacity: 0.6; margin: calc(var(--base) * 0.25) 0 0;
+}
+
+@media (max-width: 768px) {
+  .srb-marquee-can { width: calc(var(--base) * 3.6); }
+  .srb-gate-heading { font-size: calc(var(--base) * 0.82); }
+  .srb-gate-actions { flex-direction: column; width: 100%; }
+  .srb-gate-btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .srb-marquee-track { animation: none; }
+}

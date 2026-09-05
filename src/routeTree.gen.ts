@@ -21,6 +21,7 @@ import { Route as NeverpullFaqRouteImport } from './routes/neverpull.faq'
 import { Route as NeverpullFindRouteImport } from './routes/neverpull.find'
 import { Route as NeverpullHbeRouteImport } from './routes/neverpull.hbe'
 import { Route as NeverpullOghomeRouteImport } from './routes/neverpull.oghome'
+import { Route as NeverpullOghomeFysRouteImport } from './routes/neverpull.oghome-fys'
 import { Route as NeverpullProductsRouteImport } from './routes/neverpull.products'
 import { Route as NeverpullRefundPolicyRouteImport } from './routes/neverpull.refund-policy'
 import { Route as NeverpullShippingPolicyRouteImport } from './routes/neverpull.shipping-policy'
@@ -90,6 +91,11 @@ const NeverpullOghomeRoute = NeverpullOghomeRouteImport.update({
   path: '/neverpull/oghome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NeverpullOghomeFysRoute = NeverpullOghomeFysRouteImport.update({
+  id: '/neverpull/oghome-fys',
+  path: '/neverpull/oghome-fys',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NeverpullProductsRoute = NeverpullProductsRouteImport.update({
   id: '/neverpull/products',
   path: '/neverpull/products',
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/neverpull/find': typeof NeverpullFindRoute
   '/neverpull/hbe': typeof NeverpullHbeRoute
   '/neverpull/oghome': typeof NeverpullOghomeRoute
+  '/neverpull/oghome-fys': typeof NeverpullOghomeFysRoute
   '/neverpull/products': typeof NeverpullProductsRoute
   '/neverpull/refund-policy': typeof NeverpullRefundPolicyRoute
   '/neverpull/shipping-policy': typeof NeverpullShippingPolicyRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/neverpull/find': typeof NeverpullFindRoute
   '/neverpull/hbe': typeof NeverpullHbeRoute
   '/neverpull/oghome': typeof NeverpullOghomeRoute
+  '/neverpull/oghome-fys': typeof NeverpullOghomeFysRoute
   '/neverpull/products': typeof NeverpullProductsRoute
   '/neverpull/refund-policy': typeof NeverpullRefundPolicyRoute
   '/neverpull/shipping-policy': typeof NeverpullShippingPolicyRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/neverpull/find': typeof NeverpullFindRoute
   '/neverpull/hbe': typeof NeverpullHbeRoute
   '/neverpull/oghome': typeof NeverpullOghomeRoute
+  '/neverpull/oghome-fys': typeof NeverpullOghomeFysRoute
   '/neverpull/products': typeof NeverpullProductsRoute
   '/neverpull/refund-policy': typeof NeverpullRefundPolicyRoute
   '/neverpull/shipping-policy': typeof NeverpullShippingPolicyRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/neverpull/find'
     | '/neverpull/hbe'
     | '/neverpull/oghome'
+    | '/neverpull/oghome-fys'
     | '/neverpull/products'
     | '/neverpull/refund-policy'
     | '/neverpull/shipping-policy'
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/neverpull/find'
     | '/neverpull/hbe'
     | '/neverpull/oghome'
+    | '/neverpull/oghome-fys'
     | '/neverpull/products'
     | '/neverpull/refund-policy'
     | '/neverpull/shipping-policy'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/neverpull/find'
     | '/neverpull/hbe'
     | '/neverpull/oghome'
+    | '/neverpull/oghome-fys'
     | '/neverpull/products'
     | '/neverpull/refund-policy'
     | '/neverpull/shipping-policy'
@@ -282,6 +294,7 @@ export interface RootRouteChildren {
   NeverpullFindRoute: typeof NeverpullFindRoute
   NeverpullHbeRoute: typeof NeverpullHbeRoute
   NeverpullOghomeRoute: typeof NeverpullOghomeRoute
+  NeverpullOghomeFysRoute: typeof NeverpullOghomeFysRoute
   NeverpullProductsRoute: typeof NeverpullProductsRoute
   NeverpullRefundPolicyRoute: typeof NeverpullRefundPolicyRoute
   NeverpullShippingPolicyRoute: typeof NeverpullShippingPolicyRoute
@@ -378,6 +391,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NeverpullOghomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/neverpull/oghome-fys': {
+      id: '/neverpull/oghome-fys'
+      path: '/neverpull/oghome-fys'
+      fullPath: '/neverpull/oghome-fys'
+      preLoaderRoute: typeof NeverpullOghomeFysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/neverpull/products': {
       id: '/neverpull/products'
       path: '/neverpull/products'
@@ -450,6 +470,7 @@ const rootRouteChildren: RootRouteChildren = {
   NeverpullFindRoute: NeverpullFindRoute,
   NeverpullHbeRoute: NeverpullHbeRoute,
   NeverpullOghomeRoute: NeverpullOghomeRoute,
+  NeverpullOghomeFysRoute: NeverpullOghomeFysRoute,
   NeverpullProductsRoute: NeverpullProductsRoute,
   NeverpullRefundPolicyRoute: NeverpullRefundPolicyRoute,
   NeverpullShippingPolicyRoute: NeverpullShippingPolicyRoute,

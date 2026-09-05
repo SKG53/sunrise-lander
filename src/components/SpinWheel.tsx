@@ -194,6 +194,12 @@ export function SpinWheel() {
       seen = true;
     }
 
+    // The index route ("/") is now a minimal age-gate splash with no wheel entry
+    // point — do not auto-arm there. Other routes (incl. the preserved full
+    // lander at /neverpull/oghome-fys) keep the auto-triggers.
+    const onSplash =
+      typeof window !== "undefined" && window.location.pathname === "/";
+
     const FLOOR_MS = 4000;
     const FALLBACK_MS = 6000;
     const mountedAt = Date.now();
@@ -238,7 +244,7 @@ export function SpinWheel() {
       setPhase((p) => (p === "hidden" ? "idle" : p));
     };
 
-    if (!seen) {
+    if (!seen && !onSplash) {
       window.addEventListener("scroll", onScroll, { passive: true });
       document.addEventListener("mouseout", onMouseOut);
       timers.push(window.setTimeout(reveal, FALLBACK_MS));

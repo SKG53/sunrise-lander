@@ -4,8 +4,9 @@
 // cans, then (2) an inline age gate — "Are you 21 or older?" with Yes / No.
 //   • YES  → same-tab to the main store's products page, carrying ?av=srbev so
 //            the store's age gate skips (this visitor already passed it here).
-//            The shell also appends ?ref=srbev for spinners (spin suppression);
-//            the future fbc/fbp pixel passthrough will hook the same click.
+//            The shell also appends ?ref=srbev for spinners (spin suppression).
+//            This click also forwards Facebook identity (fbc/fbp) and any utm_*
+//            attribution params onto the outbound store URL.
 //   • NO   → terminal refusal message in place (matches the main-site gate copy,
 //            minus the restricted-vocab product disclosure — reworded per brand).
 // The Spin & Save wheel is intentionally NOT armed on this route (see SpinWheel).
@@ -120,6 +121,16 @@ function LanderHome() {
                     const fbp = readCookie('_fbp')
                     if (fbc && !u.searchParams.has('fbc')) u.searchParams.set('fbc', fbc)
                     if (fbp && !u.searchParams.has('fbp')) u.searchParams.set('fbp', fbp)
+                    // Forward UTM attribution across the hop so savorsunrise (GA4)
+                    // and the capture handlers learn which ad/city/campaign the
+                    // visitor came from. Copy every utm_* param present; don't
+                    // clobber any already on the href.
+                    const inUtms = new URLSearchParams(window.location.search)
+                    inUtms.forEach((val, key) => {
+                      if (key.toLowerCase().startsWith('utm_') && !u.searchParams.has(key)) {
+                        u.searchParams.set(key, val)
+                      }
+                    })
                     a.href = u.toString()
                   } catch {
                     /* leave the base href untouched — navigation still works */

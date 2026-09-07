@@ -40,6 +40,15 @@ export const Route = createFileRoute('/')({
   component: LanderHome,
 })
 
+// Read a cookie value (client only). Used to forward the pixel's fbc/fbp.
+function readCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null
+  const m = document.cookie.match(
+    new RegExp('(?:^|; )' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '=([^;]*)'),
+  )
+  return m ? decodeURIComponent(m[1]) : null
+}
+
 function LanderHome() {
   const [refused, setRefused] = useState(false)
   const wmRef = useRef<HTMLSpanElement>(null)
@@ -90,7 +99,33 @@ function LanderHome() {
           <>
             <h1 className="srb-gate-heading">Are you 21 or older?</h1>
             <div className="srb-gate-actions">
-              <a className="srb-gate-btn srb-gate-btn-primary" href="https://www.savorsunrise.com/products?av=srbev">
+              <a
+                className="srb-gate-btn srb-gate-btn-primary"
+                href="https://www.savorsunrise.com/products?av=srbev"
+                onClick={(e) => {
+                  // Forward Facebook identity across the domain hop at click time.
+                  // The shell's capture-phase rewriter has already added ?ref=srbev
+                  // for spinners by now; we append fbc/fbp on top. fbc prefers the
+                  // _fbc cookie the pixel set from fbclid, falling back to deriving
+                  // it from fbclid still in this URL (covers the pixel-not-yet-armed
+                  // race). Missing IDs are simply omitted — the link stays valid.
+                  try {
+                    const a = e.currentTarget
+                    const u = new URL(a.href)
+                    let fbc = readCookie('_fbc')
+                    if (!fbc) {
+                      const id = new URLSearchParams(window.location.search).get('fbclid')
+                      if (id) fbc = `fb.1.${Date.now()}.${id}`
+                    }
+                    const fbp = readCookie('_fbp')
+                    if (fbc && !u.searchParams.has('fbc')) u.searchParams.set('fbc', fbc)
+                    if (fbp && !u.searchParams.has('fbp')) u.searchParams.set('fbp', fbp)
+                    a.href = u.toString()
+                  } catch {
+                    /* leave the base href untouched — navigation still works */
+                  }
+                }}
+              >
                 Yes, I&rsquo;m 21+
               </a>
               <button

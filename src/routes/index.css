@@ -302,7 +302,14 @@
   /* Fill the viewport and vertically center the whole content group (marquee +
      gate) so the page reads intentional, not top-bunched with dead space below.
      Bigger cans + buttons for legibility. */
-  .srb { display: flex; flex-direction: column; justify-content: center; min-height: 100vh; min-height: calc(100dvh - 60px); }
+  .srb { display: flex; flex-direction: column; justify-content: flex-start; min-height: 100vh; min-height: calc(100dvh - 60px); }
+  /* Bias the marquee + gate group upward so the dead space above the cans on
+     tall viewports (e.g. S25 Ultra) is ~half the centered gap, while still
+     scaling down proportionally on shorter phones (iPhone 15 Pro Max).
+     top spacer : bottom spacer = 1 : 3  →  top gap = 1/4 of free space
+     (half the centered 1/2). */
+  .srb::before { content: ''; flex: 1 1 0; }
+  .srb::after { content: ''; flex: 3 1 0; }
   .srb-marquee { padding: 0 0 calc(var(--base) * 0.3); }
   .srb-marquee-can { width: calc(var(--base) * 8.4); }
   .srb-gate { padding-block: calc(var(--base) * 0.5); gap: calc(var(--base) * 0.55); }

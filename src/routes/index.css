@@ -304,7 +304,7 @@
      Bigger cans + buttons for legibility. */
   .srb { display: flex; flex-direction: column; justify-content: center; min-height: 100vh; min-height: calc(100dvh - 60px); }
   .srb-marquee { padding: 0 0 calc(var(--base) * 0.3); }
-  .srb-marquee-can { width: calc(var(--base) * 4.8); }
+  .srb-marquee-can { width: calc(var(--base) * 8.4); }
   .srb-gate { padding-block: calc(var(--base) * 0.5); gap: calc(var(--base) * 0.55); }
   .srb-gate-heading { font-size: calc(var(--base) * 0.98); }
   .srb-gate-actions { flex-direction: column; width: 100%; gap: calc(var(--base) * 0.45); }

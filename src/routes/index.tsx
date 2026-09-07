@@ -2,9 +2,10 @@
 // Shell provides the rotating announcement bar + cream background + site-wide
 // noindex. This page is: (1) a horizontally auto-scrolling strip of the (blurred)
 // cans, then (2) an inline age gate — "Are you 21 or older?" with Yes / No.
-//   • YES  → same-tab to the main store's products page. The shell's link
-//            rewriter appends ?ref=srbev at click time (spin suppression today;
-//            the future fbc/fbp pixel passthrough will hook the same click).
+//   • YES  → same-tab to the main store's products page, carrying ?av=srbev so
+//            the store's age gate skips (this visitor already passed it here).
+//            The shell also appends ?ref=srbev for spinners (spin suppression);
+//            the future fbc/fbp pixel passthrough will hook the same click.
 //   • NO   → terminal refusal message in place (matches the main-site gate copy,
 //            minus the restricted-vocab product disclosure — reworded per brand).
 // The Spin & Save wheel is intentionally NOT armed on this route (see SpinWheel).
@@ -89,7 +90,7 @@ function LanderHome() {
           <>
             <h1 className="srb-gate-heading">Are you 21 or older?</h1>
             <div className="srb-gate-actions">
-              <a className="srb-gate-btn srb-gate-btn-primary" href="https://www.savorsunrise.com/products">
+              <a className="srb-gate-btn srb-gate-btn-primary" href="https://www.savorsunrise.com/products?av=srbev">
                 Yes, I&rsquo;m 21+
               </a>
               <button

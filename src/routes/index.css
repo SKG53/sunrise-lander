@@ -277,7 +277,7 @@
   font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: calc(var(--base) * 0.9);
   letter-spacing: 0.01em; color: var(--near-black); line-height: 1.1; margin: 0;
 }
-.srb-gate-heading-refused { color: var(--tier-10); }
+.srb-gate-heading-refused { color: var(--near-black); }
 .srb-gate-actions {
   display: flex; gap: calc(var(--base) * 0.5); flex-wrap: wrap; justify-content: center;
   margin-top: calc(var(--base) * 0.2);

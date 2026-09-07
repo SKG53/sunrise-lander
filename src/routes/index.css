@@ -299,10 +299,17 @@
 }
 
 @media (max-width: 768px) {
-  .srb-marquee-can { width: calc(var(--base) * 3.6); }
-  .srb-gate-heading { font-size: calc(var(--base) * 0.82); }
-  .srb-gate-actions { flex-direction: column; width: 100%; }
-  .srb-gate-btn { width: 100%; }
+  /* Fill the viewport and vertically center the whole content group (marquee +
+     gate) so the page reads intentional, not top-bunched with dead space below.
+     Bigger cans + buttons for legibility. */
+  .srb { display: flex; flex-direction: column; justify-content: center; min-height: 100vh; min-height: calc(100dvh - 60px); }
+  .srb-marquee { padding: 0 0 calc(var(--base) * 0.3); }
+  .srb-marquee-can { width: calc(var(--base) * 4.8); }
+  .srb-gate { padding-block: calc(var(--base) * 0.5); gap: calc(var(--base) * 0.55); }
+  .srb-gate-heading { font-size: calc(var(--base) * 0.98); }
+  .srb-gate-actions { flex-direction: column; width: 100%; gap: calc(var(--base) * 0.45); }
+  .srb-gate-btn { width: 100%; font-size: calc(var(--base) * 0.42); padding: calc(var(--base) * 0.6) calc(var(--base) * 1); }
+  .srb-gate-disclosure { font-size: calc(var(--base) * 0.3); }
 }
 @media (prefers-reduced-motion: reduce) {
   .srb-marquee-track { animation: none; }

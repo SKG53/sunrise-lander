@@ -58,7 +58,7 @@ function LanderHome() {
     const paint = () => {
       if (!wmRef.current) return
       const base = getBasePx()
-      const size = window.innerWidth <= 768 ? base * 1.15 : base * 1.4
+      const size = window.innerWidth <= 768 ? base * 1.35 : base * 1.4
       wmRef.current.innerHTML = renderWordmark(size, 'gradient')
     }
     paint()

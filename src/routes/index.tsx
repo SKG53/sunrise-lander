@@ -105,6 +105,7 @@ function LanderHome() {
                 className="srb-gate-btn srb-gate-btn-primary"
                 href="https://www.savorsunrise.com/products?av=srbev"
                 onClick={(e) => {
+                  track("age_gate_pass");
                   // Forward Facebook identity across the domain hop at click time.
                   // The shell's capture-phase rewriter has already added ?ref=srbev
                   // for spinners by now; we append fbc/fbp on top. fbc prefers the

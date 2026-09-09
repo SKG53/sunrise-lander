@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import { getCanImage } from '../lib/canImages'
 import { renderWordmark, getBasePx } from '../lib/sunrise-components'
+import { track } from '../lib/track'
 import './index.css'
 
 // Every blurred can, in tier order, for the marquee. Names are flavor-only —
@@ -104,6 +105,7 @@ function LanderHome() {
                 className="srb-gate-btn srb-gate-btn-primary"
                 href="https://www.savorsunrise.com/products?av=srbev"
                 onClick={(e) => {
+                  track("age_gate_pass");
                   // Forward Facebook identity across the domain hop at click time.
                   // The shell's capture-phase rewriter has already added ?ref=srbev
                   // for spinners by now; we append fbc/fbp on top. fbc prefers the

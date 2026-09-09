@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import { getCanImage } from '../lib/canImages'
 import { renderWordmark, getBasePx } from '../lib/sunrise-components'
+import { track } from '../lib/track'
 import './index.css'
 
 // Every blurred can, in tier order, for the marquee. Names are flavor-only —

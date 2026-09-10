@@ -513,6 +513,16 @@
   font-size: calc(var(--base) * 0.9);
   line-height: 1;
 }
+.spin-chosen-rest {
+  position: relative;
+  z-index: 2;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--base) * 0.26);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.82);
+}
 .spin-chosen-title {
   position: relative;
   z-index: 2;
@@ -530,5 +540,6 @@
   .spin-card .spin-keep-btn { font-size: 12px; letter-spacing: 0.04em; }
   .spin-card .spin-choose-heading { font-size: 14px; }
   .spin-card .spin-chosen-hook { font-size: 40px; }
+  .spin-card .spin-chosen-rest { font-size: 13px; }
   .spin-card .spin-chosen-title { font-size: 14px; }
 }

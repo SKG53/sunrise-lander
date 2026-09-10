@@ -78,14 +78,14 @@ export const DEALS: Deal[] = [
   },
   // — BIG-CART pool (spin 1 → bottom-left) —
   {
-    key: "buy4free",
+    key: "buy3free",
     pool: "big",
     hook: "FREE",
     sub: "4-PACK",
     rest: "10MG 4-PACK FREE",
-    title: "Buy four 4-packs, get a 10mg 4-pack FREE",
-    terms: "Buy any four 4-packs, get a 10mg 4-pack free.",
-    code: "NEWCUST4P10MG",
+    title: "Buy three 4-packs, get a 10mg 4-pack FREE",
+    terms: "Buy any three 4-packs, get a 10mg 4-pack free.",
+    code: "NEWCUST3P10MG",
     color: "#2E1E3D",
     weight: 55,
   },
@@ -537,7 +537,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
                 )}
               </div>
               <div className="spin-saved-col">
-                {deal2 !== null ? (
+                {deal2 !== null && phase === "choose" ? (
                   <DealCard
                     deal={DEALS[deal2]}
                     fresh={phase === "choose"}
@@ -570,6 +570,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
         {phase === "email" && chosenDeal && (
           <>
             <div className="spin-chosen">
+              <Fireworks />
               <span className="spin-chosen-hook" style={{ color: chosenDeal.color }}>
                 {chosenDeal.hook}
               </span>

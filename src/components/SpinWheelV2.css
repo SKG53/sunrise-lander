@@ -491,8 +491,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(var(--base) * 0.04);
-  margin: 0 0 calc(var(--base) * 0.35);
+  gap: calc(var(--base) * 0.06);
+  margin: 0 auto calc(var(--base) * 0.4);
+  padding: calc(var(--base) * 0.42) calc(var(--base) * 0.6);
+  min-width: calc(var(--base) * 4.6);
+  max-width: calc(var(--base) * 6.4);
+  background: #fff;
+  border: 2px solid rgba(26, 26, 26, 0.14);
+  border-radius: calc(var(--base) * 0.16);
+  box-shadow: 0 calc(var(--base) * 0.05) calc(var(--base) * 0.2) rgba(0, 0, 0, 0.08);
 }
 .spin-chosen-hook {
   position: relative;

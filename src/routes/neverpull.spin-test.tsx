@@ -1,13 +1,12 @@
-// LIVE, ISOLATED TEST route for the new two-pool Spin & Save (V2).
-// Path: /neverpull/spin-test  (srbev.com is site-wide noindex; this route is
-// not linked from anywhere and carries an extra noindex for good measure).
+// LIVE, ISOLATED playground for the new two-pool Spin & Save (V2).
+// Path: /neverpull/spin-test  (srbev.com is site-wide noindex; this route also
+// carries its own noindex and is not linked from anywhere).
 //
-// It renders ONLY the new wheel (SpinWheelV2, forced open) so the founder can
-// exercise the full spin → spin-again → keep-one → email → code flow on a real
-// link without touching the live paid funnel. The lander's legacy global
-// SpinWheel (mounted in __root, auto-arms on non-splash routes via a 6s
-// fallback) is suppressed here by marking its per-session "seen" flag before
-// that sibling's effect runs — so the test page shows the new wheel only.
+// The whole page is just the popup: click the button, the wheel opens, play with
+// the full spin → spin-again → keep-one → email → code flow. NO backend — the
+// test wheel writes nothing to Supabase or HubSpot (see SpinWheelV2.submitEmail).
+// The lander's legacy global SpinWheel (mounted in __root, auto-arms on non-splash
+// routes) is suppressed here so only the new wheel appears.
 
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -24,17 +23,18 @@ export const Route = createFileRoute("/neverpull/spin-test")({
 });
 
 function SpinTestPage() {
-  // Bumping the key remounts SpinWheelV2 fresh (re-opens it) for another run.
+  // runId: 0 = not launched. Bumping it mounts a fresh wheel (opens it) and lets
+  // you reopen after closing.
   const [runId, setRunId] = useState(0);
 
-  // Suppress the lander's legacy global SpinWheel on this route only. This runs
-  // before the sibling <SpinWheel /> effect in __root (earlier child), so the
-  // old wheel sees "seen" and stays inert. Per-session (sessionStorage) only.
+  // Suppress the lander's legacy global SpinWheel on this route only, so the page
+  // shows just the new wheel. Runs before the sibling <SpinWheel /> effect in
+  // __root (earlier child). Per-session only.
   useEffect(() => {
     try {
       sessionStorage.setItem("sunrise:spin-wheel-seen", "true");
     } catch {
-      /* private browsing — worst case the old wheel could appear; harmless */
+      /* private browsing — harmless */
     }
   }, []);
 
@@ -42,25 +42,13 @@ function SpinTestPage() {
     <main
       style={{
         minHeight: "100vh",
-        background: "var(--cream, #f7efe0)",
         display: "flex",
-        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: "1rem",
+        background: "var(--cream, #f7efe0)",
         padding: "2rem",
-        textAlign: "center",
-        fontFamily: "'Montserrat', sans-serif",
       }}
     >
-      <h1 style={{ margin: 0, fontWeight: 900, color: "var(--near-black, #1a1a1a)" }}>
-        Spin &amp; Save — Two-Pool Test
-      </h1>
-      <p style={{ margin: 0, maxWidth: "34rem", color: "var(--text-body, #444)" }}>
-        Private test route (noindex, not linked from the live funnel). This is the
-        exact new wheel from the main site. Close it and press the button to run
-        it again.
-      </p>
       <button
         type="button"
         onClick={() => setRunId((n) => n + 1)}
@@ -69,18 +57,19 @@ function SpinTestPage() {
           fontWeight: 700,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          padding: "0.8rem 1.6rem",
+          padding: "1rem 2rem",
           borderRadius: "9999px",
           border: "2px solid var(--tier-10, #DC7F27)",
           background: "var(--tier-10, #DC7F27)",
           color: "var(--cream, #f7efe0)",
           cursor: "pointer",
+          fontSize: "1rem",
         }}
       >
-        Launch / Restart Wheel
+        {runId === 0 ? "Open Spin & Save" : "Reopen Spin & Save"}
       </button>
 
-      <SpinWheelV2 forceOpen key={runId} />
+      {runId > 0 && <SpinWheelV2 forceOpen key={runId} />}
     </main>
   );
 }

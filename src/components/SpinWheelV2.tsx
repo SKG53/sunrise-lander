@@ -523,9 +523,6 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
         {/* Saved slots: left = spin 1 (big cart), right = spin 2 (small cart). */}
         {showSaved && (
           <>
-            {phase === "choose" && (
-              <p className="spin-choose-heading">Two deals landed — keep the one you want.</p>
-            )}
             <div className="spin-saved-row">
               <div className="spin-saved-col">
                 {deal1 !== null && (

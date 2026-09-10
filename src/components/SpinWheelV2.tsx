@@ -221,11 +221,22 @@ function isAdVisitor(): boolean {
   }
 }
 
-function pickIndexInPool(pool: Pool, isAd: boolean): number {
+function pickIndexInPool(
+  pool: Pool,
+  isAd: boolean,
+  excludeHooks: string[] = []
+): number {
   // Whole pool is always the candidate set (looks identical to every audience).
   // Audience odds come from weightAd (falls back to weight); a 0 weight stays
   // in the set but is skipped by the loop, so no rounding/race can surface it.
-  const entries = DEALS.map((d, i) => ({ d, i })).filter((e) => e.d.pool === pool);
+  let entries = DEALS.map((d, i) => ({ d, i })).filter((e) => e.d.pool === pool);
+  if (excludeHooks.length) {
+    // "No two FREE deals": if spin 1 landed a FREE deal, drop FREE from spin 2's
+    // set so the second deal is always one of the others. Guarded so the
+    // exclusion can never empty the pool.
+    const filtered = entries.filter((e) => !excludeHooks.includes(e.d.hook));
+    if (filtered.length) entries = filtered;
+  }
   const w = (d: Deal) => (isAd ? d.weightAd ?? d.weight : d.weight);
   const total = entries.reduce((s, e) => s + w(e.d), 0);
   let r = Math.random() * total;
@@ -481,7 +492,13 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
   // Spin 2 — SMALL-CART pool → bottom-right slot. The one added button press.
   const spin2 = () => {
     if (phase !== "landed1") return;
-    const idx = pickIndexInPool("small", isAdVisitor());
+    // No two FREE deals: if spin 1 landed a FREE deal, exclude FREE from spin 2.
+    const firstWasFree = deal1 !== null && DEALS[deal1].hook === "FREE";
+    const idx = pickIndexInPool(
+      "small",
+      isAdVisitor(),
+      firstWasFree ? ["FREE"] : []
+    );
     setDeal2(idx);
     if (reduced.current) {
       setRotation((cur) => nextRotation(cur, idx));

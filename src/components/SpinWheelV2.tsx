@@ -426,31 +426,15 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
     }
     setError(null);
     setSubmitting(true);
-    try {
-      const res = await fetch("/api/public/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: value, source: "spin-wheel" }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setError(data.error || "Something went wrong. Please try again.");
-        return;
-      }
-      // Non-blocking dual-write to HubSpot — fired in parallel, deliberately NOT
-      // awaited; the reveal must never wait on or fail because of HubSpot. The
-      // Supabase write above is the sole reward gate.
-      fetch("/api/public/spin-wheel-hubspot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: value }),
-      }).catch(() => {});
-      setPhase("revealed");
-    } catch {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+    // TEST COPY — NO BACKEND. This isolated /neverpull test wheel deliberately
+    // does not call the Supabase newsletter reward-gate or the HubSpot dual-write,
+    // so playing with it never writes any data. A short delay mimics the unlock.
+    // >>> When copying this component back to the MAIN site, restore the real
+    //     submitEmail body: POST /api/public/newsletter (source "spin-wheel") as
+    //     the reward gate + the non-blocking POST /api/public/spin-wheel-hubspot.
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    setSubmitting(false);
+    setPhase("revealed");
   };
 
   const copyCode = async () => {

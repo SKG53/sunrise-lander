@@ -14,7 +14,7 @@
 // INVISIBLE MATH (two pools): spin 1 draws only from the BIG-CART pool, spin 2
 // only from the SMALL-CART pool. Each pool is an independent weighted draw whose
 // weights sum to 100 on their own. The customer never sees pool labels — it's
-// just organization + odds on our side. The single wheel shows all six deals;
+// just organization + odds on our side. The single wheel shows all seven deals;
 // each spin's weighted pick is restricted to its pool's segments, and the
 // rotation lands that segment. As before, the prize is decided BEFORE the
 // animation — the spin never decides the outcome.
@@ -59,11 +59,13 @@ export type Deal = {
   terms: string;  // per-deal fine print
   code: string;
   color: string;
-  weight: number; // within-pool odds
+  weight: number; // within-pool odds (organic / default audience)
+  weightAd?: number; // within-pool odds for ad visitors (falls back to weight);
+                     // 0 = stays IN the pool/set but is never selected (0% odds)
 };
 
 export const DEALS: Deal[] = [
-  // Wheel/segment order below is also the visual order (6 segments). Colors and
+  // Wheel/segment order below is also the visual order (7 segments). Colors and
   // the two FREE deals are arranged so no two similar colors — and neither FREE
   // — sit adjacent. Each spin's weighted pick is restricted to its pool.
 
@@ -91,7 +93,8 @@ export const DEALS: Deal[] = [
     terms: "Buy any four 4-packs, get any 4-pack FREE.",
     code: "NEWCUST4P1FR",
     color: "#2E1E3D",
-    weight: 65,
+    weight: 60,
+    weightAd: 70,
   },
   // — SMALL-CART —
   {
@@ -105,6 +108,20 @@ export const DEALS: Deal[] = [
     code: "SRSPINWIN15OFF",
     color: "#DC7F27",
     weight: 10,
+  },
+  // — BIG-CART — (Buy 5, 25% off — the ad-visitor alternative to the 30% deal) —
+  {
+    key: "buy5-25",
+    pool: "big",
+    hook: "25%",
+    sub: "OFF",
+    rest: "OFF",
+    title: "Mix and match any (5) 4-packs and take 25% off",
+    terms: "Mix and match any (5) 4-packs and take 25% off.",
+    code: "NEWCUST5P25",
+    color: "#2C3E73",
+    weight: 15,
+    weightAd: 30,
   },
   // — SMALL-CART — (new: buy 2, get a 10mg 4-pack free) —
   {
@@ -130,7 +147,8 @@ export const DEALS: Deal[] = [
     terms: "Mix and match any (5) 4-packs and take 30% off.",
     code: "NEWCUST5P30",
     color: "#0A6034",
-    weight: 35,
+    weight: 25,
+    weightAd: 0, // ad visitors: deal stays in the set but is never served (0% odds)
   },
   // — SMALL-CART —
   {
@@ -147,7 +165,7 @@ export const DEALS: Deal[] = [
   },
 ];
 
-const SEG = 360 / DEALS.length; // 72° per segment (5 deals)
+const SEG = 360 / DEALS.length; // per-segment angle; self-adjusts (7 deals)
 const SPIN_MS = 4200;
 const TURNS = 6;
 const GENERIC_TERMS =
@@ -164,15 +182,62 @@ type Phase =
   | "revealed";
 
 // Weighted pick restricted to a single pool; returns the DEALS index.
-function pickIndexInPool(pool: Pool): number {
+// ── AD-VISITOR DETECTION (self-contained; lander has no lib/utms) ─────────
+// Ad visitor if the URL carries fbclid (Meta's catch-all), a paid utm_medium /
+// ad utm_source, or ?src=meta. Persisted to localStorage with a 30-day expiry;
+// read (expiry-checked) at pick time. Mirrors the main-site detector.
+const AD_KEY = "sunrise:ad-visitor";
+const AD_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+function hasAdSignal(): boolean {
+  if (typeof location === "undefined") return false;
+  const q = new URLSearchParams(location.search);
+  if (q.get("fbclid")) return true;
+  if (q.get("src") === "meta") return true;
+  const med = (q.get("utm_medium") || "").toLowerCase();
+  const src = (q.get("utm_source") || "").toLowerCase();
+  return (
+    ["paid", "cpc", "paid_social"].includes(med) ||
+    ["meta", "facebook", "ig", "instagram"].includes(src)
+  );
+}
+function captureAdVisitor(): void {
+  if (typeof window === "undefined") return;
+  if (!hasAdSignal()) return;
+  try {
+    localStorage.setItem(AD_KEY, JSON.stringify({ ts: Date.now() }));
+  } catch {
+    /* private mode */
+  }
+}
+function isAdVisitor(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const raw = localStorage.getItem(AD_KEY);
+    if (!raw) return false;
+    const { ts } = JSON.parse(raw);
+    return typeof ts === "number" && Date.now() - ts <= AD_WINDOW_MS;
+  } catch {
+    return false;
+  }
+}
+
+function pickIndexInPool(pool: Pool, isAd: boolean): number {
+  // Whole pool is always the candidate set (looks identical to every audience).
+  // Audience odds come from weightAd (falls back to weight); a 0 weight stays
+  // in the set but is skipped by the loop, so no rounding/race can surface it.
   const entries = DEALS.map((d, i) => ({ d, i })).filter((e) => e.d.pool === pool);
-  const total = entries.reduce((s, e) => s + e.d.weight, 0);
+  const w = (d: Deal) => (isAd ? d.weightAd ?? d.weight : d.weight);
+  const total = entries.reduce((s, e) => s + w(e.d), 0);
   let r = Math.random() * total;
+  let last = -1;
   for (const e of entries) {
-    r -= e.d.weight;
+    const ew = w(e.d);
+    if (ew <= 0) continue;
+    last = e.i;
+    r -= ew;
     if (r <= 0) return e.i;
   }
-  return entries[0].i;
+  return last >= 0 ? last : entries[0].i;
 }
 
 // Final wheel orientation (deg) that centers segment `idx` under the 12 o'clock
@@ -296,6 +361,8 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    captureAdVisitor(); // detect ad visitor from the URL (fbclid / paid utm / src=meta)
+
     // Test harness: when forced open we skip all arming/suppression and just
     // show the wheel (starts in "idle"). Used only by the neverpull test route.
     if (forceOpen) return;
@@ -399,7 +466,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
   // Spin 1 — BIG-CART pool → bottom-left slot.
   const spin1 = () => {
     if (phase !== "idle") return;
-    const idx = pickIndexInPool("big");
+    const idx = pickIndexInPool("big", isAdVisitor());
     setDeal1(idx);
     if (reduced.current) {
       setRotation(finalOrientation(idx));
@@ -414,7 +481,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
   // Spin 2 — SMALL-CART pool → bottom-right slot. The one added button press.
   const spin2 = () => {
     if (phase !== "landed1") return;
-    const idx = pickIndexInPool("small");
+    const idx = pickIndexInPool("small", isAdVisitor());
     setDeal2(idx);
     if (reduced.current) {
       setRotation((cur) => nextRotation(cur, idx));
@@ -497,7 +564,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
               className="spin-wheel"
               viewBox="0 0 200 200"
               role="img"
-              aria-label="Prize wheel with six deal segments"
+              aria-label="Prize wheel with seven deal segments"
               style={{
                 transform: `rotate(${rotation}deg)`,
                 transition: spinning

@@ -14,7 +14,7 @@
 // INVISIBLE MATH (two pools): spin 1 draws only from the BIG-CART pool, spin 2
 // only from the SMALL-CART pool. Each pool is an independent weighted draw whose
 // weights sum to 100 on their own. The customer never sees pool labels — it's
-// just organization + odds on our side. The single wheel shows all five deals;
+// just organization + odds on our side. The single wheel shows all six deals;
 // each spin's weighted pick is restricted to its pool's segments, and the
 // rotation lands that segment. As before, the prize is decided BEFORE the
 // animation — the spin never decides the outcome.
@@ -63,6 +63,10 @@ export type Deal = {
 };
 
 export const DEALS: Deal[] = [
+  // Wheel/segment order below is also the visual order (6 segments). Colors and
+  // the two FREE deals are arranged so no two similar colors — and neither FREE
+  // — sit adjacent. Each spin's weighted pick is restricted to its pool.
+
   // — SMALL-CART pool (spin 2 → bottom-right) —
   {
     key: "2pk25",
@@ -74,20 +78,20 @@ export const DEALS: Deal[] = [
     terms: "Buy any (2) 4-packs and take 25% off.",
     code: "NEWCUST2P25",
     color: "#CC1F39",
-    weight: 50,
+    weight: 30,
   },
   // — BIG-CART pool (spin 1 → bottom-left) —
   {
-    key: "buy3free",
+    key: "buy4free",
     pool: "big",
     hook: "FREE",
     sub: "4-PACK",
-    rest: "10MG 4-PACK",
-    title: "Buy any three 4-packs, get a 10MG 4-pack FREE",
-    terms: "Buy any three 4-packs, get a 10MG 4-pack FREE.",
-    code: "NEWCUST3P10MG",
+    rest: "ANY 4-PACK",
+    title: "Buy any four 4-packs, get any 4-pack FREE",
+    terms: "Buy any four 4-packs, get any 4-pack FREE.",
+    code: "NEWCUST4P1FR",
     color: "#2E1E3D",
-    weight: 55,
+    weight: 65,
   },
   // — SMALL-CART —
   {
@@ -100,7 +104,20 @@ export const DEALS: Deal[] = [
     terms: "Take 15% off any product 20-pack or fewer.",
     code: "SRSPINWIN15OFF",
     color: "#DC7F27",
-    weight: 30,
+    weight: 10,
+  },
+  // — SMALL-CART — (new: buy 2, get a 10mg 4-pack free) —
+  {
+    key: "buy2free10",
+    pool: "small",
+    hook: "FREE",
+    sub: "10MG",
+    rest: "10MG 4-PACK",
+    title: "Buy any 2 4-packs, get a 10mg 4-pack FREE",
+    terms: "Buy any 2 4-packs, get a 10mg 4-pack FREE.",
+    code: "NEWCUST2P10MG",
+    color: "#C21E63",
+    weight: 45,
   },
   // — BIG-CART —
   {
@@ -113,7 +130,7 @@ export const DEALS: Deal[] = [
     terms: "Mix and match any (5) 4-packs and take 30% off.",
     code: "NEWCUST5P30",
     color: "#0A6034",
-    weight: 45,
+    weight: 35,
   },
   // — SMALL-CART —
   {
@@ -126,7 +143,7 @@ export const DEALS: Deal[] = [
     terms: "Take 20% off any product 20-pack or fewer.",
     code: "SRSPINWIN20OFF",
     color: "#822665",
-    weight: 20,
+    weight: 15,
   },
 ];
 
@@ -480,7 +497,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
               className="spin-wheel"
               viewBox="0 0 200 200"
               role="img"
-              aria-label="Prize wheel with five deal segments"
+              aria-label="Prize wheel with six deal segments"
               style={{
                 transform: `rotate(${rotation}deg)`,
                 transition: spinning

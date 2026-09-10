@@ -571,6 +571,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
               <span className="spin-chosen-hook" style={{ color: chosenDeal.color }}>
                 {chosenDeal.hook}
               </span>
+              <span className="spin-chosen-rest">{chosenDeal.rest}</span>
               <span className="spin-chosen-title">{chosenDeal.title}</span>
             </div>
             <form className="spin-form" onSubmit={submitEmail}>
@@ -605,6 +606,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
               <span className="spin-chosen-hook" style={{ color: chosenDeal.color }}>
                 {chosenDeal.hook}
               </span>
+              <span className="spin-chosen-rest">{chosenDeal.rest}</span>
               <span className="spin-chosen-title">{chosenDeal.title}</span>
             </div>
             <button type="button" className="spin-code" onClick={copyCode} title="Copy code">

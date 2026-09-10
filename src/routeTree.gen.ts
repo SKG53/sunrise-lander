@@ -27,6 +27,7 @@ import { Route as NeverpullRefundPolicyRouteImport } from './routes/neverpull.re
 import { Route as NeverpullShippingPolicyRouteImport } from './routes/neverpull.shipping-policy'
 import { Route as NeverpullSmsMarketingPolicyRouteImport } from './routes/neverpull.sms-marketing-policy'
 import { Route as NeverpullSocialRouteImport } from './routes/neverpull.social'
+import { Route as NeverpullSpinTestRouteImport } from './routes/neverpull.spin-test'
 import { Route as ApiPublicNewsletterRouteImport } from './routes/api/public/newsletter'
 import { Route as ApiPublicSpinWheelHubspotRouteImport } from './routes/api/public/spin-wheel-hubspot'
 import { Route as NeverpullProductsSlugRouteImport } from './routes/neverpull.products_.$slug'
@@ -122,6 +123,11 @@ const NeverpullSocialRoute = NeverpullSocialRouteImport.update({
   path: '/neverpull/social',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NeverpullSpinTestRoute = NeverpullSpinTestRouteImport.update({
+  id: '/neverpull/spin-test',
+  path: '/neverpull/spin-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNewsletterRoute = ApiPublicNewsletterRouteImport.update({
   id: '/api/public/newsletter',
   path: '/api/public/newsletter',
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/neverpull/shipping-policy': typeof NeverpullShippingPolicyRoute
   '/neverpull/sms-marketing-policy': typeof NeverpullSmsMarketingPolicyRoute
   '/neverpull/social': typeof NeverpullSocialRoute
+  '/neverpull/spin-test': typeof NeverpullSpinTestRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/neverpull/products/$slug': typeof NeverpullProductsSlugRoute
@@ -181,6 +188,7 @@ export interface FileRoutesByTo {
   '/neverpull/shipping-policy': typeof NeverpullShippingPolicyRoute
   '/neverpull/sms-marketing-policy': typeof NeverpullSmsMarketingPolicyRoute
   '/neverpull/social': typeof NeverpullSocialRoute
+  '/neverpull/spin-test': typeof NeverpullSpinTestRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/neverpull/products/$slug': typeof NeverpullProductsSlugRoute
@@ -205,6 +213,7 @@ export interface FileRoutesById {
   '/neverpull/shipping-policy': typeof NeverpullShippingPolicyRoute
   '/neverpull/sms-marketing-policy': typeof NeverpullSmsMarketingPolicyRoute
   '/neverpull/social': typeof NeverpullSocialRoute
+  '/neverpull/spin-test': typeof NeverpullSpinTestRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/neverpull/products_/$slug': typeof NeverpullProductsSlugRoute
@@ -230,6 +239,7 @@ export interface FileRouteTypes {
     | '/neverpull/shipping-policy'
     | '/neverpull/sms-marketing-policy'
     | '/neverpull/social'
+    | '/neverpull/spin-test'
     | '/api/public/newsletter'
     | '/api/public/spin-wheel-hubspot'
     | '/neverpull/products/$slug'
@@ -253,6 +263,7 @@ export interface FileRouteTypes {
     | '/neverpull/shipping-policy'
     | '/neverpull/sms-marketing-policy'
     | '/neverpull/social'
+    | '/neverpull/spin-test'
     | '/api/public/newsletter'
     | '/api/public/spin-wheel-hubspot'
     | '/neverpull/products/$slug'
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/neverpull/shipping-policy'
     | '/neverpull/sms-marketing-policy'
     | '/neverpull/social'
+    | '/neverpull/spin-test'
     | '/api/public/newsletter'
     | '/api/public/spin-wheel-hubspot'
     | '/neverpull/products_/$slug'
@@ -300,6 +312,7 @@ export interface RootRouteChildren {
   NeverpullShippingPolicyRoute: typeof NeverpullShippingPolicyRoute
   NeverpullSmsMarketingPolicyRoute: typeof NeverpullSmsMarketingPolicyRoute
   NeverpullSocialRoute: typeof NeverpullSocialRoute
+  NeverpullSpinTestRoute: typeof NeverpullSpinTestRoute
   ApiPublicNewsletterRoute: typeof ApiPublicNewsletterRoute
   ApiPublicSpinWheelHubspotRoute: typeof ApiPublicSpinWheelHubspotRoute
   NeverpullProductsSlugRoute: typeof NeverpullProductsSlugRoute
@@ -433,6 +446,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NeverpullSocialRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/neverpull/spin-test': {
+      id: '/neverpull/spin-test'
+      path: '/neverpull/spin-test'
+      fullPath: '/neverpull/spin-test'
+      preLoaderRoute: typeof NeverpullSpinTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/newsletter': {
       id: '/api/public/newsletter'
       path: '/api/public/newsletter'
@@ -476,6 +496,7 @@ const rootRouteChildren: RootRouteChildren = {
   NeverpullShippingPolicyRoute: NeverpullShippingPolicyRoute,
   NeverpullSmsMarketingPolicyRoute: NeverpullSmsMarketingPolicyRoute,
   NeverpullSocialRoute: NeverpullSocialRoute,
+  NeverpullSpinTestRoute: NeverpullSpinTestRoute,
   ApiPublicNewsletterRoute: ApiPublicNewsletterRoute,
   ApiPublicSpinWheelHubspotRoute: ApiPublicSpinWheelHubspotRoute,
   NeverpullProductsSlugRoute: NeverpullProductsSlugRoute,

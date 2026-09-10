@@ -69,9 +69,9 @@ export const DEALS: Deal[] = [
     pool: "small",
     hook: "25%",
     sub: "OFF",
-    rest: "OFF · 2-PACK",
-    title: "Any 2-pack, 25% off",
-    terms: "Any 2-pack. 25% off. $9.99 shipping.",
+    rest: "OFF",
+    title: "Buy any (2) 4-packs and take 25% off",
+    terms: "Buy any (2) 4-packs and take 25% off.",
     code: "NEWCUST2P25",
     color: "#CC1F39",
     weight: 50,
@@ -82,9 +82,9 @@ export const DEALS: Deal[] = [
     pool: "big",
     hook: "FREE",
     sub: "4-PACK",
-    rest: "10MG 4-PACK FREE",
-    title: "Buy three 4-packs, get a 10mg 4-pack FREE",
-    terms: "Buy any three 4-packs, get a 10mg 4-pack free.",
+    rest: "10MG 4-PACK",
+    title: "Buy any three 4-packs, get a 10MG 4-pack FREE",
+    terms: "Buy any three 4-packs, get a 10MG 4-pack FREE.",
     code: "NEWCUST3P10MG",
     color: "#2E1E3D",
     weight: 55,
@@ -96,8 +96,8 @@ export const DEALS: Deal[] = [
     hook: "15%",
     sub: "OFF",
     rest: "OFF",
-    title: "Flat 15% off",
-    terms: "15% off. 20-pack or fewer.",
+    title: "Take 15% off any 20-pack or fewer",
+    terms: "Take 15% off any 20-pack or fewer.",
     code: "SRSPINWIN15OFF",
     color: "#DC7F27",
     weight: 30,
@@ -108,9 +108,9 @@ export const DEALS: Deal[] = [
     pool: "big",
     hook: "30%",
     sub: "OFF",
-    rest: "OFF · BUY 5",
-    title: "Buy five 4-packs, 30% off",
-    terms: "Buy any five 4-packs, 30% off.",
+    rest: "OFF",
+    title: "Mix and match any (5) 4-packs and take 30% off",
+    terms: "Mix and match any (5) 4-packs and take 30% off.",
     code: "NEWCUST5P30",
     color: "#0A6034",
     weight: 45,
@@ -122,8 +122,8 @@ export const DEALS: Deal[] = [
     hook: "20%",
     sub: "OFF",
     rest: "OFF",
-    title: "Flat 20% off",
-    terms: "20% off. 20-pack or fewer.",
+    title: "Take 20% off any 20-pack or fewer",
+    terms: "Take 20% off any 20-pack or fewer.",
     code: "SRSPINWIN20OFF",
     color: "#822665",
     weight: 20,
@@ -513,7 +513,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
               Spin the Wheel
             </button>
             <p className="spin-fine">
-              Spin twice, keep the deal you like best. {GENERIC_TERMS}
+              {GENERIC_TERMS}
             </p>
           </>
         )}
@@ -561,7 +561,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
             <button type="button" className="spin-btn spin-btn-primary" onClick={spin2} autoFocus>
               Spin Again
             </button>
-            <p className="spin-fine">One more spin, then keep your favorite of the two.</p>
+            <p className="spin-fine">Spin twice and keep your favorite deal.</p>
           </>
         )}
 
@@ -596,7 +596,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
               </button>
             </form>
             <p className="spin-fine">
-              {chosenDeal.terms} {GENERIC_TERMS}
+              {GENERIC_TERMS}
             </p>
           </>
         )}
@@ -624,7 +624,7 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
               Shop Now
             </a>
             <p className="spin-fine">
-              {chosenDeal.terms} {GENERIC_TERMS}
+              {GENERIC_TERMS}
             </p>
           </>
         )}

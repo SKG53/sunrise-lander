@@ -5,7 +5,8 @@
 //   • YES  → same-tab to the main store's products page, carrying ?av=srbev so
 //            the store's age gate skips (this visitor already passed it here).
 //            The shell also appends ?ref=srbev for spinners (spin suppression).
-//            This click also forwards Facebook identity (fbc/fbp) and any utm_*
+//            This click also forwards Facebook identity (fbc/fbp), fbclid,
+//            ?src, and any utm_*
 //            attribution params onto the outbound store URL.
 //   • NO   → terminal refusal message in place (matches the main-site gate copy,
 //            minus the restricted-vocab product disclosure — reworded per brand).
@@ -133,6 +134,19 @@ function LanderHome() {
                         u.searchParams.set(key, val)
                       }
                     })
+                    // Forward the raw ad-click signals too so savorsunrise's
+                    // ad-visitor detection still fires across the hop: fbclid is
+                    // its load-bearing catch-all (the fbc conversion above is
+                    // consumed by the pixel restore, not by detection), and
+                    // ?src=meta is the optional fallback signal.
+                    const fbclid = inUtms.get('fbclid')
+                    if (fbclid && !u.searchParams.has('fbclid')) {
+                      u.searchParams.set('fbclid', fbclid)
+                    }
+                    const srcParam = inUtms.get('src')
+                    if (srcParam && !u.searchParams.has('src')) {
+                      u.searchParams.set('src', srcParam)
+                    }
                     a.href = u.toString()
                   } catch {
                     /* leave the base href untouched — navigation still works */

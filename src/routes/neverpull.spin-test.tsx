@@ -9,7 +9,7 @@
 // routes) is suppressed here so only the new wheel appears.
 
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { SpinWheelV2 } from "../components/SpinWheelV2";
 
 export const Route = createFileRoute("/neverpull/spin-test")({
@@ -22,14 +22,21 @@ export const Route = createFileRoute("/neverpull/spin-test")({
   }),
 });
 
+type LaunchMode = "wheel" | "b2g1f" | "25off5";
+
 function SpinTestPage() {
-  // runId: 0 = not launched. Bumping it mounts a fresh wheel (opens it) and lets
-  // you reopen after closing.
-  const [runId, setRunId] = useState(0);
+  // launch: null = nothing open. `mode` picks which popup mounts; bumping `id`
+  // remounts a fresh instance so you can reopen or switch between the wheel and
+  // the two deal-specific ad popups.
+  const [launch, setLaunch] = useState<{ id: number; mode: LaunchMode } | null>(
+    null,
+  );
+  const open = (mode: LaunchMode) =>
+    setLaunch((l) => ({ id: (l?.id ?? 0) + 1, mode }));
 
   // Suppress the lander's legacy global SpinWheel on this route only, so the page
-  // shows just the new wheel. Runs before the sibling <SpinWheel /> effect in
-  // __root (earlier child). Per-session only.
+  // shows just the popup under test. Runs before the sibling <SpinWheel /> effect
+  // in __root (earlier child). Per-session only.
   useEffect(() => {
     try {
       sessionStorage.setItem("sunrise:spin-wheel-seen", "true");
@@ -38,38 +45,50 @@ function SpinTestPage() {
     }
   }, []);
 
+  const btn: CSSProperties = {
+    fontFamily: "'Montserrat', sans-serif",
+    fontWeight: 700,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    padding: "1rem 2rem",
+    borderRadius: "9999px",
+    border: "2px solid var(--tier-10, #DC7F27)",
+    background: "var(--tier-10, #DC7F27)",
+    color: "var(--cream, #f7efe0)",
+    cursor: "pointer",
+    fontSize: "1rem",
+  };
+
   return (
     <main
       style={{
         minHeight: "100vh",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        gap: "1rem",
         background: "var(--cream, #f7efe0)",
         padding: "2rem",
       }}
     >
-      <button
-        type="button"
-        onClick={() => setRunId((n) => n + 1)}
-        style={{
-          fontFamily: "'Montserrat', sans-serif",
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          padding: "1rem 2rem",
-          borderRadius: "9999px",
-          border: "2px solid var(--tier-10, #DC7F27)",
-          background: "var(--tier-10, #DC7F27)",
-          color: "var(--cream, #f7efe0)",
-          cursor: "pointer",
-          fontSize: "1rem",
-        }}
-      >
-        {runId === 0 ? "Open Spin & Save" : "Reopen Spin & Save"}
+      <button type="button" onClick={() => open("wheel")} style={btn}>
+        {launch === null ? "Open Spin & Save" : "Reopen Spin & Save"}
+      </button>
+      <button type="button" onClick={() => open("b2g1f")} style={btn}>
+        Ad Visitors, B2G1F
+      </button>
+      <button type="button" onClick={() => open("25off5")} style={btn}>
+        Ad Visitors 25OFF5
       </button>
 
-      {runId > 0 && <SpinWheelV2 forceOpen key={runId} />}
+      {launch && (
+        <SpinWheelV2
+          forceOpen
+          adDealKey={launch.mode === "wheel" ? undefined : launch.mode}
+          key={launch.id}
+        />
+      )}
     </main>
   );
 }

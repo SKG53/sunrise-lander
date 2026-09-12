@@ -171,6 +171,43 @@ const TURNS = 6;
 const GENERIC_TERMS =
   "One use per customer. Enter code at checkout. Exclusions, terms, and conditions apply.";
 
+// ── AD-VISITOR DEALS (deal-specific Meta ads: skip the spin, show one deal) ──
+// NOT part of the wheel pool — never spun. A visitor from a deal-specific ad
+// gets exactly the deal the ad promised, gated behind email. Meta-specific codes,
+// distinct from the wheel's, so redemptions slice Meta-vs-organic in Shopify.
+// Keyed by the ad token (ad2 -> b2g1f, ad1 -> 25off5).
+// NOTE: on the MAIN site the router branches on utm_term to pick the key; here on
+// the /neverpull test route the two buttons pass the key directly so the popups
+// can be reviewed without live ad traffic.
+export const AD_DEALS: Record<"b2g1f" | "25off5", Deal> = {
+  // ad2 -> "Buy 2, get 1 FREE"
+  b2g1f: {
+    key: "ad-b2g1f",
+    pool: "big",
+    hook: "FREE",
+    sub: "4-PACK",
+    rest: "ANY 4-PACK",
+    title: "Buy any (2) 4-packs, get a 4-pack FREE",
+    terms: GENERIC_TERMS,
+    code: "FREE4PACK",
+    color: "#2E1E3D",
+    weight: 0,
+  },
+  // ad1 -> "Buy 5, get 25% OFF"
+  "25off5": {
+    key: "ad-25off5",
+    pool: "big",
+    hook: "25%",
+    sub: "OFF",
+    rest: "OFF",
+    title: "Mix & match any (5) 4-packs and take 25% off",
+    terms: GENERIC_TERMS,
+    code: "25OFF5",
+    color: "#2C3E73",
+    weight: 0,
+  },
+};
+
 type Phase =
   | "hidden"
   | "idle"
@@ -342,8 +379,18 @@ function DealCard({
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
-  const [phase, setPhase] = useState<Phase>(forceOpen ? "idle" : "hidden");
+export function SpinWheelV2({
+  forceOpen = false,
+  adDealKey,
+}: {
+  forceOpen?: boolean;
+  // When set, the popup opens straight to the deal-specific ad flow (deal card ->
+  // email -> gated code), skipping the wheel/spin entirely. Used by the test route.
+  adDealKey?: "b2g1f" | "25off5";
+}) {
+  const [phase, setPhase] = useState<Phase>(
+    adDealKey ? "email" : forceOpen ? "idle" : "hidden",
+  );
   const [deal1, setDeal1] = useState<number | null>(null); // big pool (left)
   const [deal2, setDeal2] = useState<number | null>(null); // small pool (right)
   const [chosen, setChosen] = useState<number | null>(null);
@@ -516,7 +563,11 @@ export function SpinWheelV2({ forceOpen = false }: { forceOpen?: boolean }) {
     setPhase("email");
   };
 
-  const chosenDeal = chosen === null ? null : DEALS[chosen];
+  const chosenDeal = adDealKey
+    ? AD_DEALS[adDealKey]
+    : chosen === null
+      ? null
+      : DEALS[chosen];
 
   const submitEmail = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,0 +1,223 @@
+/* ==========================================================================
+   SUNRISE — review.css
+   Scoped .rv-* styles for /neverpull/review. Builds on contact.css (.c-*)
+   for the form shell; inherits fonts and tokens from sunrise-shell.css.
+   ========================================================================== */
+
+/* ── PAGE HERO — tier-30 green flood (contact uses tier-60) ─────────────── */
+/* Compound selectors outrank contact.css's .c-pagehero / .accent rules
+   regardless of stylesheet load order. */
+.c-pagehero.rv-pagehero { background: var(--tier-30); }
+.c-form-headline .accent.rv-accent { color: var(--tier-30); }
+
+/* ── SIDE REWARD BADGE ──────────────────────────────────────────────────── */
+.rv-reward-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: calc(var(--base) * 0.2);
+  margin-top: calc(var(--base) * 0.6);
+  padding: calc(var(--base) * 0.22) calc(var(--base) * 0.4);
+  border: 2px solid var(--tier-30);
+  border-radius: 9999px;
+}
+.rv-reward-pct {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.6);
+  line-height: 1;
+  color: var(--tier-30);
+}
+.rv-reward-label {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: calc(var(--base) * 0.22);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--near-black);
+}
+
+/* ── STAR RATING ────────────────────────────────────────────────────────── */
+.rv-rating-field {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.16);
+}
+.rv-stars {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--base) * 0.08);
+}
+.rv-star {
+  position: relative;
+  cursor: pointer;
+  line-height: 0;
+}
+.rv-star-input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.rv-star-icon {
+  width: calc(var(--base) * 0.85);
+  height: calc(var(--base) * 0.85);
+  fill: transparent;
+  stroke: var(--near-black);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  transition: fill 120ms ease-out, transform 120ms ease-out;
+}
+.rv-star-on .rv-star-icon {
+  fill: var(--tier-5);
+  stroke: var(--tier-5);
+}
+.rv-star:hover .rv-star-icon { transform: scale(1.08); }
+.rv-star-input:focus-visible + .rv-star-icon {
+  outline: 2px solid var(--tier-10);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.rv-rating-word {
+  margin-left: calc(var(--base) * 0.25);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: calc(var(--base) * 0.24);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ── FIELD HELPERS ──────────────────────────────────────────────────────── */
+.rv-optional {
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--text-faint);
+}
+.rv-field-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: calc(var(--base) * 0.3);
+}
+.rv-hint {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-faint);
+}
+.rv-hint-tight { margin-top: calc(var(--base) * -0.35); }
+.rv-count {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+.rv-count-over { color: var(--tier-10); }
+
+.rv-name-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: calc(var(--base) * 0.45);
+}
+
+/* ── CHECKBOXES ─────────────────────────────────────────────────────────── */
+.rv-checks {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.25);
+}
+.rv-check {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--base) * 0.22);
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.3);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text-body);
+}
+.rv-check input {
+  flex: 0 0 auto;
+  width: calc(var(--base) * 0.42);
+  height: calc(var(--base) * 0.42);
+  margin-top: calc(var(--base) * 0.02);
+  accent-color: var(--tier-30);
+  cursor: pointer;
+}
+.rv-check-error { color: var(--tier-10); }
+
+.rv-disclosure {
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  max-width: 60ch;
+}
+
+/* ── SUCCESS: REWARD CODE ───────────────────────────────────────────────── */
+.rv-code-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(var(--base) * 0.16);
+  margin-bottom: calc(var(--base) * 0.7);
+}
+.rv-code-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.rv-code {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--base) * 0.35);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.55);
+  letter-spacing: 0.1em;
+  color: var(--cream);
+  background: var(--tier-30);
+  border: 0;
+  border-radius: 9999px;
+  padding: calc(var(--base) * 0.22) calc(var(--base) * 0.5);
+  cursor: pointer;
+}
+.rv-code-copy {
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.rv-code-terms {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 500;
+  color: var(--text-faint);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .rv-name-row { grid-template-columns: 1fr; }
+  .rv-field-meta { flex-direction: column; gap: calc(var(--base) * 0.08); }
+  .rv-star-icon { width: calc(var(--base) * 0.95); height: calc(var(--base) * 0.95); }
+  .rv-star { padding: 6px 4px; margin: -6px 0; } /* larger tap target, no vertical layout shift */
+}
+
+/* Legibility floor for small helper text on narrow screens (base * 0.22 ≈ 7px at 32px base). */
+.rv-hint,
+.rv-count,
+.rv-code-terms,
+.rv-disclosure { font-size: max(12px, calc(var(--base) * 0.22)); }
+.rv-check { font-size: max(14px, calc(var(--base) * 0.3)); }
+.rv-rating-word { font-size: max(11px, calc(var(--base) * 0.24)); }
+.rv-reward-label,
+.rv-code-label { font-size: max(11px, calc(var(--base) * 0.22)); }
+.rv-code-copy { font-size: max(10px, calc(var(--base) * 0.2)); }

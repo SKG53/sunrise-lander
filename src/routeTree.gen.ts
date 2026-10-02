@@ -24,6 +24,7 @@ import { Route as NeverpullOghomeRouteImport } from './routes/neverpull.oghome'
 import { Route as NeverpullOghomeFysRouteImport } from './routes/neverpull.oghome-fys'
 import { Route as NeverpullProductsRouteImport } from './routes/neverpull.products'
 import { Route as NeverpullRefundPolicyRouteImport } from './routes/neverpull.refund-policy'
+import { Route as NeverpullReviewRouteImport } from './routes/neverpull.review'
 import { Route as NeverpullShippingPolicyRouteImport } from './routes/neverpull.shipping-policy'
 import { Route as NeverpullSmsMarketingPolicyRouteImport } from './routes/neverpull.sms-marketing-policy'
 import { Route as NeverpullSocialRouteImport } from './routes/neverpull.social'
@@ -107,6 +108,11 @@ const NeverpullRefundPolicyRoute = NeverpullRefundPolicyRouteImport.update({
   path: '/neverpull/refund-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NeverpullReviewRoute = NeverpullReviewRouteImport.update({
+  id: '/neverpull/review',
+  path: '/neverpull/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NeverpullShippingPolicyRoute = NeverpullShippingPolicyRouteImport.update({
   id: '/neverpull/shipping-policy',
   path: '/neverpull/shipping-policy',
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/neverpull/oghome-fys': typeof NeverpullOghomeFysRoute
   '/neverpull/products': typeof NeverpullProductsRoute
   '/neverpull/refund-policy': typeof NeverpullRefundPolicyRoute
+  '/neverpull/review': typeof NeverpullReviewRoute
   '/neverpull/shipping-policy': typeof NeverpullShippingPolicyRoute
   '/neverpull/sms-marketing-policy': typeof NeverpullSmsMarketingPolicyRoute
   '/neverpull/social': typeof NeverpullSocialRoute
@@ -185,6 +192,7 @@ export interface FileRoutesByTo {
   '/neverpull/oghome-fys': typeof NeverpullOghomeFysRoute
   '/neverpull/products': typeof NeverpullProductsRoute
   '/neverpull/refund-policy': typeof NeverpullRefundPolicyRoute
+  '/neverpull/review': typeof NeverpullReviewRoute
   '/neverpull/shipping-policy': typeof NeverpullShippingPolicyRoute
   '/neverpull/sms-marketing-policy': typeof NeverpullSmsMarketingPolicyRoute
   '/neverpull/social': typeof NeverpullSocialRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/neverpull/oghome-fys': typeof NeverpullOghomeFysRoute
   '/neverpull/products': typeof NeverpullProductsRoute
   '/neverpull/refund-policy': typeof NeverpullRefundPolicyRoute
+  '/neverpull/review': typeof NeverpullReviewRoute
   '/neverpull/shipping-policy': typeof NeverpullShippingPolicyRoute
   '/neverpull/sms-marketing-policy': typeof NeverpullSmsMarketingPolicyRoute
   '/neverpull/social': typeof NeverpullSocialRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/neverpull/oghome-fys'
     | '/neverpull/products'
     | '/neverpull/refund-policy'
+    | '/neverpull/review'
     | '/neverpull/shipping-policy'
     | '/neverpull/sms-marketing-policy'
     | '/neverpull/social'
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/neverpull/oghome-fys'
     | '/neverpull/products'
     | '/neverpull/refund-policy'
+    | '/neverpull/review'
     | '/neverpull/shipping-policy'
     | '/neverpull/sms-marketing-policy'
     | '/neverpull/social'
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/neverpull/oghome-fys'
     | '/neverpull/products'
     | '/neverpull/refund-policy'
+    | '/neverpull/review'
     | '/neverpull/shipping-policy'
     | '/neverpull/sms-marketing-policy'
     | '/neverpull/social'
@@ -309,6 +321,7 @@ export interface RootRouteChildren {
   NeverpullOghomeFysRoute: typeof NeverpullOghomeFysRoute
   NeverpullProductsRoute: typeof NeverpullProductsRoute
   NeverpullRefundPolicyRoute: typeof NeverpullRefundPolicyRoute
+  NeverpullReviewRoute: typeof NeverpullReviewRoute
   NeverpullShippingPolicyRoute: typeof NeverpullShippingPolicyRoute
   NeverpullSmsMarketingPolicyRoute: typeof NeverpullSmsMarketingPolicyRoute
   NeverpullSocialRoute: typeof NeverpullSocialRoute
@@ -425,6 +438,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NeverpullRefundPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/neverpull/review': {
+      id: '/neverpull/review'
+      path: '/neverpull/review'
+      fullPath: '/neverpull/review'
+      preLoaderRoute: typeof NeverpullReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/neverpull/shipping-policy': {
       id: '/neverpull/shipping-policy'
       path: '/neverpull/shipping-policy'
@@ -493,6 +513,7 @@ const rootRouteChildren: RootRouteChildren = {
   NeverpullOghomeFysRoute: NeverpullOghomeFysRoute,
   NeverpullProductsRoute: NeverpullProductsRoute,
   NeverpullRefundPolicyRoute: NeverpullRefundPolicyRoute,
+  NeverpullReviewRoute: NeverpullReviewRoute,
   NeverpullShippingPolicyRoute: NeverpullShippingPolicyRoute,
   NeverpullSmsMarketingPolicyRoute: NeverpullSmsMarketingPolicyRoute,
   NeverpullSocialRoute: NeverpullSocialRoute,

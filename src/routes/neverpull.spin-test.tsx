@@ -1,4 +1,5 @@
-// LIVE, ISOLATED playground for the new two-pool Spin & Save (V2).
+// LIVE, ISOLATED playground for the new two-pool Spin & Save (V2), plus a
+// link to the /neverpull/review prototype.
 // Path: /neverpull/spin-test  (srbev.com is site-wide noindex; this route also
 // carries its own noindex and is not linked from anywhere).
 //
@@ -8,7 +9,7 @@
 // The lander's legacy global SpinWheel (mounted in __root, auto-arms on non-splash
 // routes) is suppressed here so only the new wheel appears.
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, type CSSProperties } from "react";
 import { SpinWheelV2 } from "../components/SpinWheelV2";
 
@@ -81,6 +82,12 @@ function SpinTestPage() {
       <button type="button" onClick={() => open("25off5")} style={btn}>
         Ad Visitors 25OFF5
       </button>
+      <Link
+        to="/neverpull/review"
+        style={{ ...btn, textDecoration: "none", display: "inline-block", textAlign: "center" }}
+      >
+        Review Request
+      </Link>
 
       {launch && (
         <SpinWheelV2

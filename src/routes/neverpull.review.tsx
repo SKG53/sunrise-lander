@@ -4,26 +4,25 @@
 //
 // TEST MODE: submissions write NOTHING (no Supabase, HubSpot, or Klaviyo). The
 // payload is logged to the console and the success state shows the reward code.
-// Production wiring (see SUNRISE_Review_Page brief) replaces submitReview():
+// Production wiring replaces submitReview():
 //   POST /api/public/review → Supabase `reviews` (status = pending) →
 //   Klaviyo event "Submitted Review" (sends code, stops Review Request reminders).
 //
-// Compliance rules baked into this page (FTC 16 CFR 465 + brand wellness rule):
-//   • Reward is identical for every rating — never conditioned on sentiment.
-//   • Incentive disclosed on the page.
-//   • Moderation is neutral (privacy, profanity, medical claims) — never rating.
-//   • Publish consent + 21+ confirmation are required.
-//   • Reviewers are asked not to include medical or health claims.
+// Form order (founder spec, 2026-10-02): stars → first name* / last name →
+// email* → flavors (optional multi-select; each chosen flavor gets its own
+// optional short review) → headline → message* → submit → publish disclaimer.
+// Reward is the same for every rating; publish consent is given by submitting
+// (disclaimer beneath the button). Public display: first name + last initial.
 //
-// Flavor is OPTIONAL (empty = general brand review). The dropdown lists LIVE
-// SKUs only, gated by the same SHOW_NON_LIVE_PRODUCTS flag + LIVE_SLUGS set as
-// the storefront (sunrise/src/routes/products.tsx) — flip the flag to show all.
-// ?product=<slug> pre-selects a listed flavor (e.g. ?product=60mg-blackberry-cbn),
-// so Review Request emails can deep-link per flavor. Slugs are site slugs, not
-// Shopify handles — production order verification must map them.
+// Flavors list LIVE SKUs only, gated by the same SHOW_NON_LIVE_PRODUCTS flag +
+// LIVE_SLUGS set as the storefront (sunrise/src/routes/products.tsx).
+// ?product=<slug>[,<slug>…] pre-selects listed flavors (e.g.
+// ?product=60mg-blackberry-cbn), so Review Request emails can deep-link per
+// flavor. Slugs are site slugs, not Shopify handles — production order
+// verification must map them.
 
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import "./contact.css";
@@ -46,10 +45,12 @@ export const Route = createFileRoute("/neverpull/review")({
 // ── CONFIG ───────────────────────────────────────────────────────────────
 const TEST_MODE = true;
 const REWARD_CODE = "15OFFREVIEW";
-const REWARD_TERMS = "15% off any pack of 20 cans or fewer. One use per customer.";
+const REWARD_TERMS = "15% off any pack of 20 cans or fewer. One use per order.";
 const BODY_MIN = 20;
 const BODY_MAX = 1000;
 const HEADLINE_MAX = 80;
+const FLAVOR_NOTE_MAX = 500;
+const LAST_NAME_MAX = 40;
 
 // ── PRODUCT DATA (canonical: sunrise/src/routes/products.tsx) ────────────
 // Mirrors the storefront's live-SKU gate. Keep LIVE_SLUGS in sync with
@@ -128,8 +129,6 @@ const TIERS: { tier: TierKey; label: string; flavors: Flavor[] }[] = [
   },
 ];
 
-const MULTIPLE = "multiple";
-
 function toSlug(tier: TierKey, f: Flavor): string {
   const base = f.name.toLowerCase().replace(/\s+/g, "-");
   const suffix = f.cannabinoid ? `-${f.cannabinoid.toLowerCase()}` : "";
@@ -153,24 +152,26 @@ const VALID_SLUGS = new Set(
 
 const RATING_WORDS = ["", "Not for me", "It's okay", "Good", "Great", "Love it"];
 
+// slug → dropdown label, in display order (tier, then flavor position).
+const FLAVOR_LABELS = new Map<string, string>(
+  VISIBLE_TIERS.flatMap(({ tier, flavors }) =>
+    flavors.map((f) => [toSlug(tier, f), optionLabel(tier, f)] as const),
+  ),
+);
+const FLAVOR_ORDER = [...FLAVOR_LABELS.keys()];
+
 // ── TYPES ────────────────────────────────────────────────────────────────
-type Errors = Partial<
-  Record<
-    "rating" | "headline" | "body" | "firstName" | "lastInitial" | "email" | "age21" | "consent",
-    string
-  >
->;
+type Errors = Partial<Record<"rating" | "firstName" | "email" | "body", string>>;
 
 type ReviewPayload = {
   rating: number;
-  productSlug: string; // "" = no flavor chosen (general review)
+  firstName: string;
+  lastName: string; // optional; shown publicly as its initial only
+  email: string;
+  flavors: { slug: string; review: string }[]; // empty = general review
   headline: string;
   body: string;
-  firstName: string;
-  lastInitial: string;
-  email: string;
-  confirmedAge21: true;
-  consentToPublish: true;
+  consentToPublish: true; // given by submitting (disclaimer beneath button)
   sourcePage: string;
   submittedAt: string;
 };
@@ -194,57 +195,130 @@ async function submitReview(payload: ReviewPayload): Promise<void> {
   }
 }
 
+// ── FLAVOR MULTI-SELECT ──────────────────────────────────────────────────
+// Dropdown trigger styled like the form's selects; opens a tier-grouped
+// checkbox panel. Closes on outside click or Escape.
+function FlavorMultiSelect({
+  selected,
+  onToggle,
+}: {
+  selected: string[];
+  onToggle: (slug: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent | TouchEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("touchstart", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("touchstart", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const summary =
+    selected.length === 0
+      ? "Choose flavors"
+      : selected.length === 1
+        ? FLAVOR_LABELS.get(selected[0]) ?? "1 flavor selected"
+        : `${selected.length} flavors selected`;
+
+  return (
+    <div className="rv-ms" ref={rootRef}>
+      <button
+        type="button"
+        className={`c-select rv-ms-trigger${selected.length ? "" : " rv-ms-empty"}`}
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+      >
+        {summary}
+      </button>
+      {open && (
+        <div className="rv-ms-panel" role="group" aria-label="Flavors">
+          {VISIBLE_TIERS.map(({ tier, label, flavors }) => (
+            <div key={tier} className="rv-ms-group">
+              <div className="rv-ms-group-label">{label}</div>
+              {flavors.map((f) => {
+                const slug = toSlug(tier, f);
+                return (
+                  <label key={slug} className="rv-ms-option">
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(slug)}
+                      onChange={() => onToggle(slug)}
+                    />
+                    <span>{optionLabel(tier, f)}</span>
+                  </label>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── COMPONENT ────────────────────────────────────────────────────────────
 function ReviewPage() {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
-  const [productSlug, setProductSlug] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [flavors, setFlavors] = useState<string[]>([]);
+  const [flavorNotes, setFlavorNotes] = useState<Record<string, string>>({});
   const [headline, setHeadline] = useState("");
   const [body, setBody] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastInitial, setLastInitial] = useState("");
-  const [email, setEmail] = useState("");
-  const [age21, setAge21] = useState(false);
-  const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  // Keep the lander's legacy Spin & Save popup off this page (per session).
-  useEffect(() => {
-    try {
-      sessionStorage.setItem("sunrise:spin-wheel-seen", "true");
-    } catch {
-      /* private browsing — harmless */
-    }
-  }, []);
+  // The lander's legacy Spin & Save popup is kept off this page by the
+  // NO_WHEEL_PATHS check in components/SpinWheel.tsx.
 
-  // Pre-select product from ?product=<slug>. Browser-only.
+  // Pre-select flavors from ?product=<slug>[,<slug>…]. Browser-only.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const p = new URLSearchParams(window.location.search).get("product");
-    if (p && (VALID_SLUGS.has(p) || p === MULTIPLE)) setProductSlug(p);
+    const raw = new URLSearchParams(window.location.search).get("product");
+    if (!raw) return;
+    const picks = raw.split(",").map((x) => x.trim()).filter((x) => VALID_SLUGS.has(x));
+    if (picks.length) setFlavors(FLAVOR_ORDER.filter((s) => picks.includes(s)));
   }, []);
 
   const clear = (key: keyof Errors) => {
     if (errors[key]) setErrors((e) => ({ ...e, [key]: undefined }));
   };
 
+  // Keep selections in display order so the per-flavor boxes don't jump.
+  const toggleFlavor = (slug: string) =>
+    setFlavors((cur) =>
+      cur.includes(slug)
+        ? cur.filter((s) => s !== slug)
+        : FLAVOR_ORDER.filter((s) => s === slug || cur.includes(s)),
+    );
+
   const validate = (): Errors => {
     const next: Errors = {};
     if (rating < 1) next.rating = "Pick a star rating.";
-    if (headline.trim().length > HEADLINE_MAX) next.headline = `Keep it under ${HEADLINE_MAX} characters.`;
-    const len = body.trim().length;
-    if (len < BODY_MIN) next.body = `A few more words, please (at least ${BODY_MIN} characters).`;
-    else if (len > BODY_MAX) next.body = `Keep it under ${BODY_MAX} characters.`;
     if (!firstName.trim()) next.firstName = "First name needed.";
-    if (!/^\p{L}$/u.test(lastInitial.trim())) next.lastInitial = "One letter.";
     if (!email.trim()) next.email = "Email needed.";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = "Email looks off.";
-    if (!age21) next.age21 = "You must be 21 or older to leave a review.";
-    if (!consent) next.consent = "We need your permission to publish your review.";
+    if (body.trim().length < BODY_MIN) next.body = `A few more words, please (at least ${BODY_MIN} characters).`;
     return next;
   };
 
@@ -259,19 +333,22 @@ function ReviewPage() {
     try {
       await submitReview({
         rating,
-        productSlug,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim().toLowerCase(),
+        flavors: flavors.map((slug) => ({ slug, review: (flavorNotes[slug] ?? "").trim() })),
         headline: headline.trim(),
         body: body.trim(),
-        firstName: firstName.trim(),
-        lastInitial: lastInitial.trim().toUpperCase(),
-        email: email.trim().toLowerCase(),
-        confirmedAge21: true,
         consentToPublish: true,
         sourcePage: typeof window !== "undefined" ? window.location.pathname : "/neverpull/review",
         submittedAt: new Date().toISOString(),
       });
       setSubmitted(true);
-      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+      // Bring the success card (and the code) into view — on phones the card
+      // sits below the side copy, so scrolling to page top would hide the code.
+      requestAnimationFrame(() =>
+        cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      );
     } catch (err) {
       setSubmitError(
         err instanceof Error ? err.message : "Something went wrong. Please email hello@savorsunrise.com.",
@@ -287,27 +364,29 @@ function ReviewPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
-      /* clipboard blocked — code is visible to copy manually */
+      /* clipboard blocked — code is visible on screen anyway */
     }
   };
 
+  // Name and email carry over; everything about the review itself resets.
   const resetForAnother = () => {
     setSubmitted(false);
     setRating(0);
-    setProductSlug("");
+    setFlavors([]);
+    setFlavorNotes({});
     setHeadline("");
     setBody("");
     setErrors({});
+    setCopied(false);
   };
 
   const shownRating = hoverRating || rating;
-  const bodyLen = body.trim().length;
 
   return (
     <>
       <SiteHeader />
 
-      <main>
+      <main className="rv-page">
         {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
         <section className="c-pagehero rv-pagehero">
           <p className="c-pagehero-title" aria-label="Reviews">
@@ -328,40 +407,39 @@ function ReviewPage() {
                 </h1>
                 <p className="c-form-sub">
                   Tell us about the taste, the feel, and the moments you reach for it.
-                  Every honest review earns 15% off your next order, whatever rating
-                  you give.
+                  Leave us an honest review and automatically earn{" "}
+                  <strong>15% off</strong> your next order.
                 </p>
-                <div className="rv-reward-badge" aria-hidden="true">
-                  <span className="rv-reward-pct">15%</span>
-                  <span className="rv-reward-label">off your next order</span>
-                </div>
               </div>
 
-              <div className="c-form-card">
+              <div className="c-form-card rv-card" ref={cardRef}>
                 {submitted ? (
                   <div className="c-success" role="status" aria-live="polite">
                     <div className="c-success-eyebrow">Review Received</div>
                     <div className="c-success-headline">Thanks for the feedback</div>
                     <p className="c-success-body">
-                      Here's 15% off your next order, our thanks for sharing. Reviews go
-                      live after a quick check.
+                      Here's 15% off your next order, our thanks for sharing.
                     </p>
 
-                    <div className="rv-code-block">
-                      <span className="rv-code-label">Your code</span>
-                      <button type="button" className="rv-code" onClick={copyCode} title="Copy code">
-                        {REWARD_CODE}
-                        <span className="rv-code-copy">{copied ? "Copied" : "Copy"}</span>
-                      </button>
-                      <span className="rv-code-terms">{REWARD_TERMS}</span>
-                    </div>
+                    {/* Mirrors the Spin & Save code box (dashed gold, copy icon). */}
+                    <button type="button" className="rv-code" onClick={copyCode} title="Copy code">
+                      <span className="rv-code-text">{REWARD_CODE}</span>
+                      <span className="rv-code-copy">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" className="rv-copy-icon">
+                          <rect x="8" y="8" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                          <rect x="3" y="3" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                        </svg>
+                        {copied ? "Copied!" : "Copy"}
+                      </span>
+                    </button>
+                    <div className="rv-fine">{REWARD_TERMS}</div>
 
                     <div className="c-success-ctas">
                       <a href="/neverpull/products" className="btn btn-primary">
                         Shop the Lineup
                       </a>
                       <button type="button" className="btn btn-secondary" onClick={resetForAnother}>
-                        Review Another Flavor
+                        Add Another Review
                       </button>
                     </div>
                   </div>
@@ -406,87 +484,8 @@ function ReviewPage() {
                       {errors.rating && <span className="c-field-error">{errors.rating}</span>}
                     </fieldset>
 
-                    {/* Product */}
-                    <div className="c-form-row">
-                      <label className="c-field">
-                        <span className="c-field-label">
-                          Flavor <span className="rv-optional">(optional)</span>
-                        </span>
-                        <select
-                          className="c-select"
-                          value={productSlug}
-                          onChange={(e) => setProductSlug(e.target.value)}
-                        >
-                          <option value="">Choose a flavor</option>
-                          {VISIBLE_TIERS.map(({ tier, label, flavors }) => (
-                            <optgroup key={tier} label={label}>
-                              {flavors.map((f) => {
-                                const slug = toSlug(tier, f);
-                                return (
-                                  <option key={slug} value={slug}>
-                                    {optionLabel(tier, f)}
-                                  </option>
-                                );
-                              })}
-                            </optgroup>
-                          ))}
-                          <option value={MULTIPLE}>More than one flavor</option>
-                        </select>
-                      </label>
-                    </div>
-
-                    {/* Headline */}
-                    <div className="c-form-row">
-                      <label className="c-field">
-                        <span className="c-field-label">
-                          Headline <span className="rv-optional">(optional)</span>
-                        </span>
-                        <input
-                          type="text"
-                          className={`c-input${errors.headline ? " c-input-error" : ""}`}
-                          value={headline}
-                          maxLength={HEADLINE_MAX}
-                          placeholder="Sum it up in a few words"
-                          onChange={(e) => {
-                            setHeadline(e.target.value);
-                            clear("headline");
-                          }}
-                          aria-invalid={errors.headline ? true : undefined}
-                        />
-                        {errors.headline && <span className="c-field-error">{errors.headline}</span>}
-                      </label>
-                    </div>
-
-                    {/* Body */}
-                    <div className="c-form-row">
-                      <label className="c-field">
-                        <span className="c-field-label">Your Review</span>
-                        <textarea
-                          className={`c-textarea${errors.body ? " c-input-error" : ""}`}
-                          value={body}
-                          maxLength={BODY_MAX}
-                          placeholder="How did it taste? How did it feel? When do you enjoy it?"
-                          onChange={(e) => {
-                            setBody(e.target.value);
-                            clear("body");
-                          }}
-                          aria-invalid={errors.body ? true : undefined}
-                          aria-describedby="rv-body-hint"
-                        />
-                        <span className="rv-field-meta">
-                          <span id="rv-body-hint" className="rv-hint">
-                            Please skip medical or health claims. We can't publish those.
-                          </span>
-                          <span className={`rv-count${bodyLen > BODY_MAX ? " rv-count-over" : ""}`}>
-                            {bodyLen}/{BODY_MAX}
-                          </span>
-                        </span>
-                        {errors.body && <span className="c-field-error">{errors.body}</span>}
-                      </label>
-                    </div>
-
                     {/* Name */}
-                    <div className="c-form-row rv-name-row">
+                    <div className="c-form-row c-form-row-split">
                       <label className="c-field">
                         <span className="c-field-label">First Name</span>
                         <input
@@ -503,24 +502,19 @@ function ReviewPage() {
                         {errors.firstName && <span className="c-field-error">{errors.firstName}</span>}
                       </label>
                       <label className="c-field">
-                        <span className="c-field-label">Last Initial</span>
+                        <span className="c-field-label">
+                          Last Name <span className="rv-optional">(optional)</span>
+                        </span>
                         <input
                           type="text"
-                          className={`c-input${errors.lastInitial ? " c-input-error" : ""}`}
-                          value={lastInitial}
-                          maxLength={1}
-                          onChange={(e) => {
-                            setLastInitial(e.target.value);
-                            clear("lastInitial");
-                          }}
-                          aria-invalid={errors.lastInitial ? true : undefined}
+                          className="c-input"
+                          value={lastName}
+                          maxLength={LAST_NAME_MAX}
+                          onChange={(e) => setLastName(e.target.value)}
+                          autoComplete="family-name"
                         />
-                        {errors.lastInitial && <span className="c-field-error">{errors.lastInitial}</span>}
                       </label>
                     </div>
-                    <span className="rv-hint rv-hint-tight">
-                      Shown publicly as first name and last initial, e.g. "Jordan M."
-                    </span>
 
                     {/* Email */}
                     <div className="c-form-row">
@@ -537,43 +531,73 @@ function ReviewPage() {
                           autoComplete="email"
                           aria-invalid={errors.email ? true : undefined}
                         />
-                        <span className="rv-hint">
-                          Used to verify your order and send your code. Never shown publicly.
-                        </span>
                         {errors.email && <span className="c-field-error">{errors.email}</span>}
                       </label>
                     </div>
 
-                    {/* Checkboxes */}
-                    <div className="rv-checks">
-                      <label className={`rv-check${errors.age21 ? " rv-check-error" : ""}`}>
-                        <input
-                          type="checkbox"
-                          checked={age21}
-                          onChange={(e) => {
-                            setAge21(e.target.checked);
-                            clear("age21");
-                          }}
-                        />
-                        <span>I'm 21 or older.</span>
-                      </label>
-                      {errors.age21 && <span className="c-field-error">{errors.age21}</span>}
-
-                      <label className={`rv-check${errors.consent ? " rv-check-error" : ""}`}>
-                        <input
-                          type="checkbox"
-                          checked={consent}
-                          onChange={(e) => {
-                            setConsent(e.target.checked);
-                            clear("consent");
-                          }}
-                        />
-                        <span>
-                          SUNRISE may publish my review, rating, and first name with last
-                          initial on its website and in its marketing.
+                    {/* Flavors (optional multi-select) + one short review per flavor */}
+                    <div className="c-form-row">
+                      <div className="c-field">
+                        <span className="c-field-label">
+                          Flavor <span className="rv-optional">(optional)</span>
                         </span>
+                        <FlavorMultiSelect selected={flavors} onToggle={toggleFlavor} />
+                      </div>
+                    </div>
+                    {flavors.map((slug) => (
+                      <div key={slug} className="c-form-row rv-flavor-note">
+                        <label className="c-field">
+                          <span className="c-field-label">
+                            {FLAVOR_LABELS.get(slug)} <span className="rv-optional">(optional)</span>
+                          </span>
+                          <textarea
+                            className="c-textarea rv-flavor-textarea"
+                            value={flavorNotes[slug] ?? ""}
+                            maxLength={FLAVOR_NOTE_MAX}
+                            rows={2}
+                            placeholder="A quick take on this flavor"
+                            onChange={(e) =>
+                              setFlavorNotes((n) => ({ ...n, [slug]: e.target.value }))
+                            }
+                          />
+                        </label>
+                      </div>
+                    ))}
+
+                    {/* Headline */}
+                    <div className="c-form-row">
+                      <label className="c-field">
+                        <span className="c-field-label">
+                          Headline <span className="rv-optional">(optional)</span>
+                        </span>
+                        <input
+                          type="text"
+                          className="c-input"
+                          value={headline}
+                          maxLength={HEADLINE_MAX}
+                          placeholder="Sum it up in a few words"
+                          onChange={(e) => setHeadline(e.target.value)}
+                        />
                       </label>
-                      {errors.consent && <span className="c-field-error">{errors.consent}</span>}
+                    </div>
+
+                    {/* Message */}
+                    <div className="c-form-row">
+                      <label className="c-field">
+                        <span className="c-field-label">Message</span>
+                        <textarea
+                          className={`c-textarea${errors.body ? " c-input-error" : ""}`}
+                          value={body}
+                          maxLength={BODY_MAX}
+                          placeholder="How did it taste? How did it feel? When do you enjoy it?"
+                          onChange={(e) => {
+                            setBody(e.target.value);
+                            clear("body");
+                          }}
+                          aria-invalid={errors.body ? true : undefined}
+                        />
+                        {errors.body && <span className="c-field-error">{errors.body}</span>}
+                      </label>
                     </div>
 
                     <div className="c-form-submit">
@@ -588,9 +612,8 @@ function ReviewPage() {
                     </div>
 
                     <div className="c-form-note rv-disclosure">
-                      Every reviewer gets the same 15% off code, whatever rating they give.
-                      Reviews are published after a quick check for privacy, profanity, and
-                      medical claims, never based on rating.
+                      By submitting, you agree that SUNRISE may publish your review, rating,
+                      and first name with last initial on its website and in its marketing.
                     </div>
                   </form>
                 )}

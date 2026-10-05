@@ -197,11 +197,12 @@ export function SpinWheel() {
     // The index route ("/") is now a minimal age-gate splash with no wheel entry
     // point — do not auto-arm there. Other routes (incl. the preserved full
     // lander at /neverpull/oghome-fys) keep the auto-triggers.
-    // /neverpull/review is a form page; the wheel must never cover it. Checked
-    // at mount AND at reveal time: the route is code-split, so a page-level
-    // sessionStorage flag can land after this effect runs, and a visitor can
-    // client-side navigate onto the page while the fallback timer is pending.
-    const NO_WHEEL_PATHS = ["/", "/neverpull/review"];
+    // /neverpull/review and /neverpull/tryfreecan are form pages; the wheel must
+    // never cover them. Checked at mount AND at reveal time: the routes are
+    // code-split, so a page-level sessionStorage flag can land after this effect
+    // runs, and a visitor can client-side navigate onto the page while the
+    // fallback timer is pending.
+    const NO_WHEEL_PATHS = ["/", "/neverpull/review", "/neverpull/tryfreecan"];
     const onNoWheelPath = () =>
       typeof window !== "undefined" &&
       NO_WHEEL_PATHS.includes(window.location.pathname.replace(/\/+$/, "") || "/");

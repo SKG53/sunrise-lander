@@ -11,7 +11,9 @@
 //
 // Flow: pick one can → email → reveal (fireworks + TRYFREECAN code) →
 // "Continue to Checkout" creates a REAL Storefront cart with TRYFREECAN applied
-// and sends the visitor to Shopify checkout ($0.00 can, $9.99 shipping).
+// and sends the visitor to Shopify checkout ($0.00 can, customer pays shipping).
+// Founder (Oct 5): never show the shipping amount on the page — say "just cover
+// the shipping fee" instead.
 //
 // TEST MODE: the email claim writes NOTHING (no Klaviyo, HubSpot, Supabase).
 // The payload is logged as "[tryfreecan TEST MODE]". Cart + checkout are LIVE.
@@ -70,7 +72,6 @@ export const Route = createFileRoute("/neverpull/tryfreecan")({
 // ── CONFIG ───────────────────────────────────────────────────────────────
 const TEST_MODE = true;
 const CODE = "TRYFREECAN";
-const SHIPPING = "$9.99";
 const STORAGE_KEY = "sunrise:tryfreecan";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
@@ -515,7 +516,7 @@ function TryFreeCanPage() {
               <span className="accent">Just Cover Shipping</span>
             </h1>
             <p className="tfc-subhead">
-              Pick any flavor or strength and the can is on us. Shipping is {SHIPPING}. One free can per order.
+              Pick any flavor or strength and the can is on us. You just cover the shipping fee. One free can per order.
             </p>
           </div>
         </section>
@@ -585,7 +586,7 @@ function TryFreeCanPage() {
                   {checkoutBusy ? "Opening Checkout" : "Continue to Checkout"}
                 </button>
                 {checkoutError && <p className="tfc-error" role="alert">{checkoutError}</p>}
-                <p className="tfc-fine">One free can per order. Shipping is {SHIPPING}.</p>
+                <p className="tfc-fine">One free can per order. You just cover the shipping fee.</p>
               </div>
             </section>
           )

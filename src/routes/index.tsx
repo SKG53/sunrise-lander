@@ -2,7 +2,8 @@
 // Shell provides the rotating announcement bar + cream background + site-wide
 // noindex. This page is: (1) a horizontally auto-scrolling strip of the (blurred)
 // cans, then (2) an inline age gate — "Are you 21 or older?" with Yes / No.
-//   • YES  → same-tab to the main store's products page, carrying ?av=srbev so
+//   • YES  → same-tab to the main store; the page is chosen by utm_campaign via
+//            CAMPAIGN_DESTINATIONS (default /products), carrying ?av=srbev so
 //            the store's age gate skips (this visitor already passed it here).
 //            The shell also appends ?ref=srbev for spinners (spin suppression).
 //            This click also forwards Facebook identity (fbc/fbp), fbclid,
@@ -18,6 +19,61 @@ import { getCanImage } from '../lib/canImages'
 import { renderWordmark, getBasePx } from '../lib/sunrise-components'
 import { track } from '../lib/track'
 import './index.css'
+
+// ═════════════════════════════════════════════════════════════════════════════
+// META CAMPAIGN → LANDING PAGE ROUTER          ✏️ EDIT THIS BLOCK PER CAMPAIGN
+// -----------------------------------------------------------------------------
+// The "Yes, I'm 21+" button sends each visitor to a savorsunrise.com page based
+// on the utm_campaign in their Meta ad URL.
+//
+//   KEY   = the utm_campaign value used in the Meta ad's URL parameters.
+//           Matching is case-insensitive and ignores surrounding spaces.
+//   VALUE = the savorsunrise.com page to send them to (must start with "/").
+//
+// Any campaign NOT listed here, or a visit with no utm_campaign, goes to
+// DEFAULT_DESTINATION (/products), the same behavior as before this change.
+//
+// HOW TO ADD A CAMPAIGN:
+//   1. In Meta Ads Manager → Ad → Destination → URL parameters, set a FIXED
+//      utm_campaign slug (e.g. utm_campaign=freecan_oct26). Use a typed slug,
+//      not {{campaign.name}}, so renaming the campaign in Meta never breaks
+//      the match.
+//   2. Add or replace a line below:  "<that slug>": "/<page>",
+//   3. The page must also be listed in ALLOWED_DESTINATIONS (safety list).
+//
+// Example full Meta ad URL for the free-can campaign:
+//   https://srbev.com/?utm_source=meta&utm_medium=paid_social
+//     &utm_campaign=REPLACE_ME_FREECAN_CAMPAIGN
+//     &utm_content=<geo>&utm_term=<campaign>_<geo>_ad<N>
+// ═════════════════════════════════════════════════════════════════════════════
+const CAMPAIGN_DESTINATIONS: Record<string, string> = {
+  // TODO(Sastry): replace the key with the real free-can utm_campaign slug.
+  replace_me_freecan_campaign: "/tryfreecan",
+  // "another_campaign_slug": "/products",
+};
+
+const DEFAULT_DESTINATION = "/products";
+
+// Safety list: the router will only ever send visitors to these pages.
+// Add a page here before using it as a VALUE above.
+const ALLOWED_DESTINATIONS = ["/products", "/tryfreecan"];
+
+function resolveDestination(search: string): string {
+  try {
+    const campaign = (new URLSearchParams(search).get("utm_campaign") || "")
+      .trim()
+      .toLowerCase();
+    const map: Record<string, string> = {};
+    for (const [k, v] of Object.entries(CAMPAIGN_DESTINATIONS)) {
+      map[k.trim().toLowerCase()] = v;
+    }
+    const dest = campaign ? map[campaign] : undefined;
+    return dest && ALLOWED_DESTINATIONS.includes(dest) ? dest : DEFAULT_DESTINATION;
+  } catch {
+    return DEFAULT_DESTINATION;
+  }
+}
+// ═════════════════════════════════ END ROUTER ════════════════════════════════
 
 // Every blurred can, in tier order, for the marquee. Names are flavor-only —
 // no potency/cannabinoid wording (restricted-vocab surface).
@@ -116,6 +172,7 @@ function LanderHome() {
                   try {
                     const a = e.currentTarget
                     const u = new URL(a.href)
+                    u.pathname = resolveDestination(window.location.search)
                     let fbc = readCookie('_fbc')
                     if (!fbc) {
                       const id = new URLSearchParams(window.location.search).get('fbclid')

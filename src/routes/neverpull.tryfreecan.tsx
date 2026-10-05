@@ -3,6 +3,12 @@
 // carries its own noindex). Linked only from the /neverpull/spin-test button page.
 // Brief: SUNRISE_WebDesign_Lander_TryFreeCan_Prototype_v2_2026-10-05.
 //
+// Layout (founder, Oct 5): the site header as normal → the page opens straight
+// on "Want a Taste? / Just Cover Shipping" (no page-hero band) →
+// strength-grouped grid. The claim panel ("Your pick" + email) opens directly
+// beneath the ROW of the card the visitor taps (3-up desktop, 2-up mobile) —
+// no scroll to the bottom of the page.
+//
 // Flow: pick one can → email → reveal (fireworks + TRYFREECAN code) →
 // "Continue to Checkout" creates a REAL Storefront cart with TRYFREECAN applied
 // and sends the visitor to Shopify checkout ($0.00 can, $9.99 shipping).
@@ -22,7 +28,7 @@
 //   Can images           | lander lib/heroCans HERO_CANS       | main public/images/cans/<slug>.webp as
 //                        | (blurred cutouts, data URIs)        | CARD-SIZED derivatives (full renders ~210–280 KB)
 //   Footer               | lander SiteFooter (no disclaimer)   | main footer legal block INCLUDING full disclaimer
-//   Header               | logo-only, lander paint             | main wordmark, logo-only (no nav, no cart)
+//   Header               | lander SiteHeader (full nav)        | main SiteHeader (full nav, as on every page)
 //   Announcement bar     | lander's, left as-is                | main's, left as-is
 //   Writes               | TEST_MODE: console only             | real "Claimed Free Can" event + Klaviyo subscribe
 //                        |                                     | + HubSpot (web_signup_source = Free Can)
@@ -35,12 +41,12 @@
 // products_.$slug.tsx. Card geometry mirrors main's FreeSampleSection (.fs-*).
 
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { storefrontApiRequest } from "../lib/shopify";
 import { HERO_CANS } from "../lib/heroCans";
 import {
-  renderWordmark,
   render10mgLockup,
   render30mgLockup,
   render60mgLockup,
@@ -68,6 +74,7 @@ const SHIPPING = "$9.99";
 const STORAGE_KEY = "sunrise:tryfreecan";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
+const MOBILE_MQ = "(max-width: 768px)"; // grid is 2-up at/below this, 3-up above
 
 type Tier = 10 | 30 | 60;
 type Cannabinoid = "CBG" | "CBN" | "THCV";
@@ -170,13 +177,11 @@ function CheckIcon({ color }: { color: string }) {
 }
 
 function TryFreeCanPage() {
-  const wmRef = useRef<HTMLDivElement>(null);
   const lockupRefs = useRef<Record<string, HTMLSpanElement | null>>({});
   const cbRefs = useRef<Record<string, HTMLSpanElement | null>>({});
   const tierHeadRefs = useRef<Record<number, HTMLSpanElement | null>>({});
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const gridRef = useRef<HTMLDivElement>(null);
-  const claimRef = useRef<HTMLElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const revealRef = useRef<HTMLElement>(null);
 
@@ -185,8 +190,8 @@ function TryFreeCanPage() {
   const [celebrate, setCelebrate] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [pickPrompt, setPickPrompt] = useState(false);
-  const [claimInView, setClaimInView] = useState(false);
+  const [cols, setCols] = useState<2 | 3>(3);
+  const [caretX, setCaretX] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
@@ -214,7 +219,6 @@ function TryFreeCanPage() {
     const paint = () => {
       const base = getBasePx();
       const mobile = window.innerWidth <= 768;
-      if (wmRef.current) wmRef.current.innerHTML = renderWordmark(mobile ? base * 0.69 * 1.26 : base * 0.69, "gradient");
       const lockupBase = window.innerWidth <= 520 ? 28 : 44;
       CANS.forEach((c) => {
         const l = lockupRefs.current[c.slug];
@@ -233,18 +237,45 @@ function TryFreeCanPage() {
     return () => window.removeEventListener("resize", paint);
   }, [claimed, selected]);
 
-  // Hide the mobile sticky bar while the claim section is on screen.
+  // Track the grid's column count (matches the CSS breakpoint) so the claim
+  // panel can be inserted after the last card of the selected card's row.
   useEffect(() => {
-    const el = claimRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => setClaimInView(e.isIntersecting), { threshold: 0.15 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [claimed]);
+    const mq = window.matchMedia(MOBILE_MQ);
+    const sync = () => setCols(mq.matches ? 2 : 3);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  // Point the panel's caret at the selected card (works for the centered
+  // orphan card too), and re-measure on resize.
+  useLayoutEffect(() => {
+    if (claimed || !selected) return;
+    const measure = () => {
+      const card = cardRefs.current[selected];
+      const panel = panelRef.current;
+      if (!card || !panel) return;
+      const c = card.getBoundingClientRect();
+      const pr = panel.getBoundingClientRect();
+      setCaretX(c.left + c.width / 2 - pr.left);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [selected, cols, claimed]);
+
+  // When the panel opens or moves to another row, bring it into view.
+  useEffect(() => {
+    if (claimed || !selected) return;
+    const id = window.requestAnimationFrame(() => {
+      const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      panelRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [selected, cols, claimed]);
 
   const select = (slug: string, focus = false) => {
     setSelected(slug);
-    setPickPrompt(false);
     if (focus) cardRefs.current[slug]?.focus();
   };
 
@@ -267,17 +298,8 @@ function TryFreeCanPage() {
     }
   };
 
-  const scrollToClaim = () => {
-    claimRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    window.setTimeout(() => emailRef.current?.focus({ preventScroll: true }), 450);
-  };
-
   const onClaim = () => {
-    if (!current) {
-      setPickPrompt(true);
-      gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      return;
-    }
+    if (!current) return; // the panel only exists once a can is selected
     const value = email.trim().toLowerCase();
     if (!EMAIL_RE.test(value) || value.length > 320) {
       setEmailError("Enter a valid email address.");
@@ -372,8 +394,6 @@ function TryFreeCanPage() {
     }
   };
 
-  const showBar = !claimed && !!current && !claimInView;
-
   const renderCard = (c: Can, interactive: boolean) => {
     const isSel = selected === c.slug;
     const ink = inkFor(c.color);
@@ -431,14 +451,63 @@ function TryFreeCanPage() {
     );
   };
 
-  return (
-    <div className="tfc-page">
-      {/* Logo-only header: no nav, no cart, no CTAs, no link off the page. */}
-      <header className="site-header tfc-header">
-        <div className="wordmark-slot" ref={wmRef} role="img" aria-label="SUNRISE" />
-      </header>
+  // The claim panel ("Your pick" + email), rendered right after the last card
+  // of the selected card's row.
+  const claimPanel = current && (
+    <div
+      key="tfc-panel"
+      ref={panelRef}
+      className="tfc-panel"
+      style={{ "--card-flavor-color": current.color, "--caret-x": caretX === null ? "50%" : `${caretX}px` } as CSSProperties}
+      aria-labelledby="tfc-claim-title"
+      role="region"
+    >
+      <span className="tfc-panel-caret" aria-hidden="true" />
+      <h2 id="tfc-claim-title" className="tfc-claim-title">
+        Your pick: <span style={{ color: inkFor(current.color) }}>{current.flavor}</span>
+      </h2>
+      <form
+        className="tfc-form"
+        noValidate
+        onSubmit={(e) => {
+          e.preventDefault();
+          onClaim();
+        }}
+      >
+        <label htmlFor="tfc-email" className="tfc-label">Email address</label>
+        <input
+          ref={emailRef}
+          id="tfc-email"
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          className="tfc-input"
+          placeholder="you@email.com"
+          value={email}
+          aria-invalid={!!emailError}
+          aria-describedby={emailError ? "tfc-email-error" : undefined}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (emailError) setEmailError("");
+          }}
+        />
+        {emailError && <p id="tfc-email-error" className="tfc-error">{emailError}</p>}
+        <button type="submit" className="btn btn-primary tfc-claim-btn">
+          Claim My Free Can
+        </button>
+        <p className="tfc-fine">
+          By entering your email, you agree to receive marketing emails from SUNRISE. Unsubscribe anytime.
+        </p>
+      </form>
+    </div>
+  );
 
-      <main>
+  return (
+    <>
+      <SiteHeader />
+
+      <main className="tfc-page">
+        {/* ── 01 · HERO ─────────────────────────────────────────────────── */}
         <section className="tfc-hero">
           <div className="container">
             <h1 className="tfc-headline">
@@ -452,81 +521,38 @@ function TryFreeCanPage() {
         </section>
 
         {!claimed ? (
-          <>
-            <section className="tfc-pick" aria-label="Choose your free can">
-              <div className="container">
-                <div
-                  ref={gridRef}
-                  className={`tfc-groups${selected ? " has-selection" : ""}`}
-                  role="radiogroup"
-                  aria-label="Choose your free can"
-                >
-                  {TIERS.map((t) => (
+          /* ── 02 · PICK (claim panel opens beneath the tapped row) ─────── */
+          <section className="tfc-pick" aria-label="Choose your free can">
+            <div className="container">
+              <div
+                className={`tfc-groups${selected ? " has-selection" : ""}`}
+                role="radiogroup"
+                aria-label="Choose your free can"
+              >
+                {TIERS.map((t) => {
+                  const group = CANS.filter((c) => c.tier === t.tier);
+                  const selIdx = group.findIndex((c) => c.slug === selected);
+                  const insertAfter =
+                    selIdx < 0 ? -1 : Math.min((Math.floor(selIdx / cols) + 1) * cols, group.length) - 1;
+                  return (
                     <div key={t.tier} className="tfc-group" role="group" aria-label={`${t.tier} MG`}>
                       <div className="tfc-group-head">
                         <span className="tfc-group-lockup" aria-hidden="true" ref={(el) => { tierHeadRefs.current[t.tier] = el; }} />
                       </div>
                       <div className="tfc-grid">
-                        {CANS.filter((c) => c.tier === t.tier).map((c) => renderCard(c, true))}
+                        {group.map((c, i) => (
+                          <Fragment key={c.slug}>
+                            {renderCard(c, true)}
+                            {i === insertAfter && claimPanel}
+                          </Fragment>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
-                {pickPrompt && (
-                  <p className="tfc-prompt" role="alert">Pick a flavor first.</p>
-                )}
+                  );
+                })}
               </div>
-            </section>
-
-            <section className="tfc-claim" ref={claimRef} aria-labelledby="tfc-claim-title">
-              <div className="container">
-                <h2 id="tfc-claim-title" className="tfc-claim-title">
-                  {current ? (
-                    <>Your pick: <span style={{ color: inkFor(current.color) }}>{current.flavor}</span></>
-                  ) : (
-                    "Pick a flavor above"
-                  )}
-                </h2>
-                <form
-                  className="tfc-form"
-                  noValidate
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    onClaim();
-                  }}
-                >
-                  <label htmlFor="tfc-email" className="tfc-label">Email address</label>
-                  <input
-                    ref={emailRef}
-                    id="tfc-email"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    className="tfc-input"
-                    placeholder="you@email.com"
-                    value={email}
-                    aria-invalid={!!emailError}
-                    aria-describedby={emailError ? "tfc-email-error" : undefined}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (emailError) setEmailError("");
-                    }}
-                  />
-                  {emailError && <p id="tfc-email-error" className="tfc-error">{emailError}</p>}
-                  <button
-                    type="submit"
-                    className={`btn btn-primary tfc-claim-btn${current ? "" : " is-inactive"}`}
-                    aria-disabled={!current}
-                  >
-                    Claim My Free Can
-                  </button>
-                  <p className="tfc-fine">
-                    By entering your email, you agree to receive marketing emails from SUNRISE. Unsubscribe anytime.
-                  </p>
-                </form>
-              </div>
-            </section>
-          </>
+            </div>
+          </section>
         ) : (
           current && (
             <section className="tfc-reveal" ref={revealRef} aria-labelledby="tfc-reveal-title">
@@ -566,16 +592,7 @@ function TryFreeCanPage() {
         )}
       </main>
 
-      {/* Mobile-only sticky bar once a can is selected (hidden ≥769px in CSS). */}
-      {showBar && current && (
-        <button type="button" className="tfc-bar" onClick={scrollToClaim}>
-          <span className="tfc-bar-dot" style={{ background: current.color }} aria-hidden="true" />
-          <span className="tfc-bar-text">{current.flavor} selected</span>
-          <span className="tfc-bar-cta">· Claim It →</span>
-        </button>
-      )}
-
       <SiteFooter />
-    </div>
+    </>
   );
 }

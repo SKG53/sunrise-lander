@@ -1,5 +1,5 @@
-// LIVE, ISOLATED playground for the new two-pool Spin & Save (V2), plus a
-// link to the /neverpull/review prototype.
+// LIVE, ISOLATED playground for the new two-pool Spin & Save (V2), plus links
+// to the /neverpull/review and /neverpull/tryfreecan prototypes.
 // Path: /neverpull/spin-test  (srbev.com is site-wide noindex; this route also
 // carries its own noindex and is not linked from anywhere).
 //
@@ -87,6 +87,12 @@ function SpinTestPage() {
         style={{ ...btn, textDecoration: "none", display: "inline-block", textAlign: "center" }}
       >
         Review Request
+      </Link>
+      <Link
+        to="/neverpull/tryfreecan"
+        style={{ ...btn, textDecoration: "none", display: "inline-block", textAlign: "center" }}
+      >
+        Free Can Landing Page
       </Link>
 
       {launch && (

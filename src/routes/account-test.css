@@ -1,0 +1,113 @@
+/* /neverpull/account-test — .act-* namespace. Internal test page. */
+.act-page {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 1.6);
+}
+.act-wrap {
+  max-width: calc(var(--base) * 13);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.act-page .act-kicker {
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 8px;
+}
+.act-title {
+  font-family: "Montserrat", sans-serif;
+  font-size: calc(var(--base) * 1);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  color: var(--near-black);
+  line-height: 1;
+  margin: 0 0 14px;
+}
+.act-page .act-lede {
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--text-body);
+  margin: 0 0 24px;
+  max-width: 60ch;
+}
+.act-steps {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.act-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1.5px solid var(--warm-gray-light);
+  border-radius: 8px;
+}
+.act-num {
+  flex: 0 0 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--tier-60);
+  color: var(--cream);
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.act-step .act-step-title {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin: 3px 0 4px;
+}
+.act-step .act-step-body {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-body);
+  margin: 0;
+}
+.act-page .act-cta {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  padding: 15px 30px;
+}
+.act-page .act-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 12px 0 0;
+}
+@media (max-width: 768px) {
+  .act-page {
+    padding: 28px 0 40px;
+  }
+  .act-title {
+    font-size: 34px;
+  }
+  .act-page .act-lede {
+    font-size: 15px;
+  }
+  .act-step .act-step-body {
+    font-size: 14px;
+  }
+  .act-page .act-cta {
+    align-self: stretch;
+    text-align: center;
+    font-size: 13px;
+  }
+}

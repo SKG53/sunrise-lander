@@ -1,0 +1,115 @@
+/* /neverpull/spin-test test hub — .st-* namespace. Groups are color-coded by
+   what is being tested; --st-color is set per group (tier red / green / purple). */
+.st-page {
+  min-height: 100vh;
+  background: var(--cream, #fefbe0);
+  padding: 40px 20px 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  font-family: "Montserrat", sans-serif;
+}
+.st-head {
+  width: 100%;
+  max-width: 760px;
+  margin-bottom: 4px;
+}
+.st-page .st-kicker {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold, #c4922a);
+  margin: 0 0 6px;
+}
+.st-title {
+  font-size: 36px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--near-black, #1a1a1a);
+  line-height: 1;
+  margin: 0;
+}
+.st-group {
+  width: 100%;
+  max-width: 760px;
+  background: #fff;
+  border: 1.5px solid rgba(26, 26, 26, 0.12);
+  border-left: 8px solid var(--st-color);
+  border-radius: 10px;
+  padding: 18px 20px 20px;
+}
+.st-group-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-bottom: 14px;
+}
+.st-group-title {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--st-color);
+  margin: 0;
+}
+.st-group .st-group-note {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary, #555);
+  margin: 0;
+}
+.st-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.st-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 13px 22px;
+  border-radius: 9999px;
+  border: 2px solid var(--st-color);
+  background: var(--st-color);
+  color: var(--cream, #fefbe0);
+  cursor: pointer;
+  transition:
+    background 150ms ease-out,
+    color 150ms ease-out;
+}
+.st-btn:hover {
+  background: transparent;
+  color: var(--st-color);
+}
+.st-btn:focus-visible {
+  outline: 3px solid var(--near-black, #1a1a1a);
+  outline-offset: 3px;
+}
+.st-arrow {
+  font-size: 16px;
+  line-height: 1;
+}
+@media (max-width: 520px) {
+  .st-page {
+    padding: 28px 16px 48px;
+  }
+  .st-title {
+    font-size: 30px;
+  }
+  .st-buttons {
+    flex-direction: column;
+  }
+  .st-btn {
+    justify-content: center;
+  }
+}

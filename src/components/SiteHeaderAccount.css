@@ -1,0 +1,36 @@
+/* Account icon in SiteHeader (only when `accountHref` is passed).
+   Same 40px outlined circle and hover fill as .cart-trigger (CartDrawer.css)
+   so the two read as a pair; sits immediately left of the cart. */
+.account-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid #2c1810;
+  border-radius: 999px;
+  color: #2c1810;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+  margin-left: 0.5rem;
+}
+.account-trigger:hover {
+  background: #2c1810;
+  color: #f7efe0;
+}
+.account-trigger:focus-visible {
+  outline: 3px solid var(--near-black);
+  outline-offset: 3px;
+}
+/* Phones under 375px: wordmark + account + cart + menu don't fit (the menu
+   button is pushed off-screen at 320px). Hide the icon there; the mobile
+   drawer's "My Account" button stays. */
+@media (max-width: 374px) {
+  .account-trigger {
+    display: none;
+  }
+}

@@ -1,0 +1,1251 @@
+// BUILD YOUR BOX — shared page body for the lander deal prototypes:
+//   /neverpull/buy1get2  (pay for 1 × any 4-pack, get 2 × 10 mg 4-packs free · 3-pack box)
+//   /neverpull/buy3get2  (pay for 3 × any 4-pack, get 2 × 10 mg 4-packs free · 5-pack box)
+// LIVE, ISOLATED prototypes (srbev.com is site-wide noindex; both routes also
+// carry their own noindex). Linked only from the /neverpull/spin-test button page.
+// Brief: SUNRISE_WebDesign_Lander_BuildYourBox_Prototypes_2026-10-11.
+//
+// Why: customers misread buy-X-get-Y deals and the code fails silently when the
+// cart is short. This page BUILDS THE CART for them: a sticky "box" shows the
+// paid slots and a bordered "FREE 4-PACKS" group; empty slots show "+". Box
+// full → email → reveal → Shopify checkout with every line, the code and the
+// email already applied.
+//
+// Flow: tap grid cards to fill the paid slots (same flavor allowed in several
+// slots) → tap a free slot to pick Strawberry / Watermelon / Lemonade (popover
+// on desktop, bottom sheet on mobile) → Continue (enabled only when every slot
+// is filled) → email ("Unlock My Box") → reveal (fireworks + code) → "Continue
+// to Checkout" creates a REAL Storefront cart (identical variants merged into
+// one line, discountCodes [code], buyerIdentity.email ON) and redirects.
+// Free-shipping bar counts PAID packs only: fill = min(paid / 74.50, 1); copy
+// says $75 (house rule). Never show a shipping price. No timing language.
+//
+// TEST MODE: the email step writes NOTHING (no Klaviyo, HubSpot, Supabase). The
+// payload is logged as "[<logTag> TEST MODE]". Cart + checkout are LIVE.
+// Codes are placeholders (TEST_B1G2 / TEST_B3G2): checkout shows the free packs
+// at full price and the code "not applicable". That is expected here.
+//
+// ⚠️ STANDING RULE — LANDER ELEMENTS ARE FOR THIS PROTOTYPE ONLY.
+// Approve these pages for layout, flow and behavior. When they are rebuilt on
+// savorsunrise.com, every lander element below is replaced with the MAIN
+// SITE's own version (same table as neverpull.tryfreecan.tsx, plus the last two rows):
+//
+//   Element              | Prototype (lander)                  | Main-site build MUST use
+//   ---------------------|-------------------------------------|---------------------------------------------
+//   Potency lockups      | lander sunrise-components: "ACTIVE" | main sunrise-components: "10 MG THC"
+//   Cannabinoid strip    | lander: "+BLEND"                    | main: "+CBG" / "+CBN" / "+THCV"
+//   Can images           | lander lib/heroCans HERO_CANS       | main public/images/cans/<slug>.webp as
+//                        | (blurred cutouts, data URIs)        | CARD-SIZED derivatives (full renders ~210–280 KB)
+//   Footer               | lander SiteFooter (no disclaimer)   | main footer legal block INCLUDING full disclaimer
+//   Header               | lander SiteHeader (full nav)        | main SiteHeader (full nav, as on every page)
+//   Announcement bar     | lander's, left as-is                | main's, left as-is
+//   Writes               | TEST_MODE: console only             | real claim route (never blocks the reveal)
+//   Popup suppression    | lander NO_WHEEL_PATHS               | main path check inside SpinWheel.eligible()
+//   Checkout email       | on (cartCreate buyerIdentity.email) | on (cartCreate buyerIdentity.email)
+//   `source` in payload  | not sent                            | derived from session UTMs
+//   Codes                | placeholder TEST_B1G2 / TEST_B3G2   | real per-channel Shopify codes
+//   Box contents         | built client-side here              | issued/validated server-side (Sales has
+//                        |                                     | security notes for that build)
+
+import {
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+} from "react";
+import { SiteHeader } from "./SiteHeader";
+import { SiteFooter } from "./SiteFooter";
+import { storefrontApiRequest } from "../lib/shopify";
+import { HERO_CANS } from "../lib/heroCans";
+import {
+  render10mgLockup,
+  render30mgLockup,
+  render60mgLockup,
+  renderCBGLockup,
+  renderCBNLockup,
+  renderTHCVLockup,
+  getBasePx,
+} from "../lib/sunrise-components";
+import {
+  FREE_10MG,
+  LIVE_FOUR_PACKS,
+  packBySlug,
+  type Cannabinoid,
+  type FourPack,
+  type Tier,
+} from "../lib/liveFourPacks";
+import "../routes/tryfreecan.css";
+import "../routes/buildbox.css";
+
+// ── CONFIG ───────────────────────────────────────────────────────────────
+const TEST_MODE = true; // writes nothing; console only
+const FREE_SHIP_THRESHOLD = 74.5; // live Shopify threshold (unlock logic)
+const FREE_SHIP_LABEL = 75; // what the copy says (house rule: copy says $75)
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
+const MOBILE_MQ = "(max-width: 768px)";
+
+export type BuildYourBoxProps = {
+  paidSlots: number;
+  freeSlots: number;
+  headline: string;
+  subline: string;
+  code: string;
+  storageKey: string;
+  logTag: string;
+};
+
+type Step = "build" | "email" | "reveal";
+type Slots = (string | null)[];
+
+const TIERS: { tier: Tier; color: string }[] = [
+  { tier: 10, color: "#CC1F39" },
+  { tier: 30, color: "#0A6034" },
+  { tier: 60, color: "#2E1E3D" },
+];
+
+// fysInk luminance rule (same as tryfreecan): on light flavor colors flip
+// flavor-colored ink on cream to near-black.
+function luminance(hex: string): number {
+  const h = hex.replace("#", "");
+  const [r, g, b] = [0, 2, 4].map((i) => {
+    const c = parseInt(h.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+const inkFor = (hex: string) => (luminance(hex) > 0.3 ? "#1A1A1A" : hex);
+// Text placed ON a flavor-color field: cream on dark colors, near-black on light.
+const onColor = (hex: string) => (luminance(hex) > 0.3 ? "#1A1A1A" : "#FEFBE0");
+
+const tierLockup = (tier: Tier, base: number, color: string) =>
+  tier === 10
+    ? render10mgLockup(base, color)
+    : tier === 30
+      ? render30mgLockup(base, color)
+      : render60mgLockup(base, color);
+const cbLockup = (cb: Cannabinoid, base: number, color: string) =>
+  cb === "CBG"
+    ? renderCBGLockup(base, color)
+    : cb === "CBN"
+      ? renderCBNLockup(base, color)
+      : renderTHCVLockup(base, color);
+
+const money = (n: number) => `$${n.toFixed(2)}`;
+const round2 = (n: number) => Math.round(n * 100) / 100;
+
+type Saved = { paid: string[]; free: string[]; claimed: true; email: string };
+function readSaved(key: string, paidSlots: number, freeSlots: number): Saved | null {
+  try {
+    const raw = sessionStorage.getItem(key);
+    if (!raw) return null;
+    const v = JSON.parse(raw) as Partial<Saved>;
+    const ok =
+      v.claimed === true &&
+      Array.isArray(v.paid) &&
+      v.paid.length === paidSlots &&
+      v.paid.every((s) => !!packBySlug(s)) &&
+      Array.isArray(v.free) &&
+      v.free.length === freeSlots &&
+      v.free.every((s) => FREE_10MG.some((f) => f.slug === s)) &&
+      typeof v.email === "string";
+    if (ok) return v as Saved;
+  } catch {
+    /* private browsing / bad JSON — start fresh */
+  }
+  return null;
+}
+
+// Fireworks — same burst as tryfreecan (main's Spin & Save), .tfc-* classes.
+function Fireworks() {
+  const bursts = [
+    { top: "34%", left: "22%", color: "var(--tier-5)", delay: "0s" },
+    { top: "28%", left: "72%", color: "var(--tier-10)", delay: "0.12s" },
+    { top: "60%", left: "54%", color: "var(--tier-30)", delay: "0.26s" },
+    { top: "44%", left: "44%", color: "var(--tier-60)", delay: "0.08s" },
+  ];
+  return (
+    <div className="tfc-fireworks" aria-hidden="true">
+      {bursts.map((b, i) => (
+        <span
+          key={i}
+          className="tfc-burst"
+          style={{ top: b.top, left: b.left, color: b.color, animationDelay: b.delay }}
+        >
+          {Array.from({ length: 12 }).map((_, j) => (
+            <span
+              key={j}
+              className="tfc-particle"
+              style={{ "--rotate": `${j * 30}deg` } as CSSProperties}
+            />
+          ))}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function Html({ html, className }: { html: string; className?: string }) {
+  return (
+    <span className={className} aria-hidden="true" dangerouslySetInnerHTML={{ __html: html }} />
+  );
+}
+
+export function BuildYourBox({
+  paidSlots,
+  freeSlots,
+  headline,
+  subline,
+  code,
+  storageKey,
+  logTag,
+}: BuildYourBoxProps) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const stepTopRef = useRef<HTMLElement>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const freeSlotRefs = useRef<Record<number, HTMLButtonElement | null>>({});
+  const paidSlotRefs = useRef<Record<number, HTMLButtonElement | null>>({});
+  const flashTimer = useRef<number | undefined>(undefined);
+  const fullTimer = useRef<number | undefined>(undefined);
+
+  const [paid, setPaid] = useState<Slots>(() => Array(paidSlots).fill(null));
+  const [free, setFree] = useState<Slots>(() => Array(freeSlots).fill(null));
+  const [prices, setPrices] = useState<Record<string, number>>({});
+  const [step, setStep] = useState<Step>("build");
+  const [picker, setPicker] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [vw, setVw] = useState(1280);
+  const [basePx, setBasePx] = useState(50);
+  const [stickyTop, setStickyTop] = useState(0);
+  const [flash, setFlash] = useState<string | null>(null);
+  const [fullPulse, setFullPulse] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [announce, setAnnounce] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [celebrate, setCelebrate] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+
+  const priceOf = (p: FourPack) => prices[p.variantId] ?? p.fallbackPrice;
+  const paidPacks = paid.map((s) => packBySlug(s));
+  const freePacks = free.map((s) => packBySlug(s));
+  const paidSubtotal = round2(paidPacks.reduce((sum, p) => sum + (p ? priceOf(p) : 0), 0));
+  const paidFull = paid.every((s) => s !== null);
+  const boxFull = paidFull && free.every((s) => s !== null);
+  const filledCount = paid.filter(Boolean).length + free.filter(Boolean).length;
+  const totalSlots = paidSlots + freeSlots;
+  const shipUnlocked = paidSubtotal >= FREE_SHIP_THRESHOLD;
+  const shipFill = Math.min(paidSubtotal / FREE_SHIP_THRESHOLD, 1);
+  const shipText = shipUnlocked
+    ? "Free shipping unlocked\u00a0✓"
+    : `You're ${money(round2(FREE_SHIP_LABEL - paidSubtotal))} away from free shipping`;
+  const paidLabel = paidSlots === 1 ? "Your 4-pack" : "Your 4-packs";
+  const boxTitle = headline;
+
+  // Suppress the legacy global wheel for this visit (belt + braces with
+  // NO_WHEEL_PATHS). Restore a claimed box straight to the reveal (no fireworks).
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("sunrise:spin-wheel-seen", "true");
+    } catch {
+      /* harmless */
+    }
+    const saved = readSaved(storageKey, paidSlots, freeSlots);
+    if (saved) {
+      setPaid(saved.paid);
+      setFree(saved.free);
+      setEmail(saved.email);
+      setStep("reveal");
+    }
+  }, [storageKey, paidSlots, freeSlots]);
+
+  // Live 4-pack prices (fallback prices stay if this fails).
+  useEffect(() => {
+    let cancelled = false;
+    type NodesData = { nodes: ({ id: string; price?: { amount: string } } | null)[] };
+    storefrontApiRequest<NodesData>(
+      `query BoxPrices($ids: [ID!]!) { nodes(ids: $ids) { ... on ProductVariant { id price { amount } } } }`,
+      { ids: LIVE_FOUR_PACKS.map((p) => p.variantId) },
+    )
+      .then((res) => {
+        if (cancelled) return;
+        const next: Record<string, number> = {};
+        res?.data?.nodes?.forEach((n) => {
+          const amt = n?.price ? parseFloat(n.price.amount) : NaN;
+          if (n && Number.isFinite(amt) && amt > 0) next[n.id] = amt;
+        });
+        setPrices(next);
+      })
+      .catch((err) => console.warn(`[${logTag}] price fetch failed; using fallback prices`, err));
+    return () => {
+      cancelled = true;
+    };
+  }, [logTag]);
+
+  // Viewport: mobile breakpoint, lockup sizes, and the sticky offset (the box
+  // pins directly under the sticky announcement bar + header).
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_MQ);
+    const sync = () => {
+      setIsMobile(mq.matches);
+      setVw(window.innerWidth);
+      setBasePx(getBasePx());
+      const bottomOf = (sel: string) => {
+        const el = document.querySelector<HTMLElement>(sel);
+        if (!el) return 0;
+        const cs = getComputedStyle(el);
+        if (cs.position !== "sticky" && cs.position !== "fixed") return 0;
+        return (parseFloat(cs.top) || 0) + el.offsetHeight;
+      };
+      setStickyTop(Math.max(bottomOf(".announcement-bar"), bottomOf(".site-header")));
+    };
+    sync();
+    if (document.fonts) document.fonts.ready.then(sync);
+    mq.addEventListener("change", sync);
+    window.addEventListener("resize", sync);
+    return () => {
+      mq.removeEventListener("change", sync);
+      window.removeEventListener("resize", sync);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) setExpanded(false);
+  }, [isMobile]);
+
+  // Mobile: scrolling the grid collapses the expanded box (not while the picker is open).
+  useEffect(() => {
+    if (!isMobile || !expanded || picker !== null) return;
+    let y0: number | null = null;
+    const arm = window.setTimeout(() => {
+      y0 = window.scrollY;
+    }, 250);
+    const onScroll = () => {
+      if (y0 !== null && Math.abs(window.scrollY - y0) > 48) setExpanded(false);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.clearTimeout(arm);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [isMobile, expanded, picker]);
+
+  // Picker: focus the first option, trap Tab, Esc closes, outside click closes.
+  useEffect(() => {
+    if (picker === null) return;
+    const root = pickerRef.current;
+    const slotIndex = picker;
+    const id = window.requestAnimationFrame(() =>
+      root?.querySelector<HTMLButtonElement>("button[data-pick]")?.focus(),
+    );
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (!root) return;
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closePicker(slotIndex);
+      } else if (e.key === "Tab") {
+        const f = Array.from(root.querySelectorAll<HTMLButtonElement>("button"));
+        if (!f.length) return;
+        const first = f[0];
+        const last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        } else if (!root.contains(document.activeElement)) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    const onDown = (e: MouseEvent | TouchEvent) => {
+      const t = e.target as Node;
+      if (root?.contains(t) || freeSlotRefs.current[slotIndex]?.contains(t)) return;
+      closePicker(slotIndex, false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("touchstart", onDown, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(id);
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("touchstart", onDown);
+    };
+  }, [picker]);
+
+  const reduceMotion = () => !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+  const flashSlot = (key: string) => {
+    window.clearTimeout(flashTimer.current);
+    setFlash(key);
+    flashTimer.current = window.setTimeout(() => setFlash(null), 900);
+  };
+
+  const pulseFull = () => {
+    window.clearTimeout(fullTimer.current);
+    setFullPulse(true);
+    fullTimer.current = window.setTimeout(() => setFullPulse(false), 2600);
+  };
+
+  const closePicker = (slotIndex: number, refocus = true) => {
+    setPicker(null);
+    if (refocus) window.requestAnimationFrame(() => freeSlotRefs.current[slotIndex]?.focus());
+  };
+
+  const scrollToGrid = () => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    if (isMobile) setExpanded(false);
+    window.requestAnimationFrame(() => {
+      const boxH = boxRef.current?.offsetHeight ?? 0;
+      const top = grid.getBoundingClientRect().top + window.scrollY - stickyTop - boxH - 12;
+      window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion() ? "auto" : "smooth" });
+    });
+  };
+
+  const remainingText = (nextPaid: Slots, nextFree: Slots) => {
+    const left =
+      nextPaid.filter((s) => s === null).length + nextFree.filter((s) => s === null).length;
+    return left === 0
+      ? "Your box is full. Continue when you're ready."
+      : `${left} ${left === 1 ? "slot" : "slots"} left.`;
+  };
+
+  const addPaid = (p: FourPack) => {
+    if (step !== "build") return;
+    const i = paid.indexOf(null);
+    if (i < 0) {
+      setAnnounce("Your box is full. Tap × to swap a flavor.");
+      pulseFull();
+      return;
+    }
+    const next = [...paid];
+    next[i] = p.slug;
+    setPaid(next);
+    setShowHint(false);
+    flashSlot(`p${i}`);
+    const nowFull = next.every((s) => s !== null);
+    setAnnounce(
+      `${p.flavor} 4-pack added to your box. ${nowFull && paidSlots > 0 ? "Your 4-packs are all in. " : ""}${remainingText(next, free)}`,
+    );
+  };
+
+  const removePaid = (i: number) => {
+    const p = packBySlug(paid[i]);
+    const next = [...paid];
+    next[i] = null;
+    setPaid(next);
+    setAnnounce(`${p?.flavor ?? "4-pack"} removed. ${remainingText(next, free)}`);
+    window.requestAnimationFrame(() => paidSlotRefs.current[i]?.focus());
+  };
+
+  const pickFree = (i: number, p: FourPack) => {
+    const next = [...free];
+    next[i] = p.slug;
+    setFree(next);
+    setShowHint(false);
+    flashSlot(`f${i}`);
+    setAnnounce(`${p.flavor} added as free 4-pack ${i + 1}. ${remainingText(paid, next)}`);
+    closePicker(i);
+  };
+
+  const removeFree = (i: number) => {
+    const p = packBySlug(free[i]);
+    const next = [...free];
+    next[i] = null;
+    setFree(next);
+    setAnnounce(`Free ${p?.flavor ?? "4-pack"} removed. ${remainingText(paid, next)}`);
+    window.requestAnimationFrame(() => freeSlotRefs.current[i]?.focus());
+  };
+
+  const onContinue = () => {
+    if (!boxFull) {
+      setShowHint(true);
+      setAnnounce("Fill your box to continue.");
+      if (isMobile) setExpanded(true);
+      return;
+    }
+    setExpanded(false);
+    setPicker(null);
+    setStep("email");
+    window.setTimeout(() => {
+      stepTopRef.current?.scrollIntoView({
+        behavior: reduceMotion() ? "auto" : "smooth",
+        block: "start",
+      });
+      emailRef.current?.focus({ preventScroll: true });
+    }, 30);
+  };
+
+  const onUnlock = () => {
+    const value = email.trim().toLowerCase();
+    if (!EMAIL_RE.test(value) || value.length > 320) {
+      setEmailError("Enter a valid email address.");
+      emailRef.current?.focus();
+      return;
+    }
+    setEmailError("");
+    const params = new URLSearchParams(window.location.search);
+    const utms: Record<string, string> = {};
+    UTM_KEYS.forEach((k) => {
+      const v = params.get(k);
+      if (v) utms[k] = v;
+    });
+    const payload = {
+      email: value,
+      code,
+      deal: logTag,
+      paid: paidPacks.map((p) => ({ slug: p!.slug, variant_id: p!.variantId })),
+      free: freePacks.map((p) => ({ slug: p!.slug, variant_id: p!.variantId })),
+      paid_subtotal: paidSubtotal,
+      page: `${window.location.host.replace(/^www\./, "")}${window.location.pathname}`,
+      ...utms,
+    };
+    if (TEST_MODE) {
+      console.log(`[${logTag} TEST MODE]`, payload);
+    }
+    // Production: POST the claim route. It must never block the reveal.
+    try {
+      const saved: Saved = {
+        paid: paid as string[],
+        free: free as string[],
+        claimed: true,
+        email: value,
+      };
+      sessionStorage.setItem(storageKey, JSON.stringify(saved));
+    } catch {
+      /* harmless */
+    }
+    setEmail(value);
+    setCelebrate(!reduceMotion());
+    setStep("reveal");
+    window.setTimeout(
+      () =>
+        stepTopRef.current?.scrollIntoView({
+          behavior: reduceMotion() ? "auto" : "smooth",
+          block: "start",
+        }),
+      30,
+    );
+  };
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard blocked — code is visible on screen anyway */
+    }
+  };
+
+  const goToCheckout = async () => {
+    if (checkoutBusy || !boxFull) return;
+    setCheckoutBusy(true);
+    setCheckoutError("");
+    // Merge identical variants (paid + free) into one line with the summed quantity.
+    const qty = new Map<string, number>();
+    [...paidPacks, ...freePacks].forEach((p) => {
+      if (p) qty.set(p.variantId, (qty.get(p.variantId) ?? 0) + 1);
+    });
+    const lines = Array.from(qty, ([merchandiseId, quantity]) => ({ merchandiseId, quantity }));
+    type CartCreateData = {
+      cartCreate: {
+        cart: {
+          id: string;
+          checkoutUrl: string;
+          discountCodes: { code: string; applicable: boolean }[];
+        } | null;
+        userErrors: { field: string[] | null; message: string }[];
+      };
+    };
+    try {
+      const input: Record<string, unknown> = { lines, discountCodes: [code] };
+      if (email) input.buyerIdentity = { email };
+      const res = await storefrontApiRequest<CartCreateData>(
+        `mutation cartCreate($input: CartInput!) {
+          cartCreate(input: $input) {
+            cart { id checkoutUrl discountCodes { code applicable } }
+            userErrors { field message }
+          }
+        }`,
+        { input },
+      );
+      const payload = res?.data?.cartCreate;
+      const cart = payload?.cart;
+      if (!cart?.checkoutUrl)
+        throw new Error(
+          payload?.userErrors?.map((u) => u.message).join(", ") || "cartCreate returned no cart",
+        );
+      const applied = cart.discountCodes.find((d) => d.code.toUpperCase() === code.toUpperCase());
+      if (!applied?.applicable || (payload?.userErrors?.length ?? 0) > 0) {
+        // Expected with the placeholder codes. Still send them on.
+        console.warn(`[${logTag}] discount not applicable or userErrors`, {
+          discountCodes: cart.discountCodes,
+          userErrors: payload?.userErrors,
+        });
+      }
+      let url = cart.checkoutUrl;
+      try {
+        const u = new URL(url);
+        u.searchParams.set("channel", "online_store"); // same as main formatCheckoutUrl()
+        url = u.toString();
+      } catch {
+        /* keep the raw URL */
+      }
+      window.location.assign(url);
+    } catch (err) {
+      console.error(`[${logTag}] checkout failed`, err);
+      setCheckoutError("Something went wrong. Please try again.");
+      setCheckoutBusy(false);
+    }
+  };
+
+  // ── RENDER HELPERS ──────────────────────────────────────────────────────
+  const editable = step === "build";
+  const slotLockupBase = isMobile ? 13 : 15;
+
+  const renderPaidSlot = (i: number) => {
+    const p = paidPacks[i];
+    const n = i + 1;
+    if (!p) {
+      return (
+        <button
+          key={`p${i}`}
+          ref={(el) => {
+            paidSlotRefs.current[i] = el;
+          }}
+          type="button"
+          className={`byb-slot is-empty${flash === `p${i}` ? " is-flash" : ""}`}
+          aria-label={`Empty paid slot ${n} — add a 4-pack`}
+          onClick={scrollToGrid}
+          disabled={!editable}
+        >
+          <span className="byb-slot-plus" aria-hidden="true">
+            +
+          </span>
+          <span className="byb-slot-cta">Add your 4‑pack</span>
+        </button>
+      );
+    }
+    return (
+      <div
+        key={`p${i}`}
+        className={`byb-slot is-filled${flash === `p${i}` ? " is-flash" : ""}`}
+        style={{ "--slot-color": p.color, "--slot-on": onColor(p.color) } as CSSProperties}
+      >
+        <div className="byb-slot-art">
+          <Html
+            className="byb-slot-tier"
+            html={tierLockup(p.tier, slotLockupBase, onColor(p.color))}
+          />
+          <img src={HERO_CANS[p.slug]} alt="" width={331} height={900} decoding="async" />
+        </div>
+        <div className="byb-slot-info">
+          <span className="byb-slot-name">{p.flavor}</span>
+          <span className="byb-slot-price">{money(priceOf(p))}</span>
+        </div>
+        {editable && (
+          <button
+            ref={(el) => {
+              paidSlotRefs.current[i] = el;
+            }}
+            type="button"
+            className="byb-slot-x"
+            aria-label={`Paid slot ${n}: ${p.flavor} — remove`}
+            onClick={() => removePaid(i)}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  const renderFreeSlot = (i: number) => {
+    const p = freePacks[i];
+    const n = i + 1;
+    if (!p) {
+      return (
+        <button
+          key={`f${i}`}
+          ref={(el) => {
+            freeSlotRefs.current[i] = el;
+          }}
+          type="button"
+          className={`byb-slot is-empty is-free${flash === `f${i}` ? " is-flash" : ""}${picker === i ? " is-open" : ""}`}
+          aria-label={`Empty free slot ${n} — pick a flavor`}
+          aria-haspopup="dialog"
+          aria-expanded={picker === i}
+          onClick={() => setPicker(picker === i ? null : i)}
+          disabled={!editable}
+        >
+          <span className="byb-slot-plus" aria-hidden="true">
+            +
+          </span>
+          <span className="byb-slot-cta">Pick a flavor</span>
+        </button>
+      );
+    }
+    return (
+      <div
+        key={`f${i}`}
+        className={`byb-slot is-filled is-free${flash === `f${i}` ? " is-flash" : ""}`}
+        style={{ "--slot-color": p.color, "--slot-on": onColor(p.color) } as CSSProperties}
+      >
+        <div className="byb-slot-art">
+          <Html
+            className="byb-slot-tier"
+            html={tierLockup(p.tier, slotLockupBase, onColor(p.color))}
+          />
+          <img src={HERO_CANS[p.slug]} alt="" width={331} height={900} decoding="async" />
+        </div>
+        <div className="byb-slot-info">
+          <span className="byb-slot-name">{p.flavor}</span>
+          <span className="byb-slot-price">
+            <s>{money(priceOf(p))}</s> <strong className="byb-free-tag">FREE</strong>
+          </span>
+        </div>
+        {editable && (
+          <button
+            ref={(el) => {
+              freeSlotRefs.current[i] = el;
+            }}
+            type="button"
+            className="byb-slot-x"
+            aria-label={`Free slot ${n}: ${p.flavor} — remove`}
+            onClick={() => removeFree(i)}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  const pickerEl = picker !== null && (
+    <>
+      {isMobile && (
+        <div
+          className="byb-sheet-backdrop"
+          aria-hidden="true"
+          onClick={() => closePicker(picker, false)}
+        />
+      )}
+      <div
+        ref={pickerRef}
+        className={isMobile ? "byb-picker byb-picker--sheet" : "byb-picker byb-picker--pop"}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="byb-picker-title"
+      >
+        <div className="byb-picker-head">
+          <h3 id="byb-picker-title" className="byb-picker-title">
+            Free 4-pack {picker + 1}: pick a flavor
+          </h3>
+          <button
+            type="button"
+            className="byb-picker-close"
+            aria-label="Close"
+            onClick={() => closePicker(picker)}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div className="byb-picker-options">
+          {FREE_10MG.map((p) => (
+            <button
+              key={p.slug}
+              type="button"
+              data-pick
+              className="byb-pick"
+              style={{ "--slot-color": p.color, "--card-ink": inkFor(p.color) } as CSSProperties}
+              aria-label={`${p.flavor}, ${p.descriptor} — free`}
+              onClick={() => pickFree(picker, p)}
+            >
+              <span className="byb-pick-art">
+                <img src={HERO_CANS[p.slug]} alt="" width={331} height={900} decoding="async" />
+              </span>
+              <span className="byb-pick-name">{p.flavor}</span>
+              <span className="byb-pick-desc">{p.descriptor}</span>
+              <span className="byb-pick-price">
+                <s>{money(priceOf(p))}</s> <strong className="byb-free-tag">FREE</strong>
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+
+  const progress = (
+    <div className="byb-progress">
+      <div
+        className="byb-bar"
+        role="progressbar"
+        aria-label="Free shipping progress"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(shipFill * 100)}
+      >
+        <span
+          className={`byb-bar-fill${shipUnlocked ? " is-done" : ""}`}
+          style={{ width: `${shipFill * 100}%` }}
+        />
+      </div>
+      <p className={`byb-ship-text${shipUnlocked ? " is-done" : ""}`}>{shipText}</p>
+    </div>
+  );
+
+  const continueBtn = (
+    <button
+      type="button"
+      className={`btn btn-primary byb-continue${boxFull ? "" : " is-disabled"}`}
+      aria-disabled={!boxFull}
+      aria-describedby={!boxFull ? "byb-continue-hint" : undefined}
+      onClick={onContinue}
+    >
+      Continue
+    </button>
+  );
+
+  const hint = !boxFull && (
+    <p id="byb-continue-hint" className={`byb-hint${showHint ? " is-shown" : ""}`}>
+      Fill your box to continue
+    </p>
+  );
+
+  const fullNote = editable && paidFull && (
+    <p className={`byb-full-note${fullPulse ? " is-pulse" : ""}`}>
+      Your box is full — tap × to swap a flavor.
+    </p>
+  );
+
+  // The full box (desktop always; mobile when expanded or after Continue).
+  const fullBox = (
+    <div className="byb-box-inner">
+      <div className="byb-box-title">{boxTitle}</div>
+      <div className="byb-slots">
+        <div className="byb-group byb-group--paid" role="group" aria-label={paidLabel}>
+          <div className="byb-group-label">{paidLabel}</div>
+          <div className="byb-group-row">{paid.map((_, i) => renderPaidSlot(i))}</div>
+        </div>
+        <div className="byb-group byb-group--free" role="group" aria-label="Free 4-packs">
+          <div className="byb-group-label byb-group-label--free">Free 4-packs</div>
+          <div className="byb-group-row">{free.map((_, i) => renderFreeSlot(i))}</div>
+          {!isMobile && pickerEl}
+        </div>
+      </div>
+      {editable && (
+        <div className="byb-foot">
+          <div className="byb-foot-main">
+            {progress}
+            {fullNote}
+          </div>
+          <div className="byb-cta">
+            {continueBtn}
+            {hint}
+          </div>
+        </div>
+      )}
+      {isMobile && fullNote}
+    </div>
+  );
+
+  // Mobile collapsed row: mini slots (tap to expand) + progress + Continue.
+  const miniSlot = (p: FourPack | null, key: string, isFree: boolean) => (
+    <span
+      key={key}
+      className={`byb-mini${p ? " is-filled" : ""}${isFree ? " is-free" : ""}${flash === key ? " is-flash" : ""}`}
+      style={p ? ({ "--slot-color": p.color } as CSSProperties) : undefined}
+      aria-hidden="true"
+    >
+      {p ? <img src={HERO_CANS[p.slug]} alt="" width={331} height={900} decoding="async" /> : "+"}
+    </span>
+  );
+  const collapsedRow = (
+    <div className="byb-collapsed">
+      <button
+        type="button"
+        className="byb-collapsed-toggle"
+        aria-expanded={expanded}
+        aria-controls="byb-box-panel"
+        aria-label={`Your box: ${filledCount} of ${totalSlots} filled. ${expanded ? "Collapse" : "Expand"} your box.`}
+        onClick={() => setExpanded((v) => !v)}
+      >
+        <span className="byb-mini-group">
+          {paidPacks.map((p, i) => miniSlot(p, `p${i}`, false))}
+        </span>
+        <span className="byb-mini-group byb-mini-group--free">
+          <span className="byb-mini-free-label">Free</span>
+          {freePacks.map((p, i) => miniSlot(p, `f${i}`, true))}
+        </span>
+        <span className="byb-collapsed-count">
+          {filledCount}/{totalSlots}
+          <span className={`byb-chevron${expanded ? " is-up" : ""}`} aria-hidden="true" />
+        </span>
+      </button>
+      <div className="byb-collapsed-foot">
+        {fullPulse && paidFull ? (
+          <p className="byb-full-note is-pulse is-inline">
+            Your box is full — tap × to swap a flavor.
+          </p>
+        ) : (
+          progress
+        )}
+        <div className="byb-cta">{continueBtn}</div>
+      </div>
+      {hint}
+    </div>
+  );
+
+  const renderCard = (p: FourPack) => {
+    const ink = inkFor(p.color);
+    const count = paid.filter((s) => s === p.slug).length;
+    const disabled = paidFull;
+    const style = { "--card-flavor-color": p.color, "--card-ink": ink } as CSSProperties;
+    const cardLockupBase = vw <= 520 ? 28 : 44;
+    const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        addPaid(p);
+      }
+    };
+    return (
+      <div
+        key={p.slug}
+        className={`tfc-card byb-card${count ? " is-in-box" : ""}${disabled ? " is-disabled" : ""}`}
+        style={style}
+        role="button"
+        tabIndex={0}
+        aria-disabled={disabled}
+        aria-label={`${p.flavor}, ${p.descriptor}, ${money(priceOf(p))} 4-pack${count ? `, ${count} in your box` : ""} — ${disabled ? "box full" : "add to box"}`}
+        onClick={() => addPaid(p)}
+        onKeyDown={onKey}
+      >
+        <div className="tfc-card-can" style={{ background: p.color }}>
+          <img
+            src={HERO_CANS[p.slug]}
+            alt={`SUNRISE ${p.flavor} seltzer 4-pack`}
+            width={331}
+            height={900}
+            loading="lazy"
+            decoding="async"
+          />
+          <Html className="tfc-card-tier" html={tierLockup(p.tier, cardLockupBase, "#FEFBE0")} />
+          {p.cannabinoid && (
+            <Html
+              className="tfc-card-cannabinoid"
+              html={cbLockup(p.cannabinoid, basePx * 0.91, "#FEFBE0")}
+            />
+          )}
+          {count > 0 && (
+            <span className="byb-card-count" aria-hidden="true" style={{ color: ink }}>
+              ×{count}
+            </span>
+          )}
+        </div>
+        <div className="tfc-card-meta">
+          <div className="tfc-card-name">
+            {(p.nameLines ?? p.flavor.split(" ")).map((w, i, arr) => (
+              <span key={i}>
+                {w}
+                {i < arr.length - 1 ? <br /> : null}
+              </span>
+            ))}
+          </div>
+          <div className="tfc-card-descriptor">{p.descriptor}</div>
+          <div className="byb-card-price">
+            {money(priceOf(p))} <span className="byb-card-unit">4-pack</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Headline: first sentence near-black, the rest on a new line in the accent
+  // color (same treatment as tryfreecan's "Want a Taste? / Just Cover Shipping").
+  const dot = headline.indexOf(". ");
+  const headA = dot > 0 ? headline.slice(0, dot + 1) : headline;
+  const headB = dot > 0 ? headline.slice(dot + 2) : "";
+
+  const sticky = step === "build";
+  const boxStyle = { "--byb-top": `${stickyTop}px` } as CSSProperties;
+
+  return (
+    <>
+      <SiteHeader />
+
+      <main className="tfc-page byb-page">
+        <p className="byb-sr" aria-live="polite" aria-atomic="true">
+          {announce}
+        </p>
+
+        {/* ── 01 · HERO ─────────────────────────────────────────────────── */}
+        <section className="tfc-hero byb-hero">
+          <div className="container">
+            <h1 className="tfc-headline">
+              {headA}
+              {headB && (
+                <>
+                  <br />
+                  <span className="accent">{headB}</span>
+                </>
+              )}
+            </h1>
+            <p className="tfc-subhead">{subline}</p>
+          </div>
+        </section>
+
+        {step !== "reveal" && (
+          /* ── 02 · THE BOX (sticky while building) ─────────────────────── */
+          <div
+            ref={boxRef}
+            className={`byb-box${sticky ? " is-sticky" : ""}${isMobile && sticky ? " is-mobile" : ""}${picker !== null ? " has-picker" : ""}`}
+            style={boxStyle}
+            aria-label="Your box"
+            role="region"
+          >
+            <div className="container">
+              {isMobile && sticky ? (
+                <>
+                  {collapsedRow}
+                  {expanded && (
+                    <div id="byb-box-panel" className="byb-panel">
+                      {fullBox}
+                    </div>
+                  )}
+                  {pickerEl}
+                </>
+              ) : (
+                fullBox
+              )}
+            </div>
+          </div>
+        )}
+
+        {step === "build" && (
+          /* ── 03 · FLAVOR GRID (paid packs) ────────────────────────────── */
+          <section
+            ref={gridRef}
+            className="tfc-pick byb-pick-section"
+            aria-label="Choose your 4-packs"
+          >
+            <div className="container">
+              {paidFull && (
+                <p className="byb-grid-note">Your box is full — tap × to swap a flavor.</p>
+              )}
+              <div className="tfc-groups byb-groups">
+                {TIERS.map((t) => (
+                  <div key={t.tier} className="tfc-group" role="group" aria-label={`${t.tier} MG`}>
+                    <div className="tfc-group-head">
+                      <Html
+                        className="tfc-group-lockup"
+                        html={tierLockup(t.tier, isMobile ? 30 : 40, t.color)}
+                      />
+                    </div>
+                    <div className="tfc-grid">
+                      {LIVE_FOUR_PACKS.filter((p) => p.tier === t.tier).map((p) => (
+                        <Fragment key={p.slug}>{renderCard(p)}</Fragment>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {step === "email" && (
+          /* ── 04 · EMAIL ───────────────────────────────────────────────── */
+          <section ref={stepTopRef} className="byb-email" aria-labelledby="byb-email-title">
+            <div className="container">
+              <div className="byb-email-card">
+                <h2 id="byb-email-title" className="tfc-claim-title byb-email-title">
+                  Almost there.
+                </h2>
+                <p className="byb-email-line">Enter your email to lock in your free 4-packs.</p>
+                <form
+                  className="tfc-form"
+                  noValidate
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    onUnlock();
+                  }}
+                >
+                  <label htmlFor="byb-email" className="tfc-label">
+                    Email address
+                  </label>
+                  <input
+                    ref={emailRef}
+                    id="byb-email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    className="tfc-input"
+                    placeholder="you@email.com"
+                    value={email}
+                    aria-invalid={!!emailError}
+                    aria-describedby={emailError ? "byb-email-error" : undefined}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (emailError) setEmailError("");
+                    }}
+                  />
+                  {emailError && (
+                    <p id="byb-email-error" className="tfc-error">
+                      {emailError}
+                    </p>
+                  )}
+                  <button type="submit" className="btn btn-primary tfc-claim-btn byb-unlock-btn">
+                    Unlock My Box
+                  </button>
+                  <p className="tfc-fine">
+                    By entering your email, you agree to receive marketing emails from SUNRISE.
+                    Unsubscribe anytime.
+                  </p>
+                </form>
+                <button type="button" className="byb-edit" onClick={() => setStep("build")}>
+                  Edit my box
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {step === "reveal" && boxFull && (
+          /* ── 05 · REVEAL ──────────────────────────────────────────────── */
+          <section
+            ref={stepTopRef}
+            className="tfc-reveal byb-reveal"
+            aria-labelledby="byb-reveal-title"
+          >
+            <div className="container">
+              <div className="tfc-reveal-burst">
+                {celebrate && <Fireworks />}
+                <h2 id="byb-reveal-title" className="tfc-reveal-title">
+                  Your box is ready.
+                </h2>
+              </div>
+              <ul className="byb-summary" aria-label="Your box">
+                {paidPacks.map((p, i) =>
+                  p ? (
+                    <li
+                      key={`sp${i}`}
+                      className="byb-summary-row"
+                      style={{ "--slot-color": p.color } as CSSProperties}
+                    >
+                      <span className="byb-summary-swatch" aria-hidden="true">
+                        <img
+                          src={HERO_CANS[p.slug]}
+                          alt=""
+                          width={331}
+                          height={900}
+                          decoding="async"
+                        />
+                      </span>
+                      <span className="byb-summary-name">
+                        {p.flavor}
+                        <Html
+                          className="byb-summary-tier"
+                          html={tierLockup(p.tier, 14, inkFor(p.color))}
+                        />
+                      </span>
+                      <span className="byb-summary-price">{money(priceOf(p))}</span>
+                    </li>
+                  ) : null,
+                )}
+                {freePacks.map((p, i) =>
+                  p ? (
+                    <li
+                      key={`sf${i}`}
+                      className="byb-summary-row is-free"
+                      style={{ "--slot-color": p.color } as CSSProperties}
+                    >
+                      <span className="byb-summary-swatch" aria-hidden="true">
+                        <img
+                          src={HERO_CANS[p.slug]}
+                          alt=""
+                          width={331}
+                          height={900}
+                          decoding="async"
+                        />
+                      </span>
+                      <span className="byb-summary-name">
+                        {p.flavor}
+                        <Html
+                          className="byb-summary-tier"
+                          html={tierLockup(p.tier, 14, inkFor(p.color))}
+                        />
+                      </span>
+                      <span className="byb-summary-price">
+                        <s>{money(priceOf(p))}</s> <strong className="byb-free-tag">FREE</strong>
+                      </span>
+                    </li>
+                  ) : null,
+                )}
+              </ul>
+              <button type="button" className="tfc-code" onClick={copyCode} title="Copy code">
+                <span className="tfc-code-text">{code}</span>
+                <span className="tfc-code-copy">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" className="tfc-copy-icon">
+                    <rect
+                      x="8"
+                      y="8"
+                      width="13"
+                      height="13"
+                      rx="2"
+                      ry="2"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                    <rect
+                      x="3"
+                      y="3"
+                      width="13"
+                      height="13"
+                      rx="2"
+                      ry="2"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                  {copied ? "Copied!" : "Copy"}
+                </span>
+              </button>
+              <p className="tfc-fine tfc-code-note">The deal is applied for you at checkout.</p>
+              <button
+                type="button"
+                className="btn btn-primary tfc-checkout-btn"
+                onClick={goToCheckout}
+                disabled={checkoutBusy}
+                aria-busy={checkoutBusy}
+              >
+                {checkoutBusy ? "Opening Checkout" : "Continue to Checkout"}
+              </button>
+              {checkoutError && (
+                <p className="tfc-error" role="alert">
+                  {checkoutError}
+                </p>
+              )}
+            </div>
+          </section>
+        )}
+      </main>
+
+      <SiteFooter />
+    </>
+  );
+}

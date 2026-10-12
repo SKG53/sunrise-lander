@@ -198,12 +198,13 @@ export function SpinWheel() {
     // point — do not auto-arm there. Other routes (incl. the preserved full
     // lander at /neverpull/oghome-fys) keep the auto-triggers.
     // /neverpull/review, /neverpull/tryfreecan, /neverpull/buy1get2 and
-    // /neverpull/buy3get2 are form pages; the wheel must
+    // /neverpull/buy3get2 are form pages, and /neverpull/account-test is a test
+    // page; the wheel must
     // never cover them. Checked at mount AND at reveal time: the routes are
     // code-split, so a page-level sessionStorage flag can land after this effect
     // runs, and a visitor can client-side navigate onto the page while the
     // fallback timer is pending.
-    const NO_WHEEL_PATHS = ["/", "/neverpull/review", "/neverpull/tryfreecan", "/neverpull/buy1get2", "/neverpull/buy3get2"];
+    const NO_WHEEL_PATHS = ["/", "/neverpull/review", "/neverpull/tryfreecan", "/neverpull/buy1get2", "/neverpull/buy3get2", "/neverpull/account-test"];
     const onNoWheelPath = () =>
       typeof window !== "undefined" &&
       NO_WHEEL_PATHS.includes(window.location.pathname.replace(/\/+$/, "") || "/");

@@ -3,10 +3,18 @@
 // a full-viewport mobile drawer containing the same nav links + CTAs at
 // touch-friendly sizes. Cart drawer trigger stays in the header bar on all
 // viewports — it's its own concern, independent of the menu drawer.
+//
+// Optional account link (Oct 12 2026, Customer Accounts test): pass
+// `accountHref` to show a round person icon left of the cart, plus a
+// "My Account" button in the mobile drawer. Omitted → header is unchanged
+// (every page except /neverpull/account-test). The link goes to Shopify's
+// hosted customer accounts (sign-in by emailed code, order history,
+// addresses) via a redirect route. Styles: SiteHeaderAccount.css.
 
 import { useEffect, useRef, useState } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 import { CartDrawer } from "./CartDrawer";
+import "./SiteHeaderAccount.css";
 
 type NavKey = "home" | "products" | "about" | "find" | "faq" | "contact";
 
@@ -19,7 +27,7 @@ const NAV_LINKS: { key: NavKey; href: string; label: string }[] = [
   { key: "contact",  href: "/contact",  label: "Contact" },
 ];
 
-export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
+export function SiteHeader({ activeNav, accountHref }: { activeNav?: NavKey; accountHref?: string }) {
   const wmRef = useRef<HTMLDivElement>(null);
   const drawerWmRef = useRef<HTMLDivElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -81,6 +89,25 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
             className="nav-cta outline"
           ><span className="no-transform">COAs</span></a>
           <a href="/neverpull/products" className="nav-cta solid">Shop</a>
+          {accountHref && (
+            <a href={accountHref} className="account-trigger" aria-label="My account">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 21c0-4.2 3.6-7 8-7s8 2.8 8 7" />
+              </svg>
+            </a>
+          )}
           <CartDrawer />
           <button
             type="button"
@@ -151,6 +178,13 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
               className="mobile-menu-cta solid"
               onClick={closeMenu}
             >Shop</a>
+            {accountHref && (
+              <a
+                href={accountHref}
+                className="mobile-menu-cta outline"
+                onClick={closeMenu}
+              >My Account</a>
+            )}
           </div>
         </div>
       </div>

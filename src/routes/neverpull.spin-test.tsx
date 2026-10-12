@@ -1,5 +1,6 @@
 // LIVE, ISOLATED playground for the new two-pool Spin & Save (V2), plus links
-// to the /neverpull/review and /neverpull/tryfreecan prototypes.
+// to the /neverpull/review, /neverpull/tryfreecan, /neverpull/buy1get2 and
+// /neverpull/buy3get2 prototypes.
 // Path: /neverpull/spin-test  (srbev.com is site-wide noindex; this route also
 // carries its own noindex and is not linked from anywhere).
 //
@@ -93,6 +94,18 @@ function SpinTestPage() {
         style={{ ...btn, textDecoration: "none", display: "inline-block", textAlign: "center" }}
       >
         Free Can Landing Page
+      </Link>
+      <Link
+        to="/neverpull/buy1get2"
+        style={{ ...btn, textDecoration: "none", display: "inline-block", textAlign: "center" }}
+      >
+        Buy 1 Get 2 Free
+      </Link>
+      <Link
+        to="/neverpull/buy3get2"
+        style={{ ...btn, textDecoration: "none", display: "inline-block", textAlign: "center" }}
+      >
+        Buy 3 Get 2 Free
       </Link>
 
       {launch && (

@@ -15,6 +15,8 @@ import { Route as AgeVerificationPolicyRouteImport } from './routes/age-verifica
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as NeverpullAboutRouteImport } from './routes/neverpull.about'
+import { Route as NeverpullBuy1get2RouteImport } from './routes/neverpull.buy1get2'
+import { Route as NeverpullBuy3get2RouteImport } from './routes/neverpull.buy3get2'
 import { Route as NeverpullContactRouteImport } from './routes/neverpull.contact'
 import { Route as NeverpullEventSignupRouteImport } from './routes/neverpull.event-signup'
 import { Route as NeverpullFaqRouteImport } from './routes/neverpull.faq'
@@ -62,6 +64,16 @@ const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
 const NeverpullAboutRoute = NeverpullAboutRouteImport.update({
   id: '/neverpull/about',
   path: '/neverpull/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullBuy1get2Route = NeverpullBuy1get2RouteImport.update({
+  id: '/neverpull/buy1get2',
+  path: '/neverpull/buy1get2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeverpullBuy3get2Route = NeverpullBuy3get2RouteImport.update({
+  id: '/neverpull/buy3get2',
+  path: '/neverpull/buy3get2',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NeverpullContactRoute = NeverpullContactRouteImport.update({
@@ -164,6 +176,8 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/neverpull/about': typeof NeverpullAboutRoute
+  '/neverpull/buy1get2': typeof NeverpullBuy1get2Route
+  '/neverpull/buy3get2': typeof NeverpullBuy3get2Route
   '/neverpull/contact': typeof NeverpullContactRoute
   '/neverpull/event-signup': typeof NeverpullEventSignupRoute
   '/neverpull/faq': typeof NeverpullFaqRoute
@@ -190,6 +204,8 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/neverpull/about': typeof NeverpullAboutRoute
+  '/neverpull/buy1get2': typeof NeverpullBuy1get2Route
+  '/neverpull/buy3get2': typeof NeverpullBuy3get2Route
   '/neverpull/contact': typeof NeverpullContactRoute
   '/neverpull/event-signup': typeof NeverpullEventSignupRoute
   '/neverpull/faq': typeof NeverpullFaqRoute
@@ -217,6 +233,8 @@ export interface FileRoutesById {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/neverpull/about': typeof NeverpullAboutRoute
+  '/neverpull/buy1get2': typeof NeverpullBuy1get2Route
+  '/neverpull/buy3get2': typeof NeverpullBuy3get2Route
   '/neverpull/contact': typeof NeverpullContactRoute
   '/neverpull/event-signup': typeof NeverpullEventSignupRoute
   '/neverpull/faq': typeof NeverpullFaqRoute
@@ -245,6 +263,8 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/terms-of-service'
     | '/neverpull/about'
+    | '/neverpull/buy1get2'
+    | '/neverpull/buy3get2'
     | '/neverpull/contact'
     | '/neverpull/event-signup'
     | '/neverpull/faq'
@@ -271,6 +291,8 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/terms-of-service'
     | '/neverpull/about'
+    | '/neverpull/buy1get2'
+    | '/neverpull/buy3get2'
     | '/neverpull/contact'
     | '/neverpull/event-signup'
     | '/neverpull/faq'
@@ -297,6 +319,8 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/terms-of-service'
     | '/neverpull/about'
+    | '/neverpull/buy1get2'
+    | '/neverpull/buy3get2'
     | '/neverpull/contact'
     | '/neverpull/event-signup'
     | '/neverpull/faq'
@@ -324,6 +348,8 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   NeverpullAboutRoute: typeof NeverpullAboutRoute
+  NeverpullBuy1get2Route: typeof NeverpullBuy1get2Route
+  NeverpullBuy3get2Route: typeof NeverpullBuy3get2Route
   NeverpullContactRoute: typeof NeverpullContactRoute
   NeverpullEventSignupRoute: typeof NeverpullEventSignupRoute
   NeverpullFaqRoute: typeof NeverpullFaqRoute
@@ -386,6 +412,20 @@ declare module '@tanstack/react-router' {
       path: '/neverpull/about'
       fullPath: '/neverpull/about'
       preLoaderRoute: typeof NeverpullAboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/buy1get2': {
+      id: '/neverpull/buy1get2'
+      path: '/neverpull/buy1get2'
+      fullPath: '/neverpull/buy1get2'
+      preLoaderRoute: typeof NeverpullBuy1get2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neverpull/buy3get2': {
+      id: '/neverpull/buy3get2'
+      path: '/neverpull/buy3get2'
+      fullPath: '/neverpull/buy3get2'
+      preLoaderRoute: typeof NeverpullBuy3get2RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/neverpull/contact': {
@@ -524,6 +564,8 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   NeverpullAboutRoute: NeverpullAboutRoute,
+  NeverpullBuy1get2Route: NeverpullBuy1get2Route,
+  NeverpullBuy3get2Route: NeverpullBuy3get2Route,
   NeverpullContactRoute: NeverpullContactRoute,
   NeverpullEventSignupRoute: NeverpullEventSignupRoute,
   NeverpullFaqRoute: NeverpullFaqRoute,
